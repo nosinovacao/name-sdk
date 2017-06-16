@@ -1,14 +1,14 @@
 # NAME: Self-Contained Dependencies Management
-NAME is a dependencies management library designed to expose and access dependencies information, written in C#. 
+NAME is a service dependencies management library designed to expose and access services information, written in C#. 
 
-Its goal is to make it easier and simpler to detect dependencies problems in a world where there are more and more services per application. It provides human and machine friendly dependencies information without the need for external tools.
+Its goal is to make it easier and simpler to detect service dependencies problems in a world where there are more and more services per application. It provides human and machine friendly dependencies information without the need for external tools.
 
 ### Main Features
 * Self-contained
-* Developer friendly dependencies definition
-* Human and machine readable dependencies status
+* Developer friendly service dependencies definition
+* Human and machine readable service dependencies status
 * Deep dependecies health checks
-* Third-party dependencies checks
+* Third-party service dependencies checks
 * Support for **optional** central registration
 * .Net Core and .NET 4.5+ compatible
 
@@ -21,9 +21,8 @@ The configuration file is present in `App_Start/NAMEConfig.cs` and the dependenc
 
 ### Installing on ASP.NET Core
 1. Install the NuGet package
-```PowerShell
+
     Install-Package NAME.AspNetCore
-```
 
 2. Add the NAME middleware in the *Configure* method of your *Startup.cs* file.
 ```csharp

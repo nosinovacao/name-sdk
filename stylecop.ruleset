@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RuleSet Name="Rules for NAME" Description="Code analysis rules for NAME." ToolsVersion="14.0">
+  <!--https://github.com/dotnet/roslyn/blob/master/docs/compilers/Rule%20Set%20Format.md-->
+  <IncludeAll Action="Warning" />
+  <Rules AnalyzerId="StyleCop.Analyzers" RuleNamespace="StyleCop.Analyzers">
+    <Rule Id="SA1633" Action="None" />
+    <Rule Id="SA1634" Action="None" />
+    <Rule Id="SA1637" Action="None" />
+    <Rule Id="SA1638" Action="None" />
+    <Rule Id="SA1640" Action="None" />
+    <Rule Id="SA1649" Action="None" />
+    <Rule Id="SA1650" Action="None" />
+    <Rule Id="SA1602" Action="None" />
+    <Rule Id="SA1625" Action="None" />
+    <Rule Id="SA1630" Action="None" />
+    <Rule Id="SA1631" Action="None" />
+    <Rule Id="SA1642" Action="None" />
+    <Rule Id="SA1643" Action="None" />
+    <Rule Id="SA1601" Action="None" />
+    <Rule Id="SA1200" Action="None" />
+    <Rule Id="SA1201" Action="None" />
+    <Rule Id="SA1202" Action="None" />
+    <Rule Id="SA1208" Action="None" />
+    <Rule Id="SA1210" Action="None" />
+    <Rule Id="SA1211" Action="None" />
+    <Rule Id="SA1309" Action="None" />
+    <Rule Id="SA1305" Action="None" />
+    <Rule Id="SA1311" Action="None" />
+    <Rule Id="SA1300" Action="None" />
+    <Rule Id="SA1310" Action="None" />
+    <Rule Id="SA1507" Action="None" />
+    <Rule Id="SA1505" Action="None" />
+    <Rule Id="SA1503" Action="None" />
+    <Rule Id="SA1516" Action="None" />
+    <Rule Id="SA1508" Action="None" />
+    <Rule Id="SA1512" Action="None" />
+    <Rule Id="SA1513" Action="None" />
+    <Rule Id="SA1515" Action="None" />
+    <Rule Id="SA1005" Action="None" />
+    <Rule Id="SA1028" Action="None" />
+    <!-- This rule does not handle string interpolation correctly. So disable it. -->
+    <Rule Id="SA1013" Action="None" />
+    <!-- This rule does not handle string interpolation correctly. So disable it. -->
+    <Rule Id="SA1012" Action="None" />
+    <!-- The following were disabled because they were creating build errors internally. -->
+    <Rule Id="SA1600" Action="None" />
+    <Rule Id="SA1518" Action="None" />
+    <Rule Id="SA1402" Action="None" />
+    <Rule Id="SA1203" Action="None" />
+    <Rule Id="SA1204" Action="None" />
+    <Rule Id="SA1214" Action="None" />
+  </Rules>
+</RuleSet>

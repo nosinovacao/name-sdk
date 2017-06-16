@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>6bed7e20-a9a1-41e1-9a74-fd1c9211d181</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>NAME</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)ConnectedVersionResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyCheckStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DependencyVersion.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DTOs\BootstrapDTO.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DTOs\BootstrapResultDto.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)DTOs\SendManifestDTO.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ConnectionStringNotFoundException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependenciesCheckException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependencyNotReachableException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\NAMEException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\VersionNotRecognizedException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\VersionParsingException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IConnectionStringProvider.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IFilePathMapper.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IVersionResolver.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IVersionTranslator.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Json\JSONPath.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Json\SimpleJson.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Json\SimpleJSONPathValueSystem.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NAMESettings.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SupportedConnectionStringLocators.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SupportedDependencies.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)SupportedNAMEBehaviours.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\EndianAwareBinaryReader.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\EndianAwareBinaryWriter.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\Guard.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NAMEContext.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\SocketHelpers.cs" />
+  </ItemGroup>
+</Project>

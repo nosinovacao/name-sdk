@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <Description>Provides a way to add NAME as a self host web api endpoint for .NET core using the Kestrel web-server.</Description>
+    <Authors>Miguel Alexandre;João Trigo Soares</Authors>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <AssemblyName>NAME.SelfHost.Kestrel</AssemblyName>
+    <PackageId>NAME.SelfHost.Kestrel</PackageId>
+    <PackageTags>NOS NAME Self Host SelfHost Kestrel NOS Api Manifest Extension</PackageTags>
+    <PackageTargetFallback>$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
+  </PropertyGroup>
+
+  <Import Project="..\NAME.SelfHost.Shared\NAME.SelfHost.Shared.projitems" Label="Shared" />
+
+
+
+  <ItemGroup>
+    <None Update="Nuget\readme.txt">
+      <PackagePath></PackagePath>
+      <Pack>true</Pack>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\NAME\NAME.csproj" />
+    <ProjectReference Include="..\NAME.AspNetCore\NAME.AspNetCore.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel" Version="1.1.1" />
+  </ItemGroup>
+
+</Project>

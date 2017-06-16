@@ -1,0 +1,17 @@
+﻿{
+  "infrastructure_dependencies": [
+
+  ],
+  "service_dependencies": [
+    {
+      "name": "dummy-service",
+      "connection_string": "http://dummy-service:5000/manifest",
+      "min_version": "0.0.0",
+      "max_version": "9.9.9"
+    }
+  ],
+  "Overrides": {
+    "RegistryEndpoints": [ "http://dummy-registry-service:3192/api/v1" ],
+    "RegistryPingFrequency": "00:00:01"
+  }
+}

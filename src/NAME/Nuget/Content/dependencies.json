@@ -1,0 +1,42 @@
+﻿{
+  //Use this file to define all your application dependencies.
+  "infrastructure_dependencies": [
+    //{
+    //  "os_name": "Windows",
+    //  "type": "OperatingSystem",
+    //  "min_version": "WindowsServer2008R2",
+    //  "max_version": "*"
+    //},
+    //{
+    //  "type": "MongoDb",
+    //  "min_version": "2.6",
+    //  "max_version": "3.2",
+    //  "connection_string": {
+    //    "locator": "ConnectionStrings",
+    //    "key": "MongoDBConnectionString"
+    //  }
+    //},
+    //{
+    //  "type": "RabbitMq",
+    //  "name": "rabbitmq",
+    //  "min_version": "3.0.0",
+    //  "max_version": "3.6.5",
+    //  "connection_string": {
+    //    "locator": "ConnectionStrings",
+    //    "key": "EventaConnectionString"
+    //  }
+    //}
+  ],
+  "service_dependencies": [
+    //{
+    //  "name": "AAAA",
+    //  "min_version": "2.3.7",
+    //  "max_version": "3.1.2",
+    //  "connection_string": {
+    //    "locator": "VSSettingsFile",
+    //    "section": "nPVR.Services.AAAAClient.Properties.Settings",
+    //    "key": "AAAAEndpoint"
+    //  }
+    //}
+  ]
+}

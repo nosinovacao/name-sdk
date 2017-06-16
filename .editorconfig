@@ -1,0 +1,16 @@
+﻿root = true
+[*]
+end_of_line = crlf
+indent_style = space:warning
+indent_size = 4
+charset = utf-8
+
+[*.xml]
+indent_style = space
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+[*.cs]
+csharp_style_inlined_variable_declaration = true:warning

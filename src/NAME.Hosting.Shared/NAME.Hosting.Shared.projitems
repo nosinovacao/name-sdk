@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>1b69400b-f2b5-417a-9234-5f12114554a8</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>NAME.Hosting.Shared</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)DependenciesUtils.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NAMEBaseConfiguration.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NAMESettingsExtensions.cs" />
+  </ItemGroup>
+</Project>
