@@ -7,7 +7,7 @@ Its goal is to make it easier and simpler to detect service dependencies problem
 * Self-contained
 * Developer friendly service dependencies definition
 * Human and machine readable service dependencies status
-* Deep dependecies health checks
+* Deep dependencies health checks
 * Third-party service dependencies checks
 * Support for **optional** central registration
 * .Net Core and .NET 4.5+ compatible
@@ -83,7 +83,7 @@ To build and run unit tests on Linux execute the command:
 #### 1) Developer friendly dependencies defintion
 Specify your dependencies in a developer friendly JSON format. Keep you existing connection settings, using built-in locators.
 
-#### 2) Deep dependecies checks
+#### 2) Deep dependencies checks
 Realtime recursive dependencies health check, including minimum/maximum version checks.
 
 Optionally abort the application startup if any dependency reports an unhealthy state.
@@ -103,6 +103,6 @@ All we ask is that you follow some simple guidelines, so please read the [CONTRI
 Thank you, [contributors](https://github.com/nosinovacao/name-sdk/graphs/contributors)!
 
 ## License
-Copyright © NOS Inovcaçâo.
+Copyright © NOS Inovaçâo.
 
 This project is licensed under the BSD 3-Clause License - see the [LICENSE](LICENSE) file for details
