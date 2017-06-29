@@ -79,21 +79,14 @@ Task("Build")
     {
         Information("Printing Environment variables");
         
-        foreach(var envVar in EnvironmentVariables())
-        {
-            Information(
-                "Key: {0}\tValue: \"{1}\"",
-                envVar.Key,
-                envVar.Value
-                );
-        }
-
-        // EnsureDirectoryExists(artifactsDir);
-
-        // Use MSBuild
         var dotNetBuildConfig = new DotNetCoreBuildSettings() {
             Configuration = configuration
         };
+
+        if (IsRunningOnUnix())
+            dotNetBuildConfig.EnvironmentVariables = new Dictionary<string, string>{
+                { "FrameworkPathOverride", "/usr/lib/mono/4.5/" }
+            };
 
         DotNetCoreBuild("NAME.sln", dotNetBuildConfig);
     });
@@ -174,6 +167,16 @@ Task("Nuget-Pack")
                     { "VersionSuffix", settings.VersionSuffix }
                 };
             }
+                
+            if (IsRunningOnUnix()) {
+                dotnetCoreRestoreSettings.EnvironmentVariables = new Dictionary<string, string>{
+                    { "FrameworkPathOverride", "/usr/lib/mono/4.5/" }
+                };
+                settings.EnvironmentVariables = new Dictionary<string, string>{
+                    { "FrameworkPathOverride", "/usr/lib/mono/4.5/" }
+                };
+            }
+
 
             foreach(var project in PROJECTS_TO_PACK){
                 var projectFolder = "./src/" + project;
@@ -206,6 +209,22 @@ Task("Run-Unit-Tests")
                 WorkingDirectory = file.GetDirectory()
             };
 
+            if (IsRunningOnUnix()) {
+                var frameworks = XmlPeek(file, "/Project/PropertyGroup/TargetFrameworks/text()");
+                if (frameworks == null)
+                    frameworks = XmlPeek(file, "/Project/PropertyGroup/TargetFramework/text()");
+                    
+                if (frameworks == null || frameworks.Contains("netcoreapp") == false) {
+                    continue;
+                }
+
+                processSettings.EnvironmentVariables = new Dictionary<string, string>{
+                    { "FrameworkPathOverride", "/usr/lib/mono/4.5/" }
+                };
+
+                processSettings.Arguments.Append("-framework netcoreapp1.0");
+            }
+
             var exitCode = StartProcess("dotnet", processSettings);
 
             if(exitCode > highestExitCode)
@@ -218,6 +237,7 @@ Task("Run-Unit-Tests")
     });
 
 Task("Run-Integration-Tests")
+    .IsDependentOn("Nuget-Pack")
     .Does(() => {
         EnsureDirectoryExists(releaseNugetPackagesDir);
         EnsureDirectoryExists(integrationTestResultsOutputDir);
