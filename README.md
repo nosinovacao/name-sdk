@@ -62,6 +62,10 @@ app.UseNAME(config =>
   ]
 }
 ```
+### Non-Web Applications
+For applications without a web server we created a SelfHost solution.
+You can read how to install NAME on those applications at [Using NAME On Non Web Applications](https://github.com/nosinovacao/name-sdk/wiki/Using-NAME-On-Non-Web-Applications).
+
 ## Documentation
 See the [Wiki](https://github.com/nosinovacao/name-sdk/wiki) for full documentation, examples, operational details and other information.
 
@@ -77,23 +81,6 @@ To build and run unit tests on Windows execute the command:
 To build and run unit tests on Linux execute the command:
 
     ./build.sh
-
-<!--
-## What does it do?
-#### 1) Developer friendly dependencies defintion
-Specify your dependencies in a developer friendly JSON format. Keep you existing connection settings, using built-in locators.
-
-#### 2) Deep dependencies checks
-Realtime recursive dependencies health check, including minimum/maximum version checks.
-
-Optionally abort the application startup if any dependency reports an unhealthy state.
-#### 3) Dependencies status exposure
-Expose the current status of the dependencies through a manifest endpoint in a machine readable JSON format and human friendly table layout.
-#### 4) Register your services in a central location
-Optionally register all your services against a central registration service, with regular health checks and manifest snapshots using the established registration interface.
-
-You can use our [existing Registry solution](https://github.com/nosinovacao//name-registry-api) for central registration.
--->
 
 ## Contributing
 We really appreciate your interest in contributing to NAME. 👍
