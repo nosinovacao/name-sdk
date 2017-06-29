@@ -1,4 +1,4 @@
-﻿version: '2'
+﻿version: '2.1'
 
 services:
   integration-tester:
@@ -9,19 +9,16 @@ services:
       - specific-mongo
       - specific-rabbitmq
       - dummy-service
-#      - dummy-service-2
-#      - dummy-registry-service
     environment:
       - LATEST_MONGO_HOSTNAME=mongo
       - LATEST_RABBIT_HOSTNAME=rabbitmq
-      - LATEST_SQLSERVER_HOSTNAME=zondevdb04
+      - LATEST_SQLSERVER_HOSTNAME=sqlserver
       - SPECIFIC_MONGO_HOSTNAME=specific-mongo
       - SPECIFIC_MONGO_VERSION=3.0.14
       - SPECIFIC_RABBIT_HOSTNAME=specific-rabbitmq
       - SPECIFIC_RABBIT_VERSION=3.6.5
       - SPECIFIC_SERVICE_HOSTNAME=dummy-service
       - SPECIFIC_SERVICE_VERSION=1.0.0
-#      - REGISTRY_SERVICE_HOSTNAME=dummy-registry-service
       - OPERATING_SYSTEM=debian
       - RUNNING_ON_DOCKER=true
     volumes:
@@ -30,11 +27,10 @@ services:
     depends_on:
       - mongo
       - rabbitmq
+      - sqlserver
       - specific-mongo
       - specific-rabbitmq
       - dummy-service
-#      - dummy-service-2
-#      - dummy-registry-service
   dummy-service:
     build: ./NAME.DummyService
     environment:
@@ -43,24 +39,6 @@ services:
       - ../Output/Artifacts/NuGets/Release:/service/nugets
     expose:
       - "5000"
-#  dummy-service-2:
-#    build: ./NAME.DummyService
-#    environment:
-#      - RUNNING_ON_DOCKER=true
-#      - IS_SECONDARY=true
-#    volumes:
-#      - ../Output/Artifacts/NuGets/Release:/service/nugets
-#    expose:
-#      - "5000"
-#  dummy-registry-service:
-#    build: ./NAME.DummyRegistryService
-#    environment:
-#      - RUNNING_ON_DOCKER=true
-#      - ASPNETCORE_ENVIRONMENT=Development
-#    volumes:
-#      - ../Output/Artifacts/NuGets/Release:/app/nugets
-#    expose:
-#      - "3192"
   mongo:
     image: mongo
     expose:
@@ -77,3 +55,10 @@ services:
     image: rabbitmq:3.6.5
     expose:
       - "5672"
+  sqlserver:
+    image: microsoft/mssql-server-linux
+    expose:
+      - "1433"
+    environment:
+      - SA_PASSWORD=W1#llnotbeused
+      - ACCEPT_EULA=Y

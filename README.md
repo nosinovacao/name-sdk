@@ -1,4 +1,8 @@
 # NAME: Self-Contained Dependencies Management
+[![Travis Build Status](https://travis-ci.org/nosinovacao/name-sdk.svg?branch=master)](https://travis-ci.org/nosinovacao/name-sdk)
+[![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/p6iokqd596iuw3vr/branch/master?svg=true)](https://ci.appveyor.com/project/nosinovacao/name-sdk/branch/master)
+
+
 NAME is a service dependencies management library designed to expose and access services information, written in C#. 
 
 Its goal is to make it easier and simpler to detect service dependencies problems in a world where there are more and more services per application. It provides human and machine friendly dependencies information without the need for external tools.

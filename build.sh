@@ -88,6 +88,9 @@ fi
 
 chmod u+x $CAKE_EXE
 
+# Set the mono framework path.
+export FrameworkPathOverride=$(dirname $(which mono))/../lib/mono/4.5/
+
 # Start Cake
 if $SHOW_VERSION; then
     exec mono "$CAKE_EXE" -version

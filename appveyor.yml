@@ -1,0 +1,27 @@
+version: '{branch}-{build}'
+pull_requests:
+  # Do not increment build number for pull requests
+  do_not_increment_build_number: true
+nuget:
+  # Do not publish NuGet packages for pull requests
+  disable_publish_on_pr: true
+environment:
+  # Set the DOTNET_SKIP_FIRST_TIME_EXPERIENCE environment variable to stop wasting time caching packages
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  # Disable sending usage data to Microsoft
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+# Use init to set the version using the Directory.Build.props file, branch and build number
+before_build:
+- ps: |
+    $versionPrefix = ([xml](Get-Content .\src\Directory.Build.props)).Project.PropertyGroup.VersionPrefix
+    Update-AppveyorBuild -Version "$versionPrefix-$env:APPVEYOR_REPO_BRANCH-$env:APPVEYOR_BUILD_NUMBER"
+build_script:
+- ps: .\build.ps1 -t AppVeyor --nugetPreReleaseTag="$env:APPVEYOR_REPO_BRANCH-$env:APPVEYOR_BUILD_NUMBER"
+test: off
+artifacts:
+# Store NuGet packages
+- path: .\Output\Artifacts\NuGets\PreRelease\*.nupkg
+  name: NuGet-PreRelease
+# Store NuGet packages
+- path: .\Output\Artifacts\NuGets\Release\*.nupkg
+  name: NuGet-Release
