@@ -14,15 +14,21 @@ Its goal is to make it easier and simpler to detect service dependencies problem
 
 ## Getting Started 
 ### Installing on ASP.NET Web API
-
+1. Install the Nuget Package
+```powershell
     Install-Package NAME.WebApi
+```
 
 The configuration file is present in `App_Start/NAMEConfig.cs` and the dependencies definition file is `dependencies.json`.
+
+2. Start the application and access the **/manifest** endpoint. It should show the dependencies state.
 
 ### Installing on ASP.NET Core
 1. Install the NuGet package
 
+```powershell
     Install-Package NAME.AspNetCore
+```
 
 2. Add the NAME middleware in the *Configure* method of your *Startup.cs* file.
 ```csharp
@@ -62,6 +68,9 @@ app.UseNAME(config =>
   ]
 }
 ```
+
+4. Start the application and access the **/manifest** endpoint. It should show the dependencies state.
+
 ### Non-Web Applications
 For applications without a web server we created a SelfHost solution.
 You can read how to install NAME on those applications at [Using NAME On Non Web Applications](https://github.com/nosinovacao/name-sdk/wiki/Using-NAME-On-Non-Web-Applications).
