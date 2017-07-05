@@ -103,6 +103,6 @@ All we ask is that you follow some simple guidelines, so please read the [CONTRI
 Thank you, [contributors](https://github.com/nosinovacao/name-sdk/graphs/contributors)!
 
 ## License
-Copyright © NOS Inovaçâo.
+Copyright © NOS Inovação.
 
 This project is licensed under the BSD 3-Clause License - see the [LICENSE](LICENSE) file for details
