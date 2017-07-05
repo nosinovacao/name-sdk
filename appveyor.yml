@@ -1,7 +1,8 @@
 version: '{branch}-{build}'
-pull_requests:
-  # Do not increment build number for pull requests
-  do_not_increment_build_number: true
+branches:
+  only:
+    - master
+    - dev
 nuget:
   # Do not publish NuGet packages for pull requests
   disable_publish_on_pr: true
@@ -11,7 +12,7 @@ environment:
   # Disable sending usage data to Microsoft
   DOTNET_CLI_TELEMETRY_OPTOUT: true
 # Use init to set the version using the Directory.Build.props file, branch and build number
-before_build:
+on_finish:
 - ps: |
     $versionPrefix = ([xml](Get-Content .\src\Directory.Build.props)).Project.PropertyGroup.VersionPrefix
     Update-AppveyorBuild -Version "$versionPrefix-$env:APPVEYOR_REPO_BRANCH-$env:APPVEYOR_BUILD_NUMBER"

@@ -184,11 +184,11 @@ Task("Build-AND-Test")
     .IsDependentOn("Run-Unit-Tests");
 
 Task("AppVeyor")
-    .IsDependentOn("Build-AND-Test")
+    .IsDependentOn("Run-Unit-Tests")
     .IsDependentOn("Nuget-Pack");
 
 Task("TravisCI")
-    .IsDependentOn("Build-AND-Test")
+    .IsDependentOn("Run-Unit-Tests")
     .Does(() => {
         if(EnvironmentVariable("TRAVIS_OS_NAME") == "linux") {
             Information("Travis CI running on Linux, executing the integration tests.");
