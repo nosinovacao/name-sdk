@@ -17,7 +17,7 @@ on_finish:
     $versionPrefix = ([xml](Get-Content .\src\Directory.Build.props)).Project.PropertyGroup.VersionPrefix
     Update-AppveyorBuild -Version "$versionPrefix-$env:APPVEYOR_REPO_BRANCH-$env:APPVEYOR_BUILD_NUMBER"
 build_script:
-- ps: .\build.ps1 -t AppVeyor --nugetPreReleaseTag="$env:APPVEYOR_REPO_BRANCH-$env:APPVEYOR_BUILD_NUMBER"
+- ps: .\build.ps1 -t AppVeyor --nugetPreReleaseTag="beta$env:APPVEYOR_BUILD_NUMBER"
 test: off
 artifacts:
 # Store NuGet packages
@@ -26,3 +26,12 @@ artifacts:
 # Store NuGet packages
 - path: .\Output\Artifacts\NuGets\Release\*.nupkg
   name: NuGet-Release
+deploy:
+- provider: Environment
+  name: name-sdk-nuget-pre-release
+  on:
+    branch: master
+- provider: Environment
+  name: name-sdk-nuget-release
+  on:
+    appveyor_repo_tag: true
