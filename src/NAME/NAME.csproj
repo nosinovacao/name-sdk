@@ -2,7 +2,6 @@
 
   <PropertyGroup>
     <Description>Provides a way to expose service information (e.g. software version and all the service dependencies versions).</Description>
-    <Authors>Miguel Alexandre;João Trigo Soares</Authors>
     <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AssemblyName>NAME</AssemblyName>
