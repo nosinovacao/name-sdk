@@ -10,8 +10,6 @@
     <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
     <Company>NOS Inovação</Company>
     <Copyright>Copyright © NOS Inovação 2016-$([System.DateTime]::UtcNow.Year)</Copyright>
-    <Product>NAME</Product>
-    <Title>NAME SDK</Title>
     <PackageLicenseUrl>https://github.com/nosinovacao/name-sdk/blob/master/LICENSE</PackageLicenseUrl>
     <GenerateAssemblyCompanyAttribute>true</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyCopyrightAttribute>true</GenerateAssemblyCopyrightAttribute>
