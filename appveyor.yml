@@ -31,6 +31,7 @@ deploy:
   name: name-sdk-nuget-pre-release
   on:
     branch: master
+    appveyor_repo_tag: false
 - provider: Environment
   name: name-sdk-nuget-release
   on:
