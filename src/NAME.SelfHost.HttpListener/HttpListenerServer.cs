@@ -20,6 +20,8 @@ namespace NAME.SelfHost.HttpListener
         private byte[] cachedHtml;
         private IFilePathMapper pathMapper;
 
+        public int? Port { get; private set; }
+
         public HttpListenerServer(NAMEHttpListenerConfiguration nameConfiguration, IFilePathMapper pathMapper)
         {
             this.pathMapper = pathMapper;
@@ -37,6 +39,8 @@ namespace NAME.SelfHost.HttpListener
                 this.httpListener.OnContext = this.OnContext;
                 this.httpListener.Start();
 
+                this.Port = port;
+
                 return true;
             }
             catch (System.Net.HttpListenerException)
@@ -51,7 +55,7 @@ namespace NAME.SelfHost.HttpListener
         {
             try
             {
-                context.Response.Headers.Add(Constants.MANIFEST_ENDPOINT_HEADER_NAME, this.nameConfiguration.GetManifestPath(context.Request.Url.Host, context.Request.Url.Port));
+                context.Response.Headers.Add(Constants.MANIFEST_ENDPOINT_HEADER_NAME, this.nameConfiguration.GetRelativeManifestPath());
 
                 if (this.settings.IsManifestEndpointEnabled())
                 {
@@ -99,9 +103,10 @@ namespace NAME.SelfHost.HttpListener
 
             currentHopCount++;
 
-            var nameContext = new NAMEContext();
-
-            nameContext.ServiceDependencyCurrentNumberOfHops = currentHopCount;
+            var nameContext = new NAMEContext()
+            {
+                ServiceDependencyCurrentNumberOfHops = currentHopCount
+            };
 
             var dependencies = DependenciesReader.ReadDependencies(configuration.DependenciesFilePath, this.pathMapper, this.settings, nameContext);
 
@@ -123,7 +128,7 @@ namespace NAME.SelfHost.HttpListener
         private void GetManifestUI(HttpListenerContext context)
         {
             context.Response.ContentType = "text/html";
-            string manifestLink = this.nameConfiguration.GetManifestPath(context.Request.Url.Host, context.Request.Url.Port);
+            string manifestLink = this.nameConfiguration.GetRelativeManifestPath();
 
             if (this.cachedHtml == null)
                 this.cachedHtml = Encoding.UTF8.GetBytes(ResourcesFetcher.GetNAMEUi(manifestLink));

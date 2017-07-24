@@ -21,7 +21,6 @@ a.removeEventListener("load",S),r.ready()}"complete"===d.readyState||"loading"!=
         function loadfromURL(a) {
             $("#status").text("Loading...");
             $("#inner_table").html("");
-            "http" != a.substr(0, 4) && (a = "http://" + a);
             $.ajax({
                 type: "GET",
                 url: a,

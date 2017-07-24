@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using NAME.Core;
 using NAME.SelfHost.Shared;
@@ -10,6 +11,8 @@ namespace NAME.SelfHost.Kestrel
         private IWebHost webHost;
         private NAMEKestrelConfiguration nameConfiguration;
         private IFilePathMapper pathMapper;
+
+        public int? Port { get; private set; }
 
         public KestrelServer(NAMEKestrelConfiguration nameConfiguration, IFilePathMapper pathMapper)
         {
@@ -34,6 +37,9 @@ namespace NAME.SelfHost.Kestrel
                     .Build();
 
                 this.webHost.Start();
+
+                this.Port = port;
+
                 return true;
             }
             catch (Microsoft.AspNetCore.Server.Kestrel.Internal.Networking.UvException)

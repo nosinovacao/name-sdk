@@ -137,11 +137,9 @@ namespace NAME.AspNetCore
         private async Task GetManifestUI(HttpContext context)
         {
             context.Response.ContentType = "text/html";
-
-            UriBuilder builder = new UriBuilder(context.Request.Scheme, context.Request.Host.Host, context.Request.Host.Port ?? 80, this.BuildRelativeNAMEPath(context.Request));
-
+            
             if (this.cachedHtml == null)
-                this.cachedHtml = await ResourcesFetcher.GetNAMEUiAsync(builder.Uri.AbsoluteUri);
+                this.cachedHtml = await ResourcesFetcher.GetNAMEUiAsync(this.BuildRelativeNAMEPath(context.Request));
 
             await context.Response.WriteAsync(this.cachedHtml);
         }
