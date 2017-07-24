@@ -27,15 +27,7 @@ namespace NAME.Hosting.Shared
         /// The dependencies file path.
         /// </value>
         public string DependenciesFilePath { get; set; }
-
-        /// <summary>
-        /// Gets or sets the dependencies stream.
-        /// </summary>
-        /// <value>
-        /// The dependencies stream.
-        /// </value>
-        public Stream DependenciesStream { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the name of the API.
         /// </summary>

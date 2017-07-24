@@ -21,9 +21,23 @@ namespace NAME.SelfHost.Shared
         /// </value>
         public ParsedDependencies ParsedDependencies { get; }
 
-        private IDisposable selfHostServer;
+        /// <summary>
+        /// Gets the port of the self hosted server.
+        /// </summary>
+        /// <value>
+        /// The port of the self hosted server.
+        /// </value>
+        public int ServerPort
+        {
+            get
+            {
+                return this.selfHostServer.Port ?? 0;
+            }
+        }
 
-        internal SelfHostResult(ParsedDependencies parsedDependencies, IDisposable selfHostServer)
+        private ISelfHostServer selfHostServer;
+
+        internal SelfHostResult(ParsedDependencies parsedDependencies, ISelfHostServer selfHostServer)
         {
             this.ParsedDependencies = parsedDependencies;
             this.selfHostServer = selfHostServer;
