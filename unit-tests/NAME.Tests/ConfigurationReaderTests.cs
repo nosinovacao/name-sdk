@@ -149,6 +149,35 @@ namespace NAME.Tests
                 File.Delete(fileName);
             }
         }
+        
+
+        [Fact]
+        [Trait("TestCategory", "Unit")]
+        public void ReadConfiguration_WithTabulationComments()
+        {
+            string fileContents = @"{
+                ""$schema"": ""./config-manifest.schema.json"",
+            	""infrastructure_dependencies"": [
+                	//Comment this yeah!
+                ],
+                ""service_dependencies"": [
+                    //Comment this yeah!
+                ]
+            //}";
+            string fileName = Guid.NewGuid() + ".json";
+            File.WriteAllText(fileName, fileContents);
+            try
+            {
+                ParsedDependencies configuration = DependenciesReader.ReadDependencies(fileName, new DummyFilePathMapper(), new NAMESettings(), new NAMEContext());
+
+                Assert.Equal(0, configuration.InfrastructureDependencies.Count());
+                Assert.Equal(0, configuration.ServiceDependencies.Count());
+            }
+            finally
+            {
+                File.Delete(fileName);
+            }
+        }
 
         [Fact]
         [Trait("TestCategory", "Unit")]
