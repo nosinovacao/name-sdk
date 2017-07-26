@@ -63,8 +63,16 @@ Task("Build")
     .Does(() =>
     {
         var dotNetBuildConfig = new DotNetCoreBuildSettings() {
-            Configuration = configuration
+            Configuration = configuration,
+            MSBuildSettings = new DotNetCoreMSBuildSettings()
         };
+        
+        dotNetBuildConfig.MSBuildSettings.TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error;
+
+        if(BuildSystem.IsRunningOnAppVeyor)
+        {
+            dotNetBuildConfig.MSBuildSettings.WithLogger("C:/Program Files/AppVeyor/BuildAgent/Appveyor.MSBuildLogger.dll");
+        }
 
         DotNetCoreBuild("NAME.sln", dotNetBuildConfig);
     });
