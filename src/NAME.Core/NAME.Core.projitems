@@ -19,6 +19,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ConnectionStringNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependenciesCheckException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependencyNotReachableException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependencyWithoutNAMEException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\NAMEException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\VersionNotRecognizedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\VersionParsingException.cs" />

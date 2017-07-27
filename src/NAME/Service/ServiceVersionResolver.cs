@@ -178,7 +178,7 @@ namespace NAME.Service
 
                         var headerManifestEndpoint = response.Headers[Constants.MANIFEST_ENDPOINT_HEADER_NAME];
                         if (headerManifestEndpoint == null)
-                            throw new NAMEException($"{SupportedDependencies.Service}: NAME is not installed.");
+                            throw new DependencyWithoutNAMEException();
 
                         Uri uriFromHeader = new Uri(endpointUri, headerManifestEndpoint);
 
@@ -211,7 +211,7 @@ namespace NAME.Service
                     {
                         var manifestEndpoint = response.Headers[Constants.MANIFEST_ENDPOINT_HEADER_NAME];
                         if (manifestEndpoint == null)
-                            throw new NAMEException($"{SupportedDependencies.Service}: NAME is not installed.");
+                            throw new DependencyWithoutNAMEException();
 
                         return await this.GetManifest(new Uri(endpointUri, manifestEndpoint), false, hop);
                     }
