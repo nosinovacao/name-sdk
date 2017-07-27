@@ -71,7 +71,7 @@ namespace NAME.Service
             if (!this._connectionStringProvider.TryGetConnectionString(out string serviceConnectionString))
                 throw new ConnectionStringNotFoundException(this._connectionStringProvider.ToString());
 
-            var serviceUri = new Uri(serviceConnectionString + Constants.MANIFEST_ENDPOINT_HEADER_NAME);
+            var serviceUri = new Uri(serviceConnectionString + Constants.MANIFEST_ENDPOINT);
 
             string jsonContents = await this.GetManifest(serviceUri, true, this.HopNumber)
                 .ConfigureAwait(false);

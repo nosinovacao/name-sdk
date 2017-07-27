@@ -44,7 +44,7 @@ namespace NAME.DummyService
             {
                 if (context.Request.Path.HasValue)
                 {
-                    if (context.Request.Path.Value == "/endpoint/before/name/middleware")
+                    if (context.Request.Path.Value == "/endpoint/before/name/middleware/manifest")
                     {
                         context.Response.StatusCode = 200;
                         return;
