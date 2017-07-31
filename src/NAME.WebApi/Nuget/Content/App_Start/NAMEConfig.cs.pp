@@ -1,5 +1,4 @@
-﻿using NAME.WebApi;
-using System.Reflection;
+﻿using System.Reflection;
 using System.Web.Http;
 using $rootnamespace$;
 using WebActivatorEx;
