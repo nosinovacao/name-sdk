@@ -1,0 +1,246 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "infrastructure_dependencies": {
+            "title": "Infrastructure dependencies",
+            "$ref": "#/definitions/infrastructure_dependencies_list"
+        },
+        "service_dependencies": {
+            "title": "Services (other APIs with NAME) dependencies",
+            "$ref": "#/definitions/service_dependencies_list"
+        }
+    },
+    "additionalProperties": false,
+    "definitions": {
+        "service_dependencies_list": {
+            "type": "array",
+            "items": {
+                "allOf": [
+                    {
+                        "$ref": "#/definitions/service_dependency"
+                    }
+                ]
+            },
+            "minItems": 0
+        },
+        "infrastructure_dependencies_list": {
+            "type": "array",
+            "items": {
+                "anyOf": [
+                    {
+                        "$ref": "#/definitions/infrastructure_dependency"
+                    }
+                ]
+            },
+            "minItems": 0
+        },
+        "service_dependency": {
+            "properties": {
+                "name": {
+                    "type": "string"
+                },
+                "min_version": {
+                    "$ref": "#/definitions/version"
+                },
+                "max_version": {
+                    "$ref": "#/definitions/version"
+                },
+                "connection_string": {
+                    "$ref": "#/definitions/connection_string"
+                }
+            },
+            "required": [
+                "name",
+                "min_version",
+                "max_version",
+                "connection_string"
+            ]
+        },
+        "infrastructure_dependency": {
+            "oneOf": [
+                {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "RabbitMq",
+                                "MongoDb",
+                                "SqlServer"
+                            ]
+                        },
+                        "min_version": {
+                            "$ref": "#/definitions/version"
+                        },
+                        "max_version": {
+                            "$ref": "#/definitions/version"
+                        },
+                        "connection_string": {
+                            "$ref": "#/definitions/connection_string"
+                        }
+                    },
+                    "required": [
+                        "type",
+                        "min_version",
+                        "max_version",
+                        "connection_string"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "properties": {
+                        "name": {
+                            "type": "string"
+                        },
+                        "type": {
+                            "type": "string",
+                            "enum": [
+                                "OperatingSystem"
+                            ]
+                        },
+                        "min_version": {
+                            "$ref": "#/definitions/version"
+                        },
+                        "max_version": {
+                            "$ref": "#/definitions/version"
+                        },
+                        "os_name": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "min_version",
+                        "max_version",
+                        "type",
+                        "os_name"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "properties": {
+                        "oneOf": {
+                            "$ref": "#/definitions/infrastructure_dependencies_list"
+                        }
+                    },
+                    "required": [
+                        "oneOf"
+                    ],
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "connection_string": {
+            "anyOf": [
+                {
+                    "type": "string",
+                    "title": "The connection string of the dependency."
+                },
+                {
+                    "properties": {
+                        "locator": {
+                            "type": "string",
+                            "enum": [
+                                "AppSettings",
+                                "ConnectionStrings"
+                            ],
+                            "title": "Uses the ConfigurationManager to fetch the values. Only available on the full .Net framework."
+                        },
+                        "key": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "locator"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "properties": {
+                        "locator": {
+                            "type": "string",
+                            "enum": [
+                                "XPath",
+                                "JSONPath"
+                            ]
+                        },
+                        "expression": {
+                            "type": "string"
+                        },
+                        "file": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "locator",
+                        "expression",
+                        "file"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "properties": {
+                        "locator": {
+                            "type": "string",
+                            "enum": [
+                                "VSSettingsFile"
+                            ]
+                        },
+                        "section": {
+                            "type": "string"
+                        },
+                        "key": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "locator",
+                        "section",
+                        "key"
+                    ],
+                    "additionalProperties": false
+                }
+            ]
+        },
+        "version": {
+            "type": "string",
+            "anyOf": [
+                {
+                    "pattern": "^(?:(\\d+)\\.)?(?:(\\d+)\\.)?(\\*|\\d+)$"
+                },
+                {
+                    "type": "string",
+                    "enum": [
+                        "WindowsServer2008",
+                        "WindowsServer2008R2",
+                        "WindowsServer2012",
+                        "WindowsServer2012R2",
+                        "Windows7",
+                        "Windows8",
+                        "Windows8.1",
+                        "Windows10"
+                    ]
+                },
+                {
+                    "type": "string",
+                    "enum": [
+                        "SqlServer7",
+                        "SqlServer2000",
+                        "SqlServer2005",
+                        "SqlServer2008",
+                        "SqlServer2008R2",
+                        "SqlServer2012",
+                        "SqlServer2014",
+                        "SqlServer2016"
+                    ]
+                }
+            ]
+        }
+    }
+}
