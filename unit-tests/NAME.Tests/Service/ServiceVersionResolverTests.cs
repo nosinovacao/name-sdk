@@ -29,7 +29,7 @@ namespace NAME.Tests.Service
         [Trait("TestCategory", "Unit")]
         public async Task GetVersions_NotFoundListening()
         {
-            string connectionString = "http://localhost/NonExistentService";
+            string connectionString = "http://localhost:65534/NonExistentService";
             IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
 
             await Assert.ThrowsAsync(typeof(DependencyNotReachableException), async () =>

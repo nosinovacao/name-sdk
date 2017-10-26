@@ -40,11 +40,37 @@ namespace NAME.DummyService
                 ? "dependencies-2.json"
                 : "dependencies.json";
 
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.HasValue)
+                {
+                    if (context.Request.Path.Value == "/endpoint/before/name/middleware/manifest")
+                    {
+                        context.Response.StatusCode = 200;
+                        return;
+                    }
+                }
+                await next();
+            });
+
             app.UseNAME(config =>
             {
                 config.APIName = "Dummy";
                 config.APIVersion = "1.0.0";
                 config.DependenciesFilePath = filename;
+            });
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.HasValue)
+                {
+                    if (context.Request.Path.Value == "/not/the/real/manifest")
+                    {
+                        context.Response.StatusCode = 200;
+                        return;
+                    }
+                }
+                await next();
             });
 
             app.UseMvc();

@@ -6,6 +6,7 @@
     <Authors>NOS Inovação</Authors>
     <PackageTags>NOS NAME NOS Api Manifest Extension name nos api manifest extension</PackageTags>
     <PackageProjectUrl>https://github.com/nosinovacao/name-sdk</PackageProjectUrl>
+    <PackageReleaseNotes>Check https://github.com/nosinovacao/name-sdk/blob/master/CHANGELOG.md for release notes.</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <CodeAnalysisRuleSet>../../stylecop.ruleset</CodeAnalysisRuleSet>
     <Company>NOS Inovação</Company>

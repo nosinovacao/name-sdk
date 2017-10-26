@@ -63,8 +63,11 @@ Task("Build")
     .Does(() =>
     {
         var dotNetBuildConfig = new DotNetCoreBuildSettings() {
-            Configuration = configuration
+            Configuration = configuration,
+            MSBuildSettings = new DotNetCoreMSBuildSettings()
         };
+        
+        dotNetBuildConfig.MSBuildSettings.TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error;
 
         DotNetCoreBuild("NAME.sln", dotNetBuildConfig);
     });
@@ -184,11 +187,11 @@ Task("Build-AND-Test")
     .IsDependentOn("Run-Unit-Tests");
 
 Task("AppVeyor")
-    .IsDependentOn("Run-Unit-Tests")
+    .IsDependentOn("Build-AND-Test")
     .IsDependentOn("Nuget-Pack");
 
 Task("TravisCI")
-    .IsDependentOn("Run-Unit-Tests")
+    .IsDependentOn("Build-AND-Test")
     .Does(() => {
         if(EnvironmentVariable("TRAVIS_OS_NAME") == "linux") {
             Information("Travis CI running on Linux, executing the integration tests.");

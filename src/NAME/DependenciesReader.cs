@@ -66,7 +66,7 @@ namespace NAME
             }
 
             string[] jsonLines = File.ReadAllLines(dependenciesFile);
-            string jsonContents = string.Join(Environment.NewLine, jsonLines.Where(l => !l.TrimStart(' ').StartsWith("//")));
+            string jsonContents = string.Join(Environment.NewLine, jsonLines.Where(l => !l.TrimStart().StartsWith("//")));
             return jsonContents;
         }
 

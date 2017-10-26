@@ -30,7 +30,7 @@ namespace NAME.WebApi
             if (!this.settings.IsManifestEndpointEnabled())
                 return new HttpResponseMessage(HttpStatusCode.NotFound);
 
-            string manifestLink = request.GetUrlHelper().Link("NAME_Manifest", new { });
+            string manifestLink = request.GetUrlHelper().Route("NAME_Manifest", new { });
 
             if (this.cachedHtml == null)
                 this.cachedHtml = await ResourcesFetcher.GetNAMEUiAsync(manifestLink);
