@@ -86,22 +86,12 @@ namespace NAME.Core
         /// <summary>
         /// Opens a Http client
         /// </summary>
-        /// <param name="dependencyName">Name of the depedency</param>
         /// <returns>Returns a HttpClient with a specific connection timeout</returns>
-        protected HttpClient OpenHttpClient(string dependencyName)
+        protected HttpClient OpenHttpClient()
         {
             var client = new HttpClient();
-
-            try
-            {
-                client.Timeout = TimeSpan.FromMilliseconds(this.ConnectTimeout);
-                return client;
-
-            } catch (SocketException ex)
-            {
-                client?.Dispose();
-                throw new DependencyNotReachableException(dependencyName, ex);
-            }
+            client.Timeout = TimeSpan.FromMilliseconds(this.ConnectTimeout);
+            return client;
         }
     }
 }

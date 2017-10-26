@@ -1,8 +1,6 @@
+using NAME.ConnectionStrings;
 using NAME.Core;
 using NAME.Elasticsearch;
-using NAME.ConnectionStrings;
-using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;

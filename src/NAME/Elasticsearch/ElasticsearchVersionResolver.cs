@@ -1,9 +1,10 @@
 using NAME.Core;
 using NAME.Core.Exceptions;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using NAME.Json;
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace NAME.Elasticsearch
 {
@@ -27,12 +28,17 @@ namespace NAME.Elasticsearch
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
             }
 
-            using (var client = this.OpenHttpClient(SupportedDependencies.Elasticsearch.ToString()))
+            using (var client = this.OpenHttpClient())
             {
-                var result = await client.GetStringAsync(connectionString).ConfigureAwait(false);
-
-
-                versions.Add(DependencyVersion.Parse(this.DeserializeJsonResponse(result)));
+                try
+                {
+                    var result = await client.GetStringAsync(connectionString).ConfigureAwait(false);
+                    versions.Add(DependencyVersion.Parse(this.DeserializeJsonResponse(result)));
+                }
+                catch (Exception e)
+                {
+                    throw new NAMEException(e.Message); 
+                }
             }
 
             return versions;
@@ -40,8 +46,9 @@ namespace NAME.Elasticsearch
 
         private string DeserializeJsonResponse(string result)
         {
-            var jsonResult = JsonConvert.DeserializeObject<ElasticResponseJson>(result);
-            return jsonResult.version.number;
+            
+            var jsonResult = Json.Json.Parse(result);
+            return jsonResult["version"]["number"];
         }
     }
 }
