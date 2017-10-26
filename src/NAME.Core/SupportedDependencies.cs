@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -33,6 +33,11 @@ namespace NAME.Core
         /// <summary>
         /// A service with NAME
         /// </summary>
-        Service = 50
+        Service = 50,
+
+        /// <summary>
+        /// Elasticsearch
+        /// </summary>
+        Elasticsearch = 50
     }
 }

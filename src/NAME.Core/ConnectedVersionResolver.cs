@@ -1,5 +1,7 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
+using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -77,6 +79,27 @@ namespace NAME.Core
 #else
                 client?.Dispose();
 #endif
+                throw new DependencyNotReachableException(dependencyName, ex);
+            }
+        }
+
+        /// <summary>
+        /// Opens a Http client
+        /// </summary>
+        /// <param name="dependencyName">Name of the depedency</param>
+        /// <returns>Returns a HttpClient with a specific connection timeout</returns>
+        protected HttpClient OpenHttpClient(string dependencyName)
+        {
+            var client = new HttpClient();
+
+            try
+            {
+                client.Timeout = TimeSpan.FromMilliseconds(this.ConnectTimeout);
+                return client;
+
+            } catch (SocketException ex)
+            {
+                client?.Dispose();
                 throw new DependencyNotReachableException(dependencyName, ex);
             }
         }
