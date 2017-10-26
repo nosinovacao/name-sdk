@@ -1,4 +1,4 @@
-﻿#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Json
+﻿//#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Json
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.Docker
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.DoInDirectory
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.FileHelpers
