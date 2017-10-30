@@ -1,9 +1,9 @@
 using NAME.Core;
 using NAME.Core.Exceptions;
-using NAME.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace NAME.Elasticsearch
@@ -28,16 +28,28 @@ namespace NAME.Elasticsearch
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
             }
 
-            using (var client = this.OpenHttpClient())
+            HttpWebResponse response;
+            try
             {
+                var request = this.GetHttpWebRequest(connectionString, SupportedDependencies.Elasticsearch.ToString());
+                response = await request.GetResponseAsync() as HttpWebResponse;
+            }
+            catch (Exception e)
+            {
+                throw new DependencyNotReachableException($"{SupportedDependencies.Elasticsearch}: {e.Message}");
+            }
+            using (var reader = new StreamReader(response.GetResponseStream()))
+            {
+                var body = await reader.ReadToEndAsync();
+                var version = string.Empty;
                 try
                 {
-                    var result = await client.GetStringAsync(connectionString).ConfigureAwait(false);
-                    versions.Add(DependencyVersion.Parse(this.DeserializeJsonResponse(result)));
+                    version = this.DeserializeJsonResponse(body);
+                    versions.Add(DependencyVersion.Parse(version));
                 }
                 catch (Exception e)
                 {
-                    throw new NAMEException(e.Message); 
+                    throw new VersionParsingException(version, e.Message);
                 }
             }
 
@@ -46,7 +58,6 @@ namespace NAME.Elasticsearch
 
         private string DeserializeJsonResponse(string result)
         {
-            
             var jsonResult = Json.Json.Parse(result);
             return jsonResult["version"]["number"];
         }

@@ -1,7 +1,7 @@
 using NAME.Core.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Net.Http;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -84,14 +84,25 @@ namespace NAME.Core
         }
 
         /// <summary>
-        /// Opens a Http client
+        /// Gets a HttpWebRequest
         /// </summary>
-        /// <returns>Returns a HttpClient with a specific connection timeout</returns>
-        protected HttpClient OpenHttpClient()
+        /// <param name="requestUriString">Request Uri String</param>
+        /// <param name="dependencyName">Dependency Name</param>
+        /// <returns>Returns a HttpWebRequest</returns>
+        protected HttpWebRequest GetHttpWebRequest(string requestUriString, string dependencyName)
         {
-            var client = new HttpClient();
-            client.Timeout = TimeSpan.FromMilliseconds(this.ConnectTimeout);
-            return client;
+            HttpWebRequest request = null;
+            try
+            {
+                request = WebRequest.CreateHttp(requestUriString);
+                request.ContinueTimeout = this.ConnectTimeout;
+                request.ContentType = "application/json; charset=utf-8";
+                return request;
+            }
+            catch (Exception e)
+            {
+                throw new DependencyNotReachableException(dependencyName, e);
+            }
         }
     }
 }
