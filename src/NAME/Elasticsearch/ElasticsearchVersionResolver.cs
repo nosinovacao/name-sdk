@@ -32,7 +32,7 @@ namespace NAME.Elasticsearch
             try
             {
                 var request = this.GetHttpWebRequest(connectionString, SupportedDependencies.Elasticsearch.ToString());
-            
+
                 var getResponseTask = request.GetResponseAsync();
                 var readWriteTimeout = this.ConnectTimeout + this.ReadWriteTimeout;
 
@@ -42,7 +42,6 @@ namespace NAME.Elasticsearch
                 var completedTask = await Task.WhenAny(getResponseTask, Task.Delay(readWriteTimeout)).ConfigureAwait(false);
                 if (completedTask == getResponseTask)
                 {
-                     
                     using (response = await getResponseTask.ConfigureAwait(false) as HttpWebResponse)
                     {
                         using (var reader = new StreamReader(response.GetResponseStream()))
@@ -60,18 +59,17 @@ namespace NAME.Elasticsearch
                             }
                         }
                     }
-                } else
+                }
+                else
                 {
                     request.Abort();
                     throw new NAMEException($"{SupportedDependencies.Elasticsearch}: Timed out, the server accepted the connection but did not send a response.");
                 }
-
             }
             catch (WebException e)
             {
                 throw new DependencyNotReachableException($"{SupportedDependencies.Elasticsearch}: {e.Message}");
             }
-           
 
             return versions;
         }

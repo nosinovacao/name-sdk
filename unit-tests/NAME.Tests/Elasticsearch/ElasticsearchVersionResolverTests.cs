@@ -32,6 +32,5 @@ namespace NAME.Tests.Elasticsearch
                 var value = await resolver.GetVersions().ConfigureAwait(false);
             });
         }
-
     }
 }
