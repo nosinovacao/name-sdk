@@ -18,9 +18,9 @@ public static class Constants {
     public static string SpecificServiceVersion;
 
     // Elasticsearch variables
-    public static string LatestElasticHostname;
-    public static string SpecificElasticHostname;
-    public static string SpecificElasticVersion;
+    public static string LatestElasticsearchHostname;
+    public static string SpecificElasticsearchHostname;
+    public static string SpecificElasticsearchVersion;
 
     static Constants() {
         ExpectedOperatingSystem = Environment.GetEnvironmentVariable("OPERATING_SYSTEM") ?? "windows";
@@ -37,8 +37,8 @@ public static class Constants {
         SpecificRabbitVersion = Environment.GetEnvironmentVariable("SPECIFIC_RABBIT_VERSION") ?? "3.6.5";
         SpecificServiceVersion = Environment.GetEnvironmentVariable("SPECIFIC_SERVICE_VERSION") ?? "1.0.0";
 
-        LatestElasticHostname = Environment.GetEnvironmentVariable("LATEST_ELASTIC_HOSTNAME") ?? "localhost";
-        SpecificElasticHostname = Environment.GetEnvironmentVariable("SPECIFIC_ELASTIC_HOSTNAME") ?? "localhost";
-        SpecificElasticVersion = Environment.GetEnvironmentVariable("SPECIFIC_ELASTIC_VERSION") ?? "5.5.1";
+        LatestElasticsearchHostname = Environment.GetEnvironmentVariable("LATEST_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchHostname = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchVersion = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_VERSION") ?? "5.5.1";
     }
 }

@@ -13,19 +13,19 @@ namespace NAME.IntegrationTests.Elasticsearch
         [Trait("TestCategory", "Integration")]
         public async Task GetVersions_SpecificVersion()
         {
-            ElasticsearchVersionResolver resolver = new ElasticsearchVersionResolver(new StaticConnectionStringProvider($"http://{ Constants.SpecificMongoHostname }:9200"), 10000, 10000);
+            ElasticsearchVersionResolver resolver = new ElasticsearchVersionResolver(new StaticConnectionStringProvider($"http://{ Constants.SpecificElasticsearchHostname }:9200"), 10000, 10000);
 
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificElasticVersion));
+            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificElasticsearchVersion));
         }
 
         [Fact]
         [Trait("TestCategory", "Integration")]
         public async Task GetVersions_LatestVersion()
         {
-            ElasticsearchVersionResolver resolver = new ElasticsearchVersionResolver(new StaticConnectionStringProvider($"http://{ Constants.LatestMongoHostname }:9200"), 10000, 10000);
+            ElasticsearchVersionResolver resolver = new ElasticsearchVersionResolver(new StaticConnectionStringProvider($"http://{ Constants.LatestElasticsearchHostname }:9200"), 10000, 10000);
 
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 

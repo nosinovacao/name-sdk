@@ -32,26 +32,46 @@ namespace NAME.Elasticsearch
             try
             {
                 var request = this.GetHttpWebRequest(connectionString, SupportedDependencies.Elasticsearch.ToString());
-                response = await request.GetResponseAsync() as HttpWebResponse;
+            
+                var getResponseTask = request.GetResponseAsync();
+                var readWriteTimeout = this.ConnectTimeout + this.ReadWriteTimeout;
+
+                readWriteTimeout = readWriteTimeout < 1000 ? 1000 : readWriteTimeout;
+
+                //If Elasticsearch takes to long to return a response, when readWriteTimeout passes, the request will be aborted
+                var completedTask = await Task.WhenAny(getResponseTask, Task.Delay(readWriteTimeout)).ConfigureAwait(false);
+                if (completedTask == getResponseTask)
+                {
+                     
+                    using (response = await getResponseTask.ConfigureAwait(false) as HttpWebResponse)
+                    {
+                        using (var reader = new StreamReader(response.GetResponseStream()))
+                        {
+                            var body = await reader.ReadToEndAsync();
+                            var version = string.Empty;
+                            try
+                            {
+                                version = this.DeserializeJsonResponse(body);
+                                versions.Add(DependencyVersion.Parse(version));
+                            }
+                            catch (Exception e)
+                            {
+                                throw new VersionParsingException(version, e.Message);
+                            }
+                        }
+                    }
+                } else
+                {
+                    request.Abort();
+                    throw new NAMEException($"{SupportedDependencies.Elasticsearch}: Timed out, the server accepted the connection but did not send a response.");
+                }
+
             }
-            catch (Exception e)
+            catch (WebException e)
             {
                 throw new DependencyNotReachableException($"{SupportedDependencies.Elasticsearch}: {e.Message}");
             }
-            using (var reader = new StreamReader(response.GetResponseStream()))
-            {
-                var body = await reader.ReadToEndAsync();
-                var version = string.Empty;
-                try
-                {
-                    version = this.DeserializeJsonResponse(body);
-                    versions.Add(DependencyVersion.Parse(version));
-                }
-                catch (Exception e)
-                {
-                    throw new VersionParsingException(version, e.Message);
-                }
-            }
+           
 
             return versions;
         }
