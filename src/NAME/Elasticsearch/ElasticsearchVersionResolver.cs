@@ -48,15 +48,9 @@ namespace NAME.Elasticsearch
                         {
                             var body = await reader.ReadToEndAsync();
                             var version = string.Empty;
-                            try
-                            {
-                                version = this.DeserializeJsonResponse(body);
-                                versions.Add(DependencyVersion.Parse(version));
-                            }
-                            catch (Exception e)
-                            {
-                                throw new VersionParsingException(version, e.Message);
-                            }
+
+                            version = this.DeserializeJsonResponse(body);
+                            versions.Add(DependencyVersion.Parse(version));
                         }
                     }
                 }
@@ -76,8 +70,15 @@ namespace NAME.Elasticsearch
 
         private string DeserializeJsonResponse(string result)
         {
-            var jsonResult = Json.Json.Parse(result);
-            return jsonResult["version"]["number"];
+            try
+            {
+                var jsonResult = Json.Json.Parse(result);
+                return jsonResult["version"]["number"];
+            }
+            catch (Exception e)
+            {
+                throw new VersionParsingException(result, e.Message);
+            }
         }
     }
 }
