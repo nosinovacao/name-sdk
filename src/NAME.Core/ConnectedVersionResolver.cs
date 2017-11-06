@@ -1,5 +1,7 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
+using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
@@ -78,6 +80,28 @@ namespace NAME.Core
                 client?.Dispose();
 #endif
                 throw new DependencyNotReachableException(dependencyName, ex);
+            }
+        }
+
+        /// <summary>
+        /// Gets a HttpWebRequest
+        /// </summary>
+        /// <param name="requestUriString">Request Uri String</param>
+        /// <param name="dependencyName">Dependency Name</param>
+        /// <returns>Returns a HttpWebRequest</returns>
+        protected HttpWebRequest GetHttpWebRequest(string requestUriString, string dependencyName)
+        {
+            HttpWebRequest request = null;
+            try
+            {
+                request = WebRequest.CreateHttp(requestUriString);
+                request.ContinueTimeout = this.ConnectTimeout;
+                request.ContentType = "application/json; charset=utf-8";
+                return request;
+            }
+            catch (Exception e)
+            {
+                throw new DependencyNotReachableException(dependencyName, e);
             }
         }
     }

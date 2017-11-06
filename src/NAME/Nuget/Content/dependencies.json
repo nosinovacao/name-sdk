@@ -1,4 +1,5 @@
-﻿{
+{
+  "$schema": "https://raw.githubusercontent.com/nosinovacao/name-sdk/schema-v1/name.dependencies.v1.jschema",
   //Use this file to define all your application dependencies.
   "infrastructure_dependencies": [
     //{
@@ -24,6 +25,15 @@
     //  "connection_string": {
     //    "locator": "ConnectionStrings",
     //    "key": "EventaConnectionString"
+    //  }
+    //},
+    //{
+    //  "type": "Elasticsearch",
+    //  "min_version": "5.5.1",
+    //  "max_version": "5.6.3",
+    //  "connection_string": {
+    //    "locator": "ConnectionStrings",
+    //    "key":  "ElasticConnectionString"
     //  }
     //}
   ],

@@ -20,8 +20,12 @@ public static class Constants
     public static string SpecificServiceVersion;
     public static string SpecificKestrelSelfHostVersion;
 
-    static Constants()
-    {
+    // Elasticsearch variables
+    public static string LatestElasticsearchHostname;
+    public static string SpecificElasticsearchHostname;
+    public static string SpecificElasticsearchVersion;
+
+    static Constants() {
         ExpectedOperatingSystem = Environment.GetEnvironmentVariable("OPERATING_SYSTEM") ?? "windows";
 
         LatestMongoHostname = Environment.GetEnvironmentVariable("LATEST_MONGO_HOSTNAME") ?? "localhost";
@@ -36,6 +40,9 @@ public static class Constants
         SpecificMongoVersion = Environment.GetEnvironmentVariable("SPECIFIC_MONGO_VERSION") ?? "3.0.0";
         SpecificRabbitVersion = Environment.GetEnvironmentVariable("SPECIFIC_RABBIT_VERSION") ?? "3.6.5";
         SpecificServiceVersion = Environment.GetEnvironmentVariable("SPECIFIC_SERVICE_VERSION") ?? "1.0.0";
-        SpecificKestrelSelfHostVersion = Environment.GetEnvironmentVariable("SPECIFIC_KESTREL_SELFHOST_VERSION") ?? "1.0.0";
+
+        LatestElasticsearchHostname = Environment.GetEnvironmentVariable("LATEST_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchHostname = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchVersion = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_VERSION") ?? "5.5.1";
     }
 }
