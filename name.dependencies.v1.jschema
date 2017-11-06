@@ -73,6 +73,7 @@
                                 "RabbitMq",
                                 "MongoDb",
                                 "SqlServer"
+								"Elasticsearch"
                             ]
                         },
                         "min_version": {
