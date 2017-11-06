@@ -1,5 +1,6 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Dependencies;
 using NAME.Tests.ConnectionStrings;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,12 @@ namespace NAME.Tests
                         ""min_version"": ""2.6"",
                         ""max_version"": ""4.0"",
                         ""connection_string"": ""mongodb://some-mongodb-instance:27017/some-db""
+                    },
+                    {
+                        ""type"": ""Elasticsearch"",
+                        ""min_version"": ""2.6"",
+                        ""max_version"": ""4.*"",
+                        ""connection_string"": ""http://some-elasticsearch-instance:9200""
                     }"
 #if NET452
                     + @",{
@@ -149,7 +156,7 @@ namespace NAME.Tests
                 File.Delete(fileName);
             }
         }
-        
+
 
         [Fact]
         [Trait("TestCategory", "Unit")]
@@ -244,12 +251,16 @@ namespace NAME.Tests
             ParsedDependencies configuration = DependenciesReader.ReadDependencies(CONFIGURATION_FILE, new DummyFilePathMapper(), new NAMESettings(), new NAMEContext());
 
 #if NET452
-            Assert.Equal(3, configuration.InfrastructureDependencies.Count());
+            Assert.Equal(4, configuration.InfrastructureDependencies.Count());
             Assert.Equal(2, configuration.ServiceDependencies.Count());
 #else
-            Assert.Equal(2, configuration.InfrastructureDependencies.Count());
+            Assert.Equal(3, configuration.InfrastructureDependencies.Count());
             Assert.Equal(2, configuration.ServiceDependencies.Count());
 #endif
+            var elasticsearchDependency = configuration.InfrastructureDependencies.OfType<VersionedDependency>().Single(d => d.Type == SupportedDependencies.Elasticsearch);
+            var castedMaxVersion = Assert.IsAssignableFrom<WildcardDependencyVersion>(elasticsearchDependency.MaximumVersion);
+            Assert.False(castedMaxVersion.IsMajorWildcard);
+            Assert.True(castedMaxVersion.IsMinorWildcard);
         }
 
 #if NET452

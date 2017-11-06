@@ -1,6 +1,7 @@
-﻿
+
 using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using NAME.OperatingSystem;
 using System;
 using System.Collections.Generic;
@@ -30,13 +31,13 @@ namespace NAME.Tests.OperatingSystem
         [InlineData(WindowsVersions.Windows81, "6.3")]
         [InlineData(WindowsVersions.WindowsServer2016, "10.0")]
         [InlineData(WindowsVersions.Windows10, "10.0")]
-        public void Translate_SqlServerVersions(WindowsVersions version, string expectedVersion)
+        public void Translate_WindowsVersions(WindowsVersions version, string expectedVersion)
         {
             IVersionTranslator translator = new WindowsVersionTranslator();
 
             DependencyVersion v = translator.Translate(version.ToString());
 
-            Assert.True(v >= DependencyVersion.Parse(expectedVersion));
+            Assert.True(v >= DependencyVersionParser.Parse(expectedVersion, false));
         }
 
         [Theory]
@@ -52,7 +53,7 @@ namespace NAME.Tests.OperatingSystem
         {
             IVersionTranslator translator = new WindowsVersionTranslator();
 
-            string v = translator.Translate(new OperatingSystemDependencyVersion("windows", DependencyVersion.Parse(versionStr)));
+            string v = translator.Translate(new OperatingSystemDependencyVersion("windows", DependencyVersionParser.Parse(versionStr, false)));
 
             Assert.True(v == exptectedVersion.ToString());
         }

@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
 using NAME.Core.Utils;
 using System;
@@ -40,8 +40,7 @@ namespace NAME.RabbitMq
         /// <exception cref="NAMEException">An unexpected exception happened. See inner exception for details.</exception>
         public override async Task<IEnumerable<DependencyVersion>> GetVersions()
         {
-            string rabbitConnectionString;
-            if (!this.connectionStringProvider.TryGetConnectionString(out rabbitConnectionString))
+            if (!this.connectionStringProvider.TryGetConnectionString(out var rabbitConnectionString))
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
 
             var result = new List<DependencyVersion>();
@@ -52,7 +51,7 @@ namespace NAME.RabbitMq
                 {
                     SendConnectionHeader(client);
                     string version = GetVersionFromServerReponse(client);
-                    result.Add(DependencyVersion.Parse(version));
+                    result.Add(DependencyVersionParser.Parse(version, false));
                 }
             }
             return result;

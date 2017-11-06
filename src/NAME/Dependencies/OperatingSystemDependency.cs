@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,7 +30,7 @@ namespace NAME.Dependencies
 
                     if (osVersion == null || !osVersion.OperatingSystem.Equals(this.OperatingSystemName, StringComparison.OrdinalIgnoreCase))
                     {
-                        return new DependencyCheckStatus(false, message: $"Unsupported Operating system: { osVersion.OperatingSystem }.)");
+                        return new DependencyCheckStatus(false, message: $"Unsupported Operating system { osVersion?.OperatingSystem }.)");
                     }
 
                     if (version < this.MinimumVersion || (this.MaximumVersion != null && version > this.MaximumVersion))

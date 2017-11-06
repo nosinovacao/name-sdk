@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Service;
 using NAME.ConnectionStrings;
 using System;
@@ -7,6 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 
 namespace NAME.IntegrationTests.Service
 {
@@ -22,7 +23,7 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificServiceVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificServiceVersion, false));
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificServiceVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificServiceVersion, false));
         }
 
         [Fact]
@@ -48,7 +49,7 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificServiceVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificServiceVersion, false));
         }
         // /endpoint/before/name/middleware
         

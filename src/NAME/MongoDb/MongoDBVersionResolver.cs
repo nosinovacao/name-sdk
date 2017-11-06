@@ -1,5 +1,6 @@
 using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using NAME.MongoDb.Bson;
 using System;
 using System.Collections.Generic;
@@ -42,8 +43,7 @@ namespace NAME.MongoDb
         public override async Task<IEnumerable<DependencyVersion>> GetVersions()
         {
             var versions = new List<DependencyVersion>();
-            string connectionString;
-            if (!this.connectionStringProvider.TryGetConnectionString(out connectionString))
+            if (!this.connectionStringProvider.TryGetConnectionString(out string connectionString))
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
 
             var connectionStringBuilder = new MongoConnectionStringBuilder(connectionString);
@@ -57,7 +57,7 @@ namespace NAME.MongoDb
                     await client.GetStream().WriteAsync(message, 0, message.Length, default(CancellationToken)).ConfigureAwait(false);
                     await Task.Delay(100).ConfigureAwait(false);
                     BSONObject obj = ExtractServerStatusFromResponse(client);
-                    versions.Add(DependencyVersion.Parse(obj["version"].stringValue));
+                    versions.Add(DependencyVersionParser.Parse(obj["version"].stringValue, false));
                 }
             }
 
@@ -119,8 +119,10 @@ namespace NAME.MongoDb
                 //Number to return
                 commandWriter.Write(-1);
 
-                var commandBSON = new BSONObject();
-                commandBSON["serverStatus"] = 1.0;
+                var commandBSON = new BSONObject
+                {
+                    ["serverStatus"] = 1.0
+                };
                 commandWriter.Write(SimpleBSON.Dump(commandBSON));
                 commandWriter.Flush();
 

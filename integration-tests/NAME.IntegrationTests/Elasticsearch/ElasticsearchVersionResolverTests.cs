@@ -1,5 +1,6 @@
 using NAME.ConnectionStrings;
 using NAME.Core;
+using NAME.Core.Utils;
 using NAME.Elasticsearch;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +19,7 @@ namespace NAME.IntegrationTests.Elasticsearch
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificElasticsearchVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificElasticsearchVersion, false));
         }
 
         [Fact]
@@ -31,7 +32,7 @@ namespace NAME.IntegrationTests.Elasticsearch
 
             Assert.Equal(1, versions.Count());
             // Latest GA RELEASE: https://www.elastic.co/downloads/elasticsearch#ga-release
-            Assert.Equal(versions.First(), DependencyVersion.Parse("5.6.3"));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse("5.6.3", false));
         }
     }
 }
