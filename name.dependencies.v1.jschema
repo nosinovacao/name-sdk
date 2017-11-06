@@ -72,7 +72,8 @@
                             "enum": [
                                 "RabbitMq",
                                 "MongoDb",
-                                "SqlServer"
+                                "SqlServer",
+                                "Elasticsearch"
                             ]
                         },
                         "min_version": {

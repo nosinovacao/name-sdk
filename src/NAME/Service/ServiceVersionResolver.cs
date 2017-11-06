@@ -1,12 +1,10 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
 using NAME.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NAME.Service
@@ -18,7 +16,7 @@ namespace NAME.Service
     public class ServiceVersionResolver : ConnectedVersionResolver
     {
         private readonly IConnectionStringProvider _connectionStringProvider;
-        private readonly Func<string, HttpWebRequest> _webRequestFactory;
+
         private const string InfrastructureDependenciesKey = "infrastructure_dependencies";
         private const string ServiceDependenciesKey = "service_dependencies";
 
@@ -46,15 +44,12 @@ namespace NAME.Service
         /// <param name="maxHopCount">The maximum hop count.</param>
         /// <param name="connectTimeout">The connect timeout.</param>
         /// <param name="readWriteTimeout">The read write timeout.</param>
-        /// <param name="webRequestFactory">The web request factory.</param>
-        public ServiceVersionResolver(IConnectionStringProvider connectionStringProvider, int currentHopNumber, int maxHopCount, int connectTimeout, int readWriteTimeout, Func<string, HttpWebRequest> webRequestFactory = null)
+        public ServiceVersionResolver(IConnectionStringProvider connectionStringProvider, int currentHopNumber, int maxHopCount, int connectTimeout, int readWriteTimeout)
             : base(connectTimeout, readWriteTimeout)
         {
             this._connectionStringProvider = connectionStringProvider;
             this.HopNumber = currentHopNumber;
             this.MaxHopCount = maxHopCount;
-
-            this._webRequestFactory = webRequestFactory ?? WebRequest.CreateHttp;
         }
 
         /// <summary>
@@ -150,12 +145,11 @@ namespace NAME.Service
 
         private async Task<string> GetManifest(Uri endpointUri, bool retry, int hop)
         {
-            HttpWebRequest request = this._webRequestFactory.Invoke(endpointUri.AbsoluteUri);
-            request.ContentType = "application/json; charset=utf-8";
+            HttpWebRequest request = this.GetHttpWebRequest(endpointUri.AbsoluteUri, SupportedDependencies.Service.ToString());
             request.Headers[Constants.HOP_COUNT_HEADER_NAME] = hop.ToString();
 
             // This timeout defines the time it should take to connect to the instance.
-            request.ContinueTimeout = this.ConnectTimeout;
+
             try
             {
                 var getResponseTask = request.GetResponseAsync();

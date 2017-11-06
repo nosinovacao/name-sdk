@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 public static class Constants {
     public static string ExpectedOperatingSystem;
@@ -17,6 +17,11 @@ public static class Constants {
     public static string SpecificRabbitVersion;
     public static string SpecificServiceVersion;
 
+    // Elasticsearch variables
+    public static string LatestElasticsearchHostname;
+    public static string SpecificElasticsearchHostname;
+    public static string SpecificElasticsearchVersion;
+
     static Constants() {
         ExpectedOperatingSystem = Environment.GetEnvironmentVariable("OPERATING_SYSTEM") ?? "windows";
 
@@ -31,5 +36,9 @@ public static class Constants {
         SpecificMongoVersion = Environment.GetEnvironmentVariable("SPECIFIC_MONGO_VERSION") ?? "3.0.0";
         SpecificRabbitVersion = Environment.GetEnvironmentVariable("SPECIFIC_RABBIT_VERSION") ?? "3.6.5";
         SpecificServiceVersion = Environment.GetEnvironmentVariable("SPECIFIC_SERVICE_VERSION") ?? "1.0.0";
+
+        LatestElasticsearchHostname = Environment.GetEnvironmentVariable("LATEST_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchHostname = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchVersion = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_VERSION") ?? "5.5.1";
     }
 }

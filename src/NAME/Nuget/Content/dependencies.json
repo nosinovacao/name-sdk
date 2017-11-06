@@ -26,6 +26,15 @@
     //    "locator": "ConnectionStrings",
     //    "key": "EventaConnectionString"
     //  }
+    //},
+    //{
+    //  "type": "Elasticsearch",
+    //  "min_version": "5.5.1",
+    //  "max_version": "5.6.3",
+    //  "connection_string": {
+    //    "locator": "ConnectionStrings",
+    //    "key":  "ElasticConnectionString"
+    //  }
     //}
   ],
   "service_dependencies": [

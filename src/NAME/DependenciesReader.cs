@@ -1,4 +1,4 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -265,6 +265,8 @@ namespace NAME
                     return new SqlServer.SqlServerVersionResolver(connectionStringProvider, configuration.DependencyConnectTimeout, configuration.DependencyReadWriteTimeout);
                 case SupportedDependencies.Service:
                     return new Service.ServiceVersionResolver(connectionStringProvider, context.ServiceDependencyCurrentNumberOfHops, configuration.ServiceDependencyMaxHops, configuration.DependencyConnectTimeout, configuration.DependencyReadWriteTimeout);
+                case SupportedDependencies.Elasticsearch:
+                    return new Elasticsearch.ElasticsearchVersionResolver(connectionStringProvider, configuration.DependencyConnectTimeout, configuration.DependencyReadWriteTimeout);
                 default:
                     throw new NAMEException($"The dependency of type {dependencyType} is not supported as a connected dependency.");
             }
