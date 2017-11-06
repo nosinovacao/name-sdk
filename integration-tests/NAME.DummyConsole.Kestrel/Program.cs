@@ -1,11 +1,14 @@
 using System;
 using NAME.SelfHost.Kestrel;
 using System.Reflection;
+using System.Threading;
 
 namespace NAME.DummyConsole
 {
     class Program
     {
+        private static readonly AutoResetEvent _closing = new AutoResetEvent(false);
+
         static void Main(string[] args)
         {
             Action<NAMEKestrelConfiguration> configBuilder = config =>
@@ -20,8 +23,16 @@ namespace NAME.DummyConsole
             using (var selfHost = NAMEServer.EnableName(configBuilder))
             {
                 Console.WriteLine("Hello World!");
-                Console.ReadKey();
+
+                Console.CancelKeyPress += new ConsoleCancelEventHandler(OnExit);
+                _closing.WaitOne();
             }
+        }
+
+        protected static void OnExit(object sender, ConsoleCancelEventArgs args)
+        {
+            Console.WriteLine("Exiting");
+            _closing.Set();
         }
     }
 }
