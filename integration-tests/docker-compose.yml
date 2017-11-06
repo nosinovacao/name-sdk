@@ -1,4 +1,4 @@
-﻿version: '2.1'
+version: '2.1'
 
 services:
   integration-tester:
@@ -6,9 +6,11 @@ services:
     links:
       - mongo
       - rabbitmq
+      - sqlserver
       - specific-mongo
       - specific-rabbitmq
       - dummy-service
+      - dummy-console-kestrel
     environment:
       - LATEST_MONGO_HOSTNAME=mongo
       - LATEST_RABBIT_HOSTNAME=rabbitmq
@@ -19,6 +21,8 @@ services:
       - SPECIFIC_RABBIT_VERSION=3.6.5
       - SPECIFIC_SERVICE_HOSTNAME=dummy-service
       - SPECIFIC_SERVICE_VERSION=1.0.0
+      - SPECIFIC_KESTREL_SELFHOST_HOSTNAME=dummy-console-kestrel
+      - SPECIFIC_KESTREL_SELFHOST_VERSION=1.0.0
       - OPERATING_SYSTEM=debian
       - RUNNING_ON_DOCKER=true
     volumes:
@@ -31,6 +35,7 @@ services:
       - specific-mongo
       - specific-rabbitmq
       - dummy-service
+      - dummy-console-kestrel
   dummy-service:
     build: ./NAME.DummyService
     environment:
@@ -39,6 +44,14 @@ services:
       - ../Output/Artifacts/NuGets/Release:/service/nugets
     expose:
       - "5000"
+  dummy-console-kestrel:
+    build: ./NAME.DummyConsole.Kestrel
+    environment:
+      - RUNNING_ON_DOCKER=true
+    volumes:
+      - ../Output/Artifacts/NuGets/Release:/service/nugets
+    expose:
+      - "40500"
   mongo:
     image: mongo
     expose:
