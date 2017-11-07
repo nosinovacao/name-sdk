@@ -73,9 +73,9 @@ namespace NAME.IntegrationTests
                         {
                             ""name"":""Mongo"",
                             ""version"":""" + Constants.SpecificMongoVersion + @""",
+                            ""status"":""Ok"",
                             ""min_version"":""2.6.0"",
                             ""max_version"":""*"",
-                            ""status"":""Ok"",
                             ""value"":""mongodb://" + Constants.SpecificMongoHostname + @":27017/nPVR_Dev_TST""
                         }
                     ],
@@ -104,9 +104,10 @@ namespace NAME.IntegrationTests
                         {
                             ""name"":""Mongo"",
                             ""version"":""" + Constants.SpecificMongoVersion + @""",
+                            ""error"": ""Unsupported version."",
+                            ""status"":""" + NAMEStatusLevel.Error.ToString() + @""",
                             ""min_version"":""1.0.0"",
                             ""max_version"":""2.*"",
-                            ""status"":""Error"",
                             ""value"":""mongodb://" + Constants.SpecificMongoHostname + @":27017/nPVR_Dev_TST""
                         }
                     ],
@@ -140,7 +141,7 @@ namespace NAME.IntegrationTests
                             ""status"":""" + NAMEStatusLevel.Warn.ToString() + @""",
                             ""min_version"": ""1.0.0"",
                             ""max_version"": ""2.*"",
-                            ""connection_string"": ""http://" + Constants.SpecificServiceHostname + @":5000/endpoint/before/name/middleware""
+                            ""value"": ""http://" + Constants.SpecificServiceHostname + @":5000/endpoint/before/name/middleware""
                         }
                     ]
                 }";
