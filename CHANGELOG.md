@@ -11,6 +11,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 * Fix NAME not retrying to fetch a service dependency manifest from the correct endpoint when the dependency returned a successful status code. [(#8)](https://github.com/nosinovacao/name-sdk/issues/8)
 ### Added
 * A relevant error message is now shown when a service dependency does not have NAME installed. [(#14)](https://github.com/nosinovacao/name-sdk/issues/14)
+* Support for wildcards in the maximum version of dependencies. [(#11)](https://github.com/nosinovacao/name-sdk/issues/11)
 
 ## v1.0.0 - 2017-07-07
 * Initial open source release.
