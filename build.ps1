@@ -183,6 +183,9 @@ if (!(Test-Path $CAKE_EXE)) {
     Throw "Could not find Cake.exe at $CAKE_EXE"
 }
 
+# This is a workaround for https://github.com/dotnet/cli/issues/6550 , we should remove this when we migrate to .net 2.0 cli.
+$env:DOTNET_SKIP_FIRST_TIME_EXPERIENCE = 1
+
 # Start Cake
 Write-Host "Running build script..."
 Invoke-Expression "& `"$CAKE_EXE`" `"$Script`" -target=`"$Target`" -configuration=`"$Configuration`" -verbosity=`"$Verbosity`" $UseMono $UseDryRun $UseExperimental $ScriptArgs"

@@ -1,5 +1,4 @@
-﻿//#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Json
-#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Docker
+﻿#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Docker
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.DoInDirectory
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.FileHelpers
 
@@ -193,7 +192,7 @@ Task("AppVeyor")
 Task("TravisCI")
     .IsDependentOn("Build-AND-Test")
     .Does(() => {
-        if(EnvironmentVariable("TRAVIS_OS_NAME") == "linux") {
+        if(IsRunningOnUnix()) {
             Information("Travis CI running on Linux, executing the integration tests.");
             RunTarget("Run-Integration-Tests");
         }

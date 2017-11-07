@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -32,12 +32,12 @@ namespace NAME.IntegrationTests
         [Trait("TestCategory", "Integration")]
         public async Task GenerateJson()
         {
-            var runningVersion = typeof(Core.Constants).GetTypeInfo().Assembly.GetName().Version.ToString(3);
+            var runningVersion = typeof(ManifestGeneratorTests).GetTypeInfo().Assembly.GetName().Version.ToString(3);
 
             string expectedManifest = @"{
-                    ""nameVersion"": """ + runningVersion + @""",
+                    ""nameVersion"": """ + NAME.Core.Constants.NAME_ASSEMBLY_VERSION + @""",
                     ""name"":""NAME.Tests"",
-                    ""version"":""1.0.0"",
+                    ""version"":""" + runningVersion + @""",
                     ""infrastructure_dependencies"":[
                         {
                             ""name"":""Mongo"",
@@ -54,8 +54,8 @@ namespace NAME.IntegrationTests
             string manifest = await ManifestGenerator.GenerateJson("NAME.Tests", runningVersion, dependencies);
 
             Assert.Equal(
-                            expectedManifest.Replace(" ", string.Empty).Replace("\t", "").Replace("\r", "").Replace("\n",""),
-                            manifest.Replace(" ", string.Empty).Replace("\t", "").Replace("\r", "").Replace("\n",""));
+                            expectedManifest.Replace(" ", string.Empty).Replace("\t", "").Replace("\r", "").Replace("\n", ""),
+                                        manifest.Replace(" ", string.Empty).Replace("\t", "").Replace("\r", "").Replace("\n", ""));
         }
     }
 
