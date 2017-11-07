@@ -12,6 +12,7 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 ### Added
 * A relevant error message is now shown when a service dependency does not have NAME installed. [(#14)](https://github.com/nosinovacao/name-sdk/issues/14)
 * Support for wildcards in the maximum version of dependencies. [(#11)](https://github.com/nosinovacao/name-sdk/issues/11)
+* Support for Elasticsearch version resolving. [(#19)](https://github.com/nosinovacao/name-sdk/issues/19)
 
 ## v1.0.0 - 2017-07-07
 * Initial open source release.
