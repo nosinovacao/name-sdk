@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
@@ -31,7 +31,7 @@ namespace NAME.Hosting.Shared
             var dependencies = new ParsedDependencies(null, null);
 
             settings = DependenciesReader.ReadNAMESettingsOverrides(configuration.DependenciesFilePath, pathMapper);
-            
+
             try
             {
                 dependencies = DependenciesReader.ReadDependencies(configuration.DependenciesFilePath, pathMapper, settings, new NAMEContext());
@@ -45,7 +45,7 @@ namespace NAME.Hosting.Shared
                     if (ex is NAMEException)
                         throw;
                     else
-                        throw new NAMEException("Error parsing the dependencies file.", ex);
+                        throw new NAMEException("Error parsing the dependencies file.", ex, NAMEStatusLevel.Error);
                 }
                 return dependencies;
             }
@@ -61,7 +61,7 @@ namespace NAME.Hosting.Shared
             var allStatuses = LogDependenciesStatuses(dependencies.InfrastructureDependencies, logToConsole);
             allStatuses.AddRange(LogDependenciesStatuses(dependencies.ServiceDependencies, logToConsole));
 
-            if (configuration.ThrowOnDependenciesFail && allStatuses.Any(s => !s.CheckPassed))
+            if (configuration.ThrowOnDependenciesFail && allStatuses.Any(s => s.CheckStatus != NAMEStatusLevel.Ok))
             {
                 throw new DependenciesCheckException(allStatuses);
             }

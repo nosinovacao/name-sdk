@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -16,7 +16,7 @@ namespace NAME.Core.Exceptions
         /// </summary>
         /// <param name="provider">The provider used to try to get the connection string.</param>
         public ConnectionStringNotFoundException(string provider) 
-            : base($"Unable to find the connection string using: {provider}.")
+            : base($"Unable to find the connection string using: {provider}.", NAMEStatusLevel.Warn)
         {
         }
     }

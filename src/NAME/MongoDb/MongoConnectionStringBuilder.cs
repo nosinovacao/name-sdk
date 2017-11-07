@@ -50,7 +50,7 @@ namespace NAME.MongoDb
                 if (connectionString.StartsWith("mongodb://"))
                     this.ParseUri(connectionString);
                 else
-                    throw new NAMEException("The connection string must start with mongodb://");
+                    throw new NAMEException("The connection string must start with mongodb://", NAMEStatusLevel.Warn);
             }
         }
 
@@ -113,8 +113,7 @@ namespace NAME.MongoDb
 
                 var serverHost = serverMatch.Groups[1].Value;
 
-                int port;
-                if (int.TryParse(serverMatch.Groups[2].Value, out port))
+                if (int.TryParse(serverMatch.Groups[2].Value, out int port))
                     this.AddServer(serverHost, port);
                 else
                     this.AddServer(serverHost);

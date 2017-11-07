@@ -1,4 +1,4 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -72,7 +72,11 @@ namespace NAME.IntegrationTests
                 });
 
                 Assert.Equal(1, exception.DependenciesStatutes.Count());
+                // we still need to test for backwards compatibility
+#pragma warning disable CS0618 // Type or member is obsolete
                 Assert.False(exception.DependenciesStatutes.First().CheckPassed);
+#pragma warning restore CS0618 // Type or member is obsolete
+                Assert.Equal(NAMEStatusLevel.Error, exception.DependenciesStatutes.First().CheckStatus);
                 Assert.Equal(string.Join(Environment.NewLine, exception.DependenciesStatutes.Select(s => s.Message)), exception.Message);
                 Assert.NotNull(exception.DependenciesStatutes.First().Message);
             }
@@ -108,7 +112,11 @@ namespace NAME.IntegrationTests
                 var statuses = await DependenciesExtensions.GetDependenciesStatutes(parsedDependencies);
 
                 Assert.Equal(1, statuses.Count());
+                // we still need to test for backwards compatibility
+#pragma warning disable CS0618 // Type or member is obsolete
                 Assert.False(statuses.First().CheckPassed);
+#pragma warning restore CS0618 // Type or member is obsolete
+                Assert.Equal(NAMEStatusLevel.Error, statuses.First().CheckStatus);
                 Assert.NotNull(statuses.First().Message);
             }
             finally

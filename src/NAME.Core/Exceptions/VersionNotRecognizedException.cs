@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -46,7 +46,7 @@ namespace NAME.Core.Exceptions
         /// <param name="message">The message.</param>
         /// <param name="inner">The inner exception.</param>
         public VersionNotRecognizedException(string version, string message, Exception inner)
-            : base(message, inner)
+            : base(message, inner, NAMEStatusLevel.Warn)
         {
         }
     }

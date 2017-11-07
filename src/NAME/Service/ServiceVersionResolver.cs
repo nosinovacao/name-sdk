@@ -81,7 +81,7 @@ namespace NAME.Service
             }
             catch (Exception ex)
             {
-                throw new NAMEException($"{SupportedDependencies.Service}: The service returned an invalid JSON from the manifest endpoint.", ex);
+                throw new NAMEException($"{SupportedDependencies.Service}: The service returned an invalid JSON from the manifest endpoint.", ex, NAMEStatusLevel.Warn);
             }
 
             if (dependencyVersion == null)
@@ -167,11 +167,6 @@ namespace NAME.Service
                     // await the task again to propagate exceptions/cancellations
                     using (HttpWebResponse response = (HttpWebResponse)await getResponseTask.ConfigureAwait(false))
                     {
-                        if ((int)response.StatusCode < 200 || (int)response.StatusCode > 299)
-                        {
-                            throw new NAMEException($"{SupportedDependencies.Service}: The service returned an unsuccessfull status code: {response.StatusCode}.");
-                        }
-
                         var headerManifestEndpoint = response.Headers[Constants.MANIFEST_ENDPOINT_HEADER_NAME];
                         if (headerManifestEndpoint == null)
                             throw new DependencyWithoutNAMEException();
@@ -184,6 +179,11 @@ namespace NAME.Service
                         }
                         else
                         {
+                            if ((int)response.StatusCode < 200 || (int)response.StatusCode > 299)
+                            {
+                                throw new NAMEException($"{SupportedDependencies.Service}: The service returned an unsuccessfull status code on the manifest endpoint: {response.StatusCode}.", NAMEStatusLevel.Error);
+                            }
+
                             using (Stream stream = response.GetResponseStream())
                             using (StreamReader reader = new StreamReader(stream))
                             {
@@ -195,7 +195,7 @@ namespace NAME.Service
                 else
                 {
                     request.Abort();
-                    throw new NAMEException($"{SupportedDependencies.Service}: Timed out, the server accepted the connection but did not send a response.");
+                    throw new NAMEException($"{SupportedDependencies.Service}: Timed out, the server accepted the connection but did not send a response.", NAMEStatusLevel.Error);
                 }
             }
             catch (WebException ex)
@@ -212,7 +212,7 @@ namespace NAME.Service
                     }
 
                     if ((int)response.StatusCode == Constants.SERVICE_HOPS_ERROR_STATUS_CODE)
-                        throw new NAMEException($"The maximum number of hops between manifest endpoints was reached.");
+                        throw new NAMEException($"The maximum number of hops between manifest endpoints was reached.", NAMEStatusLevel.Warn);
                     if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.RequestTimeout)
                         throw new DependencyNotReachableException(SupportedDependencies.Service.ToString(), ex);
                 }

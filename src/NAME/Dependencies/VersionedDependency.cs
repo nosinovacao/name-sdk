@@ -75,21 +75,25 @@ namespace NAME.Dependencies
             {
                 IEnumerable<DependencyVersion> actualVersions = await this.VersionResolver.GetVersions().ConfigureAwait(false);
                 if (!actualVersions.Any())
-                    return new DependencyCheckStatus(false, message: "Could not fetch the versions.");
+                    return new DependencyCheckStatus(NAMEStatusLevel.Warn, message: "Could not fetch the versions.");
 
                 foreach (var version in actualVersions)
                 {
                     if (version < this.MinimumVersion || (this.MaximumVersion != null && version > this.MaximumVersion))
                     {
-                        return new DependencyCheckStatus(false, version: version, message: "Unsupported version.");
+                        return new DependencyCheckStatus(NAMEStatusLevel.Error, version: version, message: "Unsupported version.");
                     }
                 }
 
-                return new DependencyCheckStatus(true, actualVersions.FirstOrDefault());
+                return new DependencyCheckStatus(NAMEStatusLevel.Ok, actualVersions.FirstOrDefault());
+            }
+            catch (NAMEException ex)
+            {
+                return new DependencyCheckStatus(ex.StatusLevel, message: ex.Message, innerException: ex.InnerException);
             }
             catch (Exception ex)
             {
-                return new DependencyCheckStatus(false, message: ex.Message, innerException: ex);
+                return new DependencyCheckStatus(NAMEStatusLevel.Error, message: ex.Message, innerException: ex);
             }
         }
 
@@ -104,8 +108,11 @@ namespace NAME.Dependencies
             if (status.Version != null)
                 jsonDependency.Add("version", status.Version.ToString());
 
-            if (!status.CheckPassed)
+            if (status.CheckStatus != NAMEStatusLevel.Ok)
+            {
                 jsonDependency.Add("error", status.Message ?? "Unhandled error");
+            }
+            jsonDependency.Add("status", status.CheckStatus.ToString());
 
             jsonDependency.Add("min_version", this.MinimumVersion.ToString());
             jsonDependency.Add("max_version", this.MaximumVersion?.ToString() ?? "*");

@@ -58,7 +58,7 @@ namespace NAME.Elasticsearch
                 else
                 {
                     request.Abort();
-                    throw new NAMEException($"{SupportedDependencies.Elasticsearch}: Timed out, the server accepted the connection but did not send a response.");
+                    throw new NAMEException($"{SupportedDependencies.Elasticsearch}: Timed out, the server accepted the connection but did not send a response.", NAMEStatusLevel.Error);
                 }
             }
             catch (WebException e)

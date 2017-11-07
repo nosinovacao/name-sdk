@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -15,9 +15,12 @@ namespace NAME.SelfHost.Shared
     {
         public static ParsedDependencies Initialize(ISelfHostServer server, IFilePathMapper pathMapper, NAMESelfHostConfiguration configuration)
         {
-            NAMESettings settings;
 
-            ParsedDependencies dependencies = ReadAndLogDependencies(configuration, configuration.LogHealthCheckToConsole, pathMapper, out settings);
+            ParsedDependencies dependencies = ReadAndLogDependencies(
+                configuration,
+                configuration.LogHealthCheckToConsole,
+                pathMapper,
+                out NAMESettings settings);
 
             if (settings.RunningMode == SupportedNAMEBehaviours.NAMEDisabled)
             {
@@ -38,7 +41,7 @@ namespace NAME.SelfHost.Shared
                     portNumber++;
                 }
                 if (result == false)
-                    throw new NAMEException("Tried all ports, without success.");
+                    throw new NAMEException("Tried all ports, without success.", NAMEStatusLevel.Error);
 
                 Console.WriteLine($"Succesfully started the server. Listening on {portNumber}.");
             }
@@ -50,7 +53,7 @@ namespace NAME.SelfHost.Shared
                     if (ex is NAMEException)
                         throw;
                     else
-                        throw new NAMEException("Could not bind to the SelfHost address.", ex);
+                        throw new NAMEException("Could not bind to the SelfHost address.", ex, NAMEStatusLevel.Error);
                 }
                 return dependencies;
             }
