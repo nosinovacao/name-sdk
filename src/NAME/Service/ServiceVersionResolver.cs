@@ -1,5 +1,6 @@
 using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using NAME.Json;
 using System;
 using System.Collections.Generic;
@@ -76,8 +77,7 @@ namespace NAME.Service
             try
             {
                 node = Json.Json.Parse(jsonContents);
-                DependencyVersion.TryParse(node?["version"], out dependencyVersion);
-                dependencyVersion.ManifestNode = node;
+                DependencyVersionParser.TryParse(node?["version"], false, out dependencyVersion);
             }
             catch (Exception ex)
             {
@@ -86,6 +86,8 @@ namespace NAME.Service
 
             if (dependencyVersion == null)
                 throw new VersionParsingException(node?["version"], $"The version from manifest {node} cannot be parsed");
+
+            dependencyVersion.ManifestNode = node;
 
             await this.GetDependantManifests(dependencyVersion).ConfigureAwait(false);
 
@@ -198,8 +200,7 @@ namespace NAME.Service
             }
             catch (WebException ex)
             {
-                var response = ex.Response as HttpWebResponse;
-                if (response != null)
+                if (ex.Response is HttpWebResponse response)
                 {
                     if (retry)
                     {

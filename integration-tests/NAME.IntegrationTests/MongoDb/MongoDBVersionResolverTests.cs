@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.MongoDb;
 using NAME.ConnectionStrings;
 using System;
@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using NAME.Core.Utils;
 
 namespace NAME.IntegrationTests.MongoDb
 {
@@ -20,7 +21,7 @@ namespace NAME.IntegrationTests.MongoDb
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.True(versions.First() >= DependencyVersion.Parse("3.0.0"));
+            Assert.True(versions.First() >= DependencyVersionParser.Parse("3.0.0", false));
         }
         [Fact]
         [Trait("TestCategory", "Integration")]
@@ -31,7 +32,7 @@ namespace NAME.IntegrationTests.MongoDb
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificMongoVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificMongoVersion, false));
         }
         [Fact]
         [Trait("TestCategory", "Integration")]
@@ -42,7 +43,7 @@ namespace NAME.IntegrationTests.MongoDb
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificMongoVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificMongoVersion, false));
         }
         [Fact]
         [Trait("TestCategory", "Integration")]
@@ -53,8 +54,8 @@ namespace NAME.IntegrationTests.MongoDb
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(2, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificMongoVersion));
-            Assert.Equal(versions.Skip(1).First(), DependencyVersion.Parse(Constants.SpecificMongoVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificMongoVersion, false));
+            Assert.Equal(versions.Skip(1).First(), DependencyVersionParser.Parse(Constants.SpecificMongoVersion, false));
         }
     }
 }

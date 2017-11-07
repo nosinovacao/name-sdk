@@ -1,4 +1,4 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
 using NAME.Core.Utils;
 using NAME.Core;
 using System;
@@ -43,9 +43,7 @@ namespace NAME.SqlServer
         /// <exception cref="NAMEException">An unexpected exception happened. See inner exception for details.</exception>
         public override async Task<IEnumerable<DependencyVersion>> GetVersions()
         {
-            string hostname;
-            int port;
-            this.ExtractHostnameAndPort(out hostname, out port);
+            this.ExtractHostnameAndPort(out string hostname, out int port);
 
             byte[] message = this.CreatePreLoginMessage();
 
@@ -53,7 +51,7 @@ namespace NAME.SqlServer
             {
                 await client.GetStream().WriteAsync(message, 0, message.Length, default(CancellationToken)).ConfigureAwait(false);
                 string versionStr = this.GetServerVersionFromResponse(client.GetStream());
-                return new List<DependencyVersion> { DependencyVersion.Parse(versionStr) };
+                return new List<DependencyVersion> { DependencyVersionParser.Parse(versionStr, false) };
             }
         }
 
@@ -61,8 +59,7 @@ namespace NAME.SqlServer
         {
             hostname = string.Empty;
             port = 1433;
-            string connectionString;
-            if (!this.connectionStringProvider.TryGetConnectionString(out connectionString))
+            if (!this.connectionStringProvider.TryGetConnectionString(out string connectionString))
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
 
             var matches = dataSourceRegex.Matches(connectionString);

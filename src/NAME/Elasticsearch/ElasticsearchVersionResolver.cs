@@ -1,5 +1,6 @@
 using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -50,7 +51,7 @@ namespace NAME.Elasticsearch
                             var version = string.Empty;
 
                             version = this.DeserializeJsonResponse(body);
-                            versions.Add(DependencyVersion.Parse(version));
+                            versions.Add(DependencyVersionParser.Parse(version, false));
                         }
                     }
                 }

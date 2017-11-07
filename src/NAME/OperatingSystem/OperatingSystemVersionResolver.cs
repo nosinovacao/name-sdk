@@ -1,5 +1,6 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -65,9 +66,8 @@ namespace NAME.OperatingSystem
 
             if (distroVersion == null)
                 throw new NAMEException($"Linux: Was unable to resolve the current version.");
-
-            DependencyVersion parsedVersion;
-            if (!DependencyVersion.TryParse(distroVersion, out parsedVersion))
+        
+            if (!DependencyVersionParser.TryParse(distroVersion, false, out var parsedVersion))
                 throw new NAMEException($"Linux: The extracted version ({distroVersion}) from the file {LINUX_OS_RELEASE_FILE} is not valid.");
 
             return new OperatingSystemDependencyVersion(distroId, parsedVersion);
@@ -80,9 +80,8 @@ namespace NAME.OperatingSystem
 #else
             string osDescription = RuntimeInformation.OSDescription;
             string versionPortion = osDescription.Split(new char[] { ' ' }, options: StringSplitOptions.RemoveEmptyEntries).Last();
-
-            DependencyVersion version;
-            if (!DependencyVersion.TryParse(versionPortion, out version))
+            
+            if (!DependencyVersionParser.TryParse(versionPortion, false, out var version))
                 throw new NAMEException($"Windows: Was not able to extract the version from the OS description ({osDescription}).");
 
             return new OperatingSystemDependencyVersion("windows", version);

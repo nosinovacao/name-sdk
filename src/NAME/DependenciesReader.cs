@@ -150,8 +150,7 @@ namespace NAME
             var type = dependency["type"]?.Value;
             var osName = dependency["os_name"]?.Value;
             type = string.IsNullOrEmpty(type) ? SupportedDependencies.Service.ToString() : type;
-            SupportedDependencies typedType;
-            if (!Enum.TryParse(type, out typedType))
+            if (!Enum.TryParse(type, out SupportedDependencies typedType))
                 throw new NAMEException($"The dependency type {type} is not supported.");
 
             VersionedDependency result;
@@ -160,8 +159,8 @@ namespace NAME
                 result = new OperatingSystemDependency()
                 {
                     OperatingSystemName = osName,
-                    MinimumVersion = ParseVersion(minVersion, osName),
-                    MaximumVersion = ParseVersion(maxVersion, osName)
+                    MinimumVersion = ParseMinimumVersion(minVersion, osName),
+                    MaximumVersion = ParseMaximumVersion(maxVersion, osName)
                 };
             }
             else
@@ -170,8 +169,8 @@ namespace NAME
                 result = new ConnectedDependency(GetConnectedDependencyVersionResolver(typedType, connectionStringProvider, configuration, context))
                 {
                     ConnectionStringProvider = connectionStringProvider,
-                    MinimumVersion = ParseVersion(minVersion, type),
-                    MaximumVersion = ParseVersion(maxVersion, type),
+                    MinimumVersion = ParseMinimumVersion(minVersion, type),
+                    MaximumVersion = ParseMaximumVersion(maxVersion, type),
                     ShowConnectionStringInJson = configuration.ConnectedDependencyShowConnectionString
                 };
             }
@@ -181,12 +180,21 @@ namespace NAME
             return result;
         }
 
-        private static DependencyVersion ParseVersion(string version, string dependencyType)
+        private static DependencyVersion ParseMinimumVersion(string version, string dependencyType)
         {
-            if (version == "*")
-                return null;
-            DependencyVersion parsedVersion;
-            if (DependencyVersion.TryParse(version, out parsedVersion))
+            if (DependencyVersionParser.TryParse(version, false, out DependencyVersion parsedVersion))
+                return parsedVersion;
+
+            if (!dependencyVersionTranslators.ContainsKey(dependencyType))
+                throw new NAMEException($"Could not parse the version of the dependency type {dependencyType}.");
+
+            return dependencyVersionTranslators[dependencyType].Translate(version);
+        }
+
+
+        private static DependencyVersion ParseMaximumVersion(string version, string dependencyType)
+        {
+            if (DependencyVersionParser.TryParse(version, true, out DependencyVersion parsedVersion))
                 return parsedVersion;
 
             if (!dependencyVersionTranslators.ContainsKey(dependencyType))
@@ -201,8 +209,7 @@ namespace NAME
                 return new StaticConnectionStringProvider(node.Value);
 
             JsonClass objClass = node.AsObject;
-            SupportedConnectionStringLocators locator;
-            if (!Enum.TryParse(node["locator"]?.Value, out locator))
+            if (!Enum.TryParse(node["locator"]?.Value, out SupportedConnectionStringLocators locator))
                 throw new NAMEException($"The locator {node["locator"]?.Value} is not supported.");
             IConnectionStringProvider provider = null;
             string key;

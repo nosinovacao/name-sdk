@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
 using System;
 using System.Collections.Generic;
@@ -95,8 +95,10 @@ namespace NAME.Dependencies
 
         internal override async Task<JsonNode> ToJson()
         {
-            JsonClass jsonDependency = new JsonClass();
-            jsonDependency.Add("name", this.ToString());
+            JsonClass jsonDependency = new JsonClass
+            {
+                { "name", this.ToString() }
+            };
             DependencyCheckStatus status = await this.GetStatus().ConfigureAwait(false);
 
             if (status.Version != null)
