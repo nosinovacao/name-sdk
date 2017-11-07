@@ -1,6 +1,7 @@
 using NAME.ConnectionStrings;
 using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using NAME.Service;
 using System.Linq;
 using System.Threading.Tasks;
@@ -20,7 +21,7 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificKestrelSelfHostVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificKestrelSelfHostVersion, false));
         }
 
         [Fact]
@@ -33,7 +34,7 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificKestrelSelfHostVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificKestrelSelfHostVersion, false));
         }
 
         [Fact]
@@ -46,8 +47,8 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificKestrelSelfHostVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificKestrelSelfHostVersion, false));
         }
-        
+
     }
 }
