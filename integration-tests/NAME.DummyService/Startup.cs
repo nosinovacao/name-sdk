@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,11 +35,7 @@ namespace NAME.DummyService
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            var filename = Configuration["IS_SECONDARY"] != null && Configuration["IS_SECONDARY"] == "true"
-                ? "dependencies-2.json"
-                : "dependencies.json";
-
+            
             app.Use(async (context, next) =>
             {
                 if (context.Request.Path.HasValue)
@@ -57,7 +53,7 @@ namespace NAME.DummyService
             {
                 config.APIName = "Dummy";
                 config.APIVersion = "1.0.0";
-                config.DependenciesFilePath = filename;
+                config.DependenciesFilePath = "dependencies.json";
             });
 
             app.Use(async (context, next) =>
