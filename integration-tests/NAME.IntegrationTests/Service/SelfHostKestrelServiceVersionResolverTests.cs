@@ -48,19 +48,6 @@ namespace NAME.IntegrationTests.Service
             Assert.Equal(1, versions.Count());
             Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificKestrelSelfHostVersion));
         }
-        // /endpoint/before/name/middleware
-
-        [Fact]
-        [Trait("TestCategory", "Integration")]
-        public async Task GetVersions_EndpointWithoutNAMEInstalled()
-        {
-            string connectionString = $"http://{ Constants.SpecificKestrelSelfHostHostname }:40500/endpoint/before/name/middleware";
-            IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
-
-            await Assert.ThrowsAsync<DependencyWithoutNAMEException>(async () =>
-            {
-                await resolver.GetVersions().ConfigureAwait(false);
-            });
-        }
+        
     }
 }

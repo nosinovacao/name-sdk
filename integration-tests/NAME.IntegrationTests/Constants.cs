@@ -35,11 +35,12 @@ public static class Constants
         SpecificMongoHostname = Environment.GetEnvironmentVariable("SPECIFIC_MONGO_HOSTNAME") ?? "localhost";
         SpecificRabbitHostname = Environment.GetEnvironmentVariable("SPECIFIC_RABBIT_HOSTNAME") ?? "localhost";
         SpecificServiceHostname = Environment.GetEnvironmentVariable("SPECIFIC_SERVICE_HOSTNAME") ?? "dummy-service";
-        SpecificKestrelSelfHostHostname = Environment.GetEnvironmentVariable("SPECIFIC_KESTREL_SELFHOST_HOSTNAME") ?? "dummy-console-kestrel";
+        SpecificKestrelSelfHostHostname = Environment.GetEnvironmentVariable("SPECIFIC_KESTREL_SELFHOST_HOSTNAME") ?? "localhost";
 
         SpecificMongoVersion = Environment.GetEnvironmentVariable("SPECIFIC_MONGO_VERSION") ?? "3.0.0";
         SpecificRabbitVersion = Environment.GetEnvironmentVariable("SPECIFIC_RABBIT_VERSION") ?? "3.6.5";
         SpecificServiceVersion = Environment.GetEnvironmentVariable("SPECIFIC_SERVICE_VERSION") ?? "1.0.0";
+        SpecificKestrelSelfHostVersion = Environment.GetEnvironmentVariable("SPECIFIC_KESTREL_SELFHOST_VERSION") ?? "1.0.0";
 
         LatestElasticsearchHostname = Environment.GetEnvironmentVariable("LATEST_ELASTICSEARCH_HOSTNAME") ?? "localhost";
         SpecificElasticsearchHostname = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_HOSTNAME") ?? "localhost";
