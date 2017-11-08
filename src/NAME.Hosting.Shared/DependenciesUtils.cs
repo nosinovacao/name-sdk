@@ -69,7 +69,7 @@ namespace NAME.Hosting.Shared
             if (configuration.ThrowOnDependenciesFail)
             {
                 var allStatuses = logStatusesAction();
-                if (allStatuses.Any(s => !s.CheckPassed))
+                if (allStatuses.Any(s => s.CheckStatus != NAMEStatusLevel.Ok))
                     throw new DependenciesCheckException(allStatuses);
             }
             else
