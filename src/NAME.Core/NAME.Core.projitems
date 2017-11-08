@@ -40,7 +40,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Utils\EndianAwareBinaryWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Guard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NAMEContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\SocketHelpers.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)WildcardDependencyVersion.cs" />
   </ItemGroup>
 </Project>
