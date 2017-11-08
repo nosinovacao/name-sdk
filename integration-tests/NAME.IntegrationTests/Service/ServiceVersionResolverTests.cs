@@ -60,10 +60,12 @@ namespace NAME.IntegrationTests.Service
             string connectionString = $"http://{ Constants.SpecificServiceHostname }:5000/endpoint/before/name/middleware";
             IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
 
-            await Assert.ThrowsAsync<DependencyWithoutNAMEException>(async () =>
+            var ex = await Assert.ThrowsAsync<DependencyWithoutNAMEException>(async () =>
             {
                 await resolver.GetVersions().ConfigureAwait(false);
             });
+
+            Assert.Equal(NAMEStatusLevel.Warn, ex.StatusLevel);
         }
     }
 }

@@ -62,7 +62,7 @@ namespace NAME
             if (!File.Exists(dependenciesFile))
             {
                 string exceptionMessage = "The dependencies file was not found.";
-                throw new NAMEException(exceptionMessage, new FileNotFoundException(exceptionMessage, dependenciesFile));
+                throw new NAMEException(exceptionMessage, new FileNotFoundException(exceptionMessage, dependenciesFile), NAMEStatusLevel.Warn);
             }
 
             string[] jsonLines = File.ReadAllLines(dependenciesFile);
@@ -93,7 +93,7 @@ namespace NAME
 
             if (configurationStream.CanRead == false)
             {
-                throw new NAMEException("Configuration file stream is not in readable state");
+                throw new NAMEException("Configuration file stream is not in readable state", NAMEStatusLevel.Warn);
             }
 
             using (StreamReader reader = new StreamReader(configurationStream))
@@ -133,7 +133,7 @@ namespace NAME
         private static Dependency HandleDependency(JsonClass dependency, IFilePathMapper pathMapper, NAMESettings configuration, NAMEContext context, int depth = 0)
         {
             if (depth == MAX_DEPENDENCY_DEPTH)
-                throw new NAMEException($"Reached the maximum dependency recursion of {MAX_DEPENDENCY_DEPTH}.");
+                throw new NAMEException($"Reached the maximum dependency recursion of {MAX_DEPENDENCY_DEPTH}.", NAMEStatusLevel.Warn);
 
             if (dependency == null)
                 return null;
@@ -151,7 +151,7 @@ namespace NAME
             var osName = dependency["os_name"]?.Value;
             type = string.IsNullOrEmpty(type) ? SupportedDependencies.Service.ToString() : type;
             if (!Enum.TryParse(type, out SupportedDependencies typedType))
-                throw new NAMEException($"The dependency type {type} is not supported.");
+                throw new NAMEException($"The dependency type {type} is not supported.", NAMEStatusLevel.Warn);
 
             VersionedDependency result;
             if (typedType == SupportedDependencies.OperatingSystem)
@@ -186,7 +186,7 @@ namespace NAME
                 return parsedVersion;
 
             if (!dependencyVersionTranslators.ContainsKey(dependencyType))
-                throw new NAMEException($"Could not parse the version of the dependency type {dependencyType}.");
+                throw new VersionParsingException($"Could not parse the version of the dependency type {dependencyType}.");
 
             return dependencyVersionTranslators[dependencyType].Translate(version);
         }
@@ -198,7 +198,7 @@ namespace NAME
                 return parsedVersion;
 
             if (!dependencyVersionTranslators.ContainsKey(dependencyType))
-                throw new NAMEException($"Could not parse the version of the dependency type {dependencyType}.");
+                throw new VersionParsingException($"Could not parse the version of the dependency type {dependencyType}.");
 
             return dependencyVersionTranslators[dependencyType].Translate(version);
         }
@@ -210,7 +210,7 @@ namespace NAME
 
             JsonClass objClass = node.AsObject;
             if (!Enum.TryParse(node["locator"]?.Value, out SupportedConnectionStringLocators locator))
-                throw new NAMEException($"The locator {node["locator"]?.Value} is not supported.");
+                throw new NAMEException($"The locator {node["locator"]?.Value} is not supported.", NAMEStatusLevel.Warn);
             IConnectionStringProvider provider = null;
             string key;
             switch (locator)
@@ -251,7 +251,7 @@ namespace NAME
                     }
                     break;
                 default:
-                    throw new NAMEException($"The locator {locator.ToString()} is not supported..");
+                    throw new NAMEException($"The locator {locator.ToString()} is not supported.", NAMEStatusLevel.Warn);
             }
 
             if (string.IsNullOrEmpty(key))
@@ -275,7 +275,7 @@ namespace NAME
                 case SupportedDependencies.Elasticsearch:
                     return new Elasticsearch.ElasticsearchVersionResolver(connectionStringProvider, configuration.DependencyConnectTimeout, configuration.DependencyReadWriteTimeout);
                 default:
-                    throw new NAMEException($"The dependency of type {dependencyType} is not supported as a connected dependency.");
+                    throw new NAMEException($"The dependency of type {dependencyType} is not supported as a connected dependency.", NAMEStatusLevel.Warn);
             }
         }
 

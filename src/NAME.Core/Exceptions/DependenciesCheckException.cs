@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +24,7 @@ namespace NAME.Core.Exceptions
         /// </summary>
         /// <param name="dependenciesStatuses">The dependencies statuses.</param>
         public DependenciesCheckException(IEnumerable<DependencyCheckStatus> dependenciesStatuses)
-            : base(string.Join(Environment.NewLine, dependenciesStatuses.Where(s => !s.CheckPassed).Select(s => s.Message)), dependenciesStatuses.Where(d => d.CheckPassed == true && d.InnerException != null).Select(d => d.InnerException))
+            : base(string.Join(Environment.NewLine, dependenciesStatuses.Where(s => s.CheckStatus != NAMEStatusLevel.Ok).Select(s => s.Message)), dependenciesStatuses.Where(d => d.CheckStatus != NAMEStatusLevel.Ok && d.InnerException != null).Select(d => d.InnerException))
         {
             this.DependenciesStatutes = dependenciesStatuses;
         }

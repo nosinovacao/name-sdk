@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,7 +26,7 @@ namespace NAME.Core.Exceptions
         /// <param name="message">The message that represents the error.</param>
         /// <param name="inner">Inner exception.</param>
         public DependencyNotReachableException(string dependencyName, string message, Exception inner)
-            : base(message, inner)
+            : base(message, inner, NAMEStatusLevel.Error)
         {
             this.DependencyName = dependencyName;
         }

@@ -74,12 +74,12 @@ namespace NAME.MongoDb
                 //Response To
                 int responseTo = binaryReader.ReadInt32();
                 if (responseTo != 0)
-                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected response code ({responseTo}).");
+                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected response code ({responseTo}).", NAMEStatusLevel.Error);
 
                 //Op Code
                 int opCode = binaryReader.ReadInt32();
                 if (opCode != 1)
-                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected operation code ({opCode}).");
+                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected operation code ({opCode}).", NAMEStatusLevel.Error);
 
                 //We don't care about responseFlags, cursorID or startingFrom. Skip them.
                 binaryReader.ReadBytes(4 + 8 + 4);
@@ -87,7 +87,7 @@ namespace NAME.MongoDb
                 //Number of documents
                 var numberOfDocuments = binaryReader.ReadInt32();
                 if (numberOfDocuments != 1)
-                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responded with an unexpected number of documents ({numberOfDocuments}).");
+                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responded with an unexpected number of documents ({numberOfDocuments}).", NAMEStatusLevel.Error);
 
                 //The ServerStatus document
                 int size = binaryReader.ReadInt32();

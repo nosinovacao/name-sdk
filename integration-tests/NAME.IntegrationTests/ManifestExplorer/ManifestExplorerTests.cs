@@ -43,7 +43,11 @@ namespace NAME.IntegrationTests.ManifestExplorer
 
                 DependencyCheckStatus status = await serviceDependency.GetStatus().ConfigureAwait(false);
 
+                // we still need to test for backwards compatibility
+#pragma warning disable CS0618 // Type or member is obsolete
                 Assert.True(status.CheckPassed);
+#pragma warning restore CS0618 // Type or member is obsolete
+                Assert.Equal(NAMEStatusLevel.Ok, status.CheckStatus);
                 Assert.NotNull(status.Version.ManifestNode);
                 Assert.Equal("1.0.0", status.Version.ToString());
                 Assert.Equal("NAME.DummyService", status.Version.ManifestNode["name"]);

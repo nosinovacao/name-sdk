@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -16,15 +16,7 @@ namespace NAME.Core.Exceptions
         /// <param name="message">The message that represents the error.</param>
         /// <param name="inner">Inner exception.</param>
         public DependencyWithoutNAMEException(string message, Exception inner)
-            : base(message, inner)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DependencyWithoutNAMEException"/> class.
-        /// </summary>
-        public DependencyWithoutNAMEException()
-            : this(null)
+            : base(message, inner, NAMEStatusLevel.Warn)
         {
         }
 
@@ -36,6 +28,14 @@ namespace NAME.Core.Exceptions
             : this($"Dependency does not have NAME installed!", inner)
         {
 
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DependencyWithoutNAMEException"/> class.
+        /// </summary>
+        public DependencyWithoutNAMEException()
+            : this(null)
+        {
         }
     }
 }

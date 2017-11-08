@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Dependencies;
 using System;
 using System.Collections.Generic;
@@ -50,10 +50,10 @@ namespace NAME.Utils
                 var status = dependency.GetStatus().ConfigureAwait(false).GetAwaiter().GetResult();
                 string versionStr = status.Version != null ? $" ({status.Version})" : string.Empty;
 
-                if (status.CheckPassed)
+                if (status.CheckStatus == NAMEStatusLevel.Ok)
                     LogInfo($"{dependency}{versionStr} check passed.", logToConsole);
                 else
-                    LogWarning($"{dependency}{versionStr} check failed with the message: {status.Message}.", logToConsole);
+                    LogWarning($"{dependency}{versionStr} check {status.CheckStatus.ToString()} with message: {status.Message}.", logToConsole);
 
                 allStatuses.Add(status);
             }

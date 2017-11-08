@@ -59,7 +59,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NAME.SelfHost.HttpListener.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NAME.DummyConsole.Kestrel", "integration-tests\NAME.DummyConsole.Kestrel\NAME.DummyConsole.Kestrel.csproj", "{ED02CFF2-1001-4C0D-AD28-EB8B05943453}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NAME.Hosting.Shared.Tests", "unit-tests\NAME.Hosting.Shared.Tests\NAME.Hosting.Shared.Tests.csproj", "{7BF3496C-1E0F-4AC3-9497-2C526132894A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NAME.Hosting.Shared.Tests", "unit-tests\NAME.Hosting.Shared.Tests\NAME.Hosting.Shared.Tests.csproj", "{7BF3496C-1E0F-4AC3-9497-2C526132894A}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution

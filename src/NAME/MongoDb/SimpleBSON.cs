@@ -1,4 +1,4 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -585,8 +585,7 @@ namespace NAME.MongoDb.Bson
             int i = (int)this.mBinaryReader.BaseStream.Position;
             while (this.mBinaryReader.BaseStream.Position < i + length - 1)
             {
-                string name;
-                BSONValue value = this.decodeElement(out name);
+                BSONValue value = this.decodeElement(out string name);
                 obj.Add(name, value);
 
             }
@@ -632,9 +631,8 @@ namespace NAME.MongoDb.Bson
             }
             byte[] buffer;
 #if NETSTANDARD1_6
-            ArraySegment<byte> tempBuffer;
-            if (!ms.TryGetBuffer(out tempBuffer))
-                throw new NAMEException("This should not happen!");
+            if (!ms.TryGetBuffer(out var tempBuffer))
+                throw new NAMEException("This should not happen!", NAMEStatusLevel.Warn);
             buffer = tempBuffer.Array;
 #else
             try
@@ -643,7 +641,7 @@ namespace NAME.MongoDb.Bson
             }
             catch (Exception ex)
             {
-                throw new NAMEException("This should not happen!", ex);
+                throw new NAMEException("This should not happen!", ex, NAMEStatusLevel.Error);
             }
 #endif
 
@@ -721,9 +719,8 @@ namespace NAME.MongoDb.Bson
 
             byte[] buffer;
 #if NETSTANDARD1_6
-            ArraySegment<byte> tempBuffer;
-            if (!dms.TryGetBuffer(out tempBuffer))
-                throw new NAMEException("This should not happen!");
+            if (!dms.TryGetBuffer(out var tempBuffer))
+                throw new NAMEException("This should not happen!", NAMEStatusLevel.Error);
             buffer = tempBuffer.Array;
 #else
             try
@@ -732,7 +729,7 @@ namespace NAME.MongoDb.Bson
             }
             catch (Exception ex)
             {
-                throw new NAMEException("This should not happen!", ex);
+                throw new NAMEException("This should not happen!", ex, NAMEStatusLevel.Error);
             }
 #endif
             bw.Write(buffer, 0, (int)dms.Position);

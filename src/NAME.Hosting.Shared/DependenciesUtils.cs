@@ -46,7 +46,7 @@ namespace NAME.Hosting.Shared
                     if (ex is NAMEException)
                         throw;
                     else
-                        throw new NAMEException("Error parsing the dependencies file.", ex);
+                        throw new NAMEException("Error parsing the dependencies file.", ex, NAMEStatusLevel.Error);
                 }
                 return dependencies;
             }
@@ -69,7 +69,7 @@ namespace NAME.Hosting.Shared
             if (configuration.ThrowOnDependenciesFail)
             {
                 var allStatuses = logStatusesAction();
-                if (allStatuses.Any(s => !s.CheckPassed))
+                if (allStatuses.Any(s => s.CheckStatus != NAMEStatusLevel.Ok))
                     throw new DependenciesCheckException(allStatuses);
             }
             else

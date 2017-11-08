@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
 using NAME.Dependencies;
 using System;
@@ -23,7 +23,7 @@ namespace NAME
         {
             var dependenciesStatuses = await GetDependenciesStatutes(dependencies).ConfigureAwait(false);
 
-            if (dependenciesStatuses.Any(d => d.CheckPassed == false))
+            if (dependenciesStatuses.Any(d => d.CheckStatus != NAMEStatusLevel.Ok))
                 throw new DependenciesCheckException(dependenciesStatuses);
         }
 
@@ -55,11 +55,11 @@ namespace NAME
                 }
                 catch (NAMEException ex)
                 {
-                    checkStatus = new DependencyCheckStatus(false, message: ex.Message, innerException: ex);
+                    checkStatus = new DependencyCheckStatus(ex.StatusLevel, message: ex.Message, innerException: ex);
                 }
                 catch (Exception ex)
                 {
-                    checkStatus = new DependencyCheckStatus(false, message: $"An unexpected exception happened checking the state of the dependency.", innerException: ex);
+                    checkStatus = new DependencyCheckStatus(NAMEStatusLevel.Error, message: $"An unexpected exception happened checking the state of the dependency.", innerException: ex);
                 }
                 dependenciesStatuses.Add(checkStatus);
             }
