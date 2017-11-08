@@ -1,9 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Linq;
 using NAME.Core.Exceptions;
 using NAME.Core;
+using System.Threading.Tasks;
 using static NAME.Utils.LogUtils;
 
 namespace NAME.Hosting.Shared
@@ -31,7 +32,7 @@ namespace NAME.Hosting.Shared
             var dependencies = new ParsedDependencies(null, null);
 
             settings = DependenciesReader.ReadNAMESettingsOverrides(configuration.DependenciesFilePath, pathMapper);
-            
+
             try
             {
                 dependencies = DependenciesReader.ReadDependencies(configuration.DependenciesFilePath, pathMapper, settings, new NAMEContext());
@@ -58,12 +59,35 @@ namespace NAME.Hosting.Shared
 
             LogInfo("Starting the dependencies state logs.", logToConsole);
 
-            var allStatuses = LogDependenciesStatuses(dependencies.InfrastructureDependencies, logToConsole);
-            allStatuses.AddRange(LogDependenciesStatuses(dependencies.ServiceDependencies, logToConsole));
-
-            if (configuration.ThrowOnDependenciesFail && allStatuses.Any(s => !s.CheckPassed))
+            Func<IEnumerable<DependencyCheckStatus>> logStatusesAction = () =>
             {
-                throw new DependenciesCheckException(allStatuses);
+                var allStatuses = LogDependenciesStatuses(dependencies.InfrastructureDependencies, logToConsole);
+                allStatuses.AddRange(LogDependenciesStatuses(dependencies.ServiceDependencies, logToConsole));
+                return allStatuses;
+            };
+
+            if (configuration.ThrowOnDependenciesFail)
+            {
+                var allStatuses = logStatusesAction();
+                if (allStatuses.Any(s => !s.CheckPassed))
+                    throw new DependenciesCheckException(allStatuses);
+            }
+            else
+            {
+                Task.Factory
+                    .StartNew(logStatusesAction)
+                    .ContinueWith(
+                        task =>
+                        {
+                            LogWarning("Exception logging dependencies status:", logToConsole);
+                            var flattened = task.Exception.Flatten();
+                            flattened.Handle(ex =>
+                            {
+                                LogWarning(ex.Message, logToConsole);
+                                return true;
+                            });
+                        },
+                        TaskContinuationOptions.OnlyOnFaulted);
             }
 
             return dependencies;
