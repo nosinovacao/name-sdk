@@ -32,7 +32,8 @@ deploy:
   on:
     branch: master
     appveyor_repo_tag: false
-- provider: Environment
-  name: name-sdk-nuget-release
-  on:
-    appveyor_repo_tag: true
+# Use the manual deployment in appveyor to release a stable nuget package.
+# - provider: Environment
+#   name: name-sdk-nuget-release
+#   on:
+#     appveyor_repo_tag: true
