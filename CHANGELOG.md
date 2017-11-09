@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## v1.1.0 - 2017-11-09
 ### Fixed
 * Fix tab character '/t' breaking dependencies.json parsing. [(#10)](https://github.com/nosinovacao/name-sdk/issues/9)
 * Fix the table ui endpoint failing to load the manifest behind a HTTPS proxy. [(#9)](https://github.com/nosinovacao/name-sdk/issues/9)
@@ -20,4 +20,4 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) a
 * Initial open source release.
 
 
-[Unreleased]: https://github.com/nosinovacao/name-sdk/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/nosinovacao/name-sdk/compare/v1.1.0...HEAD
