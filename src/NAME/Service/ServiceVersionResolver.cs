@@ -165,19 +165,23 @@ namespace NAME.Service
                 if (completedTask == getResponseTask)
                 {
                     // await the task again to propagate exceptions/cancellations
-                    using (HttpWebResponse response = (HttpWebResponse)await getResponseTask.ConfigureAwait(false))
+                    HttpWebResponse response = (HttpWebResponse)await getResponseTask.ConfigureAwait(false);
+                    var headerManifestEndpoint = response.Headers[Constants.MANIFEST_ENDPOINT_HEADER_NAME];
+                    if (headerManifestEndpoint == null)
+                        throw new DependencyWithoutNAMEException();
+
+                    Uri uriFromHeader = new Uri(endpointUri, headerManifestEndpoint);
+
+                    if (uriFromHeader != endpointUri && retry)
                     {
-                        var headerManifestEndpoint = response.Headers[Constants.MANIFEST_ENDPOINT_HEADER_NAME];
-                        if (headerManifestEndpoint == null)
-                            throw new DependencyWithoutNAMEException();
+                        // We need to dispose the current response, or the next request may hang.
+                        response.Dispose();
 
-                        Uri uriFromHeader = new Uri(endpointUri, headerManifestEndpoint);
-
-                        if (uriFromHeader != endpointUri && retry)
-                        {
-                            return await this.GetManifest(uriFromHeader, false, hop);
-                        }
-                        else
+                        return await this.GetManifest(uriFromHeader, false, hop);
+                    }
+                    else
+                    {
+                        try
                         {
                             if ((int)response.StatusCode < 200 || (int)response.StatusCode > 299)
                             {
@@ -189,6 +193,10 @@ namespace NAME.Service
                             {
                                 return await reader.ReadToEndAsync().ConfigureAwait(false);
                             }
+                        }
+                        finally
+                        {
+                            response.Dispose();
                         }
                     }
                 }
