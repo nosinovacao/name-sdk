@@ -7,17 +7,14 @@ namespace NAME.SelfHost.Shared
 {
     internal static class NAMESelfHostConfigurationExtensions
     {
-        public static string GetManifestPath(this NAMESelfHostConfiguration configuration, string requestHost, int? requestPort)
+        public static string GetRelativeManifestPath(this NAMESelfHostConfiguration configuration)
         {
-            string baseUrl = $"http://{requestHost}";
-            if (requestPort != null)
-                baseUrl += $":{requestPort}";
             string normalizedPrefix = string.Empty;
 
-            if (configuration.ManifestUriPrefix != "/")
+            if (!string.IsNullOrWhiteSpace(configuration.ManifestUriPrefix) && configuration.ManifestUriPrefix != "/")
                 normalizedPrefix = '/' + configuration.ManifestUriPrefix.TrimStart('/').TrimEnd('/');
 
-            return baseUrl + normalizedPrefix + Constants.MANIFEST_ENDPOINT;
+            return normalizedPrefix + Constants.MANIFEST_ENDPOINT;
         }
     }
 }

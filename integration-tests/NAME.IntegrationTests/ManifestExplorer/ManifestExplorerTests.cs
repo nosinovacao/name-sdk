@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,10 +19,10 @@ namespace NAME.IntegrationTests.ManifestExplorer
                     ""infrastructure_dependencies"": [  ],
                     ""service_dependencies"": [
                     {
-                        ""name"":""DummyService2"",
+                        ""name"":""DummyConsoleKestrel"",
                         ""min_version"": ""1.0.0"",
                         ""max_version"": ""2.0.0"",
-                        ""connection_string"": ""http://dummy-service:5000""
+                        ""connection_string"": ""http://dummy-console-kestrel:40500""
                     }
                 ]
             }";
@@ -36,18 +36,23 @@ namespace NAME.IntegrationTests.ManifestExplorer
 
                 ParsedDependencies parsedDependencies = DependenciesReader.ReadDependencies(memoryStream, new DummyFilePathMapper(), new Core.NAMESettings(), new Core.NAMEContext());
 
-                Assert.True(parsedDependencies.ServiceDependencies.Any());
-                Assert.False(parsedDependencies.InfrastructureDependencies.Any());
+                Assert.True(1 == parsedDependencies.ServiceDependencies.Count(), "The number of service dependencies did not match.");
+                Assert.Empty(parsedDependencies.InfrastructureDependencies);
 
-                foreach (Dependency dependency in parsedDependencies.ServiceDependencies)
-                {
-                    DependencyCheckStatus status = await dependency.GetStatus().ConfigureAwait(false);
-                    Assert.True(status.CheckPassed);
-                    Assert.NotNull(status.Version.ManifestNode);
-                    Assert.Equal("NAME.DummyService", status.Version.ManifestNode["name"]);
-                    ////Assert.NotEmpty(status.Version.ManifestNode["infrastructure_dependencies"].Children);
-                    Assert.NotEmpty(status.Version.ManifestNode["service_dependencies"].Children);
-                }
+                var serviceDependency = parsedDependencies.ServiceDependencies.First();
+
+                DependencyCheckStatus status = await serviceDependency.GetStatus().ConfigureAwait(false);
+
+                // we still need to test for backwards compatibility
+#pragma warning disable CS0618 // Type or member is obsolete
+                Assert.True(status.CheckPassed);
+#pragma warning restore CS0618 // Type or member is obsolete
+                Assert.Equal(NAMEStatusLevel.Ok, status.CheckStatus);
+                Assert.NotNull(status.Version.ManifestNode);
+                Assert.Equal("1.0.0", status.Version.ToString());
+                Assert.Equal("NAME.DummyService", status.Version.ManifestNode["name"]);
+                Assert.Empty(status.Version.ManifestNode["infrastructure_dependencies"].Children);
+                Assert.Empty(status.Version.ManifestNode["service_dependencies"].Children);
             }
         }
     }

@@ -1,4 +1,4 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,32 +21,32 @@ namespace NAME.Dependencies
         public override async Task<DependencyCheckStatus> GetStatus()
         {
             if (!this.Dependencies.Any())
-                return new DependencyCheckStatus(false, message: "A OneOf condition dependency must have child dependencies.");
+                return new DependencyCheckStatus(NAMEStatusLevel.Warn, message: "A OneOf condition dependency must have child dependencies.");
             try
             {
                 var allDependenciesTasks = this.Dependencies.Select(d => d.GetStatus());
 
                 var results = await Task.WhenAll(allDependenciesTasks).ConfigureAwait(false);
-                bool checkPassed = results.All(s => s.CheckPassed);
+                var bestStatus = results.Min(s => s.CheckStatus);
 
                 string message = "Everything is ok!";
                 Exception innerException = null;
-                if (!checkPassed)
+                if (bestStatus != NAMEStatusLevel.Ok)
                 {
                     message = string.Join(Environment.NewLine, results.Select(s => s.Message));
                     var exceptions = results.Where(s => s.InnerException != null).Select(s => s.InnerException);
                     if (exceptions == null || exceptions.Count() == 0)
-                        innerException = new NAMEException("None of the dependencies matched the version");
+                        innerException = new NAMEException("None of the dependencies matched the version", NAMEStatusLevel.Error);
                     else
                         innerException = new AggregateException(exceptions);
                 }
 
-                return new DependencyCheckStatus(checkPassed, message: message, innerException: innerException);
+                return new DependencyCheckStatus(bestStatus, message: message, innerException: innerException);
 
             }
             catch (NAMEException ex)
             {
-                return new DependencyCheckStatus(false, message: ex.Message, innerException: ex);
+                return new DependencyCheckStatus(ex.StatusLevel, message: ex.Message, innerException: ex);
             }
         }
 

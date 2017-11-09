@@ -1,5 +1,6 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -38,7 +39,7 @@ namespace NAME.OperatingSystem
                 result = this.HandleWindowsOperatingSystem();
             //TODO: Implement version fetching for OSX.
             else
-                throw new NAMEException($"{SupportedDependencies.OperatingSystem.ToString()}: The current Operating System is not supported!");
+                throw new NAMEException($"{SupportedDependencies.OperatingSystem.ToString()}: The current Operating System is not supported!", NAMEStatusLevel.Error);
 #endif
 
             return Task.FromResult(new List<DependencyVersion> { result }.AsEnumerable());
@@ -47,7 +48,7 @@ namespace NAME.OperatingSystem
         private OperatingSystemDependencyVersion HandleLinuxOperatingSystem()
         {
             if (!File.Exists(LINUX_OS_RELEASE_FILE))
-                throw new NAMEException($"Linux: The file {LINUX_OS_RELEASE_FILE} does not exist or not enough permissions.");
+                throw new NAMEException($"Linux: The file {LINUX_OS_RELEASE_FILE} does not exist or not enough permissions.", NAMEStatusLevel.Warn);
 
             var osReleaseLines = File.ReadAllLines(LINUX_OS_RELEASE_FILE);
             string distroId = null;
@@ -61,14 +62,13 @@ namespace NAME.OperatingSystem
             }
 
             if (distroId == null)
-                throw new NAMEException($"Linux: Was unable to resolve the current distribution.");
+                throw new NAMEException($"Linux: Was unable to resolve the current distribution.", NAMEStatusLevel.Warn);
 
             if (distroVersion == null)
-                throw new NAMEException($"Linux: Was unable to resolve the current version.");
-
-            DependencyVersion parsedVersion;
-            if (!DependencyVersion.TryParse(distroVersion, out parsedVersion))
-                throw new NAMEException($"Linux: The extracted version ({distroVersion}) from the file {LINUX_OS_RELEASE_FILE} is not valid.");
+                throw new NAMEException($"Linux: Was unable to resolve the current version.", NAMEStatusLevel.Warn);
+        
+            if (!DependencyVersionParser.TryParse(distroVersion, false, out var parsedVersion))
+                throw new NAMEException($"Linux: The extracted version ({distroVersion}) from the file {LINUX_OS_RELEASE_FILE} is not valid.", NAMEStatusLevel.Warn);
 
             return new OperatingSystemDependencyVersion(distroId, parsedVersion);
         }
@@ -80,10 +80,9 @@ namespace NAME.OperatingSystem
 #else
             string osDescription = RuntimeInformation.OSDescription;
             string versionPortion = osDescription.Split(new char[] { ' ' }, options: StringSplitOptions.RemoveEmptyEntries).Last();
-
-            DependencyVersion version;
-            if (!DependencyVersion.TryParse(versionPortion, out version))
-                throw new NAMEException($"Windows: Was not able to extract the version from the OS description ({osDescription}).");
+            
+            if (!DependencyVersionParser.TryParse(versionPortion, false, out var version))
+                throw new NAMEException($"Windows: Was not able to extract the version from the OS description ({osDescription}).", NAMEStatusLevel.Warn);
 
             return new OperatingSystemDependencyVersion("windows", version);
 #endif

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 
-public static class Constants {
+public static class Constants
+{
     public static string ExpectedOperatingSystem;
 
     // Latest versions
@@ -12,10 +13,17 @@ public static class Constants {
     public static string SpecificMongoHostname;
     public static string SpecificRabbitHostname;
     public static string SpecificServiceHostname;
+    public static string SpecificKestrelSelfHostHostname;
 
     public static string SpecificMongoVersion;
     public static string SpecificRabbitVersion;
     public static string SpecificServiceVersion;
+    public static string SpecificKestrelSelfHostVersion;
+
+    // Elasticsearch variables
+    public static string LatestElasticsearchHostname;
+    public static string SpecificElasticsearchHostname;
+    public static string SpecificElasticsearchVersion;
 
     static Constants() {
         ExpectedOperatingSystem = Environment.GetEnvironmentVariable("OPERATING_SYSTEM") ?? "windows";
@@ -27,9 +35,15 @@ public static class Constants {
         SpecificMongoHostname = Environment.GetEnvironmentVariable("SPECIFIC_MONGO_HOSTNAME") ?? "localhost";
         SpecificRabbitHostname = Environment.GetEnvironmentVariable("SPECIFIC_RABBIT_HOSTNAME") ?? "localhost";
         SpecificServiceHostname = Environment.GetEnvironmentVariable("SPECIFIC_SERVICE_HOSTNAME") ?? "dummy-service";
+        SpecificKestrelSelfHostHostname = Environment.GetEnvironmentVariable("SPECIFIC_KESTREL_SELFHOST_HOSTNAME") ?? "localhost";
 
         SpecificMongoVersion = Environment.GetEnvironmentVariable("SPECIFIC_MONGO_VERSION") ?? "3.0.0";
         SpecificRabbitVersion = Environment.GetEnvironmentVariable("SPECIFIC_RABBIT_VERSION") ?? "3.6.5";
         SpecificServiceVersion = Environment.GetEnvironmentVariable("SPECIFIC_SERVICE_VERSION") ?? "1.0.0";
+        SpecificKestrelSelfHostVersion = Environment.GetEnvironmentVariable("SPECIFIC_KESTREL_SELFHOST_VERSION") ?? "1.0.0";
+
+        LatestElasticsearchHostname = Environment.GetEnvironmentVariable("LATEST_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchHostname = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_HOSTNAME") ?? "localhost";
+        SpecificElasticsearchVersion = Environment.GetEnvironmentVariable("SPECIFIC_ELASTICSEARCH_VERSION") ?? "5.5.1";
     }
 }

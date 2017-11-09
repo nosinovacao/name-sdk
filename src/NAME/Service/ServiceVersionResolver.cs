@@ -1,12 +1,11 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using NAME.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace NAME.Service
@@ -18,7 +17,7 @@ namespace NAME.Service
     public class ServiceVersionResolver : ConnectedVersionResolver
     {
         private readonly IConnectionStringProvider _connectionStringProvider;
-        private readonly Func<string, HttpWebRequest> _webRequestFactory;
+
         private const string InfrastructureDependenciesKey = "infrastructure_dependencies";
         private const string ServiceDependenciesKey = "service_dependencies";
 
@@ -46,15 +45,12 @@ namespace NAME.Service
         /// <param name="maxHopCount">The maximum hop count.</param>
         /// <param name="connectTimeout">The connect timeout.</param>
         /// <param name="readWriteTimeout">The read write timeout.</param>
-        /// <param name="webRequestFactory">The web request factory.</param>
-        public ServiceVersionResolver(IConnectionStringProvider connectionStringProvider, int currentHopNumber, int maxHopCount, int connectTimeout, int readWriteTimeout, Func<string, HttpWebRequest> webRequestFactory = null)
+        public ServiceVersionResolver(IConnectionStringProvider connectionStringProvider, int currentHopNumber, int maxHopCount, int connectTimeout, int readWriteTimeout)
             : base(connectTimeout, readWriteTimeout)
         {
             this._connectionStringProvider = connectionStringProvider;
             this.HopNumber = currentHopNumber;
             this.MaxHopCount = maxHopCount;
-
-            this._webRequestFactory = webRequestFactory ?? WebRequest.CreateHttp;
         }
 
         /// <summary>
@@ -68,13 +64,12 @@ namespace NAME.Service
         /// <exception cref="VersionParsingException">The version from manifest cannot be parsed</exception>
         public override async Task<IEnumerable<DependencyVersion>> GetVersions()
         {
-            string serviceConnectionString;
-            if (!this._connectionStringProvider.TryGetConnectionString(out serviceConnectionString))
+            if (!this._connectionStringProvider.TryGetConnectionString(out string serviceConnectionString))
                 throw new ConnectionStringNotFoundException(this._connectionStringProvider.ToString());
 
-            var serviceUri = new Uri(serviceConnectionString);
+            var serviceUri = new Uri(serviceConnectionString + Constants.MANIFEST_ENDPOINT);
 
-            string jsonContents = await this.GetManifest(serviceUri.ToString().TrimEnd('/') + Constants.MANIFEST_ENDPOINT, true, serviceUri, this.HopNumber)
+            string jsonContents = await this.GetManifest(serviceUri, true, this.HopNumber)
                 .ConfigureAwait(false);
 
             DependencyVersion dependencyVersion;
@@ -82,16 +77,17 @@ namespace NAME.Service
             try
             {
                 node = Json.Json.Parse(jsonContents);
-                DependencyVersion.TryParse(node?["version"], out dependencyVersion);
-                dependencyVersion.ManifestNode = node;
+                DependencyVersionParser.TryParse(node?["version"], false, out dependencyVersion);
             }
             catch (Exception ex)
             {
-                throw new NAMEException($"{SupportedDependencies.Service}: The service returned an invalid JSON from the manifest endpoint.", ex);
+                throw new NAMEException($"{SupportedDependencies.Service}: The service returned an invalid JSON from the manifest endpoint.", ex, NAMEStatusLevel.Warn);
             }
 
             if (dependencyVersion == null)
                 throw new VersionParsingException(node?["version"], $"The version from manifest {node} cannot be parsed");
+
+            dependencyVersion.ManifestNode = node;
 
             await this.GetDependantManifests(dependencyVersion).ConfigureAwait(false);
 
@@ -130,11 +126,10 @@ namespace NAME.Service
                     continue;
                 }
 
-                var uri = new Uri(dependencyUrl);
-                var endpoint = dependencyUrl.TrimEnd('/') + Constants.MANIFEST_ENDPOINT;
+                var uri = new Uri(dependencyUrl.TrimEnd('/') + Constants.MANIFEST_ENDPOINT);
                 try
                 {
-                    var manifest = await this.GetManifest(endpoint, true, uri, nextHop);
+                    var manifest = await this.GetManifest(uri, true, nextHop);
 
                     JsonNode manifestJsonNode = Json.Json.Parse(manifest);
                     JsonNode infrastructureDependencies = manifestJsonNode[InfrastructureDependenciesKey];
@@ -150,15 +145,13 @@ namespace NAME.Service
             }
         }
 
-        private async Task<string> GetManifest(string endpoint, bool retry, Uri serviceUri, int hop)
+        private async Task<string> GetManifest(Uri endpointUri, bool retry, int hop)
         {
-            string jsonContents;
-            HttpWebRequest request = this._webRequestFactory.Invoke(endpoint);
-            request.ContentType = "application/json; charset=utf-8";
+            HttpWebRequest request = this.GetHttpWebRequest(endpointUri.AbsoluteUri, SupportedDependencies.Service.ToString());
             request.Headers[Constants.HOP_COUNT_HEADER_NAME] = hop.ToString();
 
             // This timeout defines the time it should take to connect to the instance.
-            request.ContinueTimeout = this.ConnectTimeout;
+
             try
             {
                 var getResponseTask = request.GetResponseAsync();
@@ -174,49 +167,57 @@ namespace NAME.Service
                     // await the task again to propagate exceptions/cancellations
                     using (HttpWebResponse response = (HttpWebResponse)await getResponseTask.ConfigureAwait(false))
                     {
-                        if ((int)response.StatusCode < 200 || (int)response.StatusCode > 299)
-                        {
-                            throw new NAMEException($"{SupportedDependencies.Service}: The service returned an unsuccessfull status code: {response.StatusCode}.");
-                        }
+                        var headerManifestEndpoint = response.Headers[Constants.MANIFEST_ENDPOINT_HEADER_NAME];
+                        if (headerManifestEndpoint == null)
+                            throw new DependencyWithoutNAMEException();
 
-                        using (Stream stream = response.GetResponseStream())
-                        using (StreamReader reader = new StreamReader(stream))
+                        Uri uriFromHeader = new Uri(endpointUri, headerManifestEndpoint);
+
+                        if (uriFromHeader != endpointUri && retry)
                         {
-                            jsonContents = await reader.ReadToEndAsync().ConfigureAwait(false);
+                            return await this.GetManifest(uriFromHeader, false, hop);
+                        }
+                        else
+                        {
+                            if ((int)response.StatusCode < 200 || (int)response.StatusCode > 299)
+                            {
+                                throw new NAMEException($"{SupportedDependencies.Service}: The service returned an unsuccessfull status code on the manifest endpoint: {response.StatusCode}.", NAMEStatusLevel.Error);
+                            }
+
+                            using (Stream stream = response.GetResponseStream())
+                            using (StreamReader reader = new StreamReader(stream))
+                            {
+                                return await reader.ReadToEndAsync().ConfigureAwait(false);
+                            }
                         }
                     }
                 }
                 else
                 {
                     request.Abort();
-                    throw new NAMEException($"{SupportedDependencies.Service}: Timed out, the server accepted the connection but did not send a response.");
+                    throw new NAMEException($"{SupportedDependencies.Service}: Timed out, the server accepted the connection but did not send a response.", NAMEStatusLevel.Error);
                 }
             }
             catch (WebException ex)
             {
-                var response = ex.Response as HttpWebResponse;
-                if (response != null)
+                if (ex.Response is HttpWebResponse response)
                 {
                     if (retry)
                     {
                         var manifestEndpoint = response.Headers[Constants.MANIFEST_ENDPOINT_HEADER_NAME];
-                        if (manifestEndpoint != null)
-                        {
-                            string baseUri = serviceUri.GetComponents(UriComponents.Scheme | UriComponents.StrongAuthority, UriFormat.Unescaped).TrimEnd('/');
-                            baseUri += manifestEndpoint;
-                            return await this.GetManifest(baseUri, false, serviceUri, hop);
-                        }
+                        if (manifestEndpoint == null)
+                            throw new DependencyWithoutNAMEException();
+
+                        return await this.GetManifest(new Uri(endpointUri, manifestEndpoint), false, hop);
                     }
 
                     if ((int)response.StatusCode == Constants.SERVICE_HOPS_ERROR_STATUS_CODE)
-                        throw new NAMEException($"The maximum number of hops between manifest endpoints was reached.");
+                        throw new NAMEException($"The maximum number of hops between manifest endpoints was reached.", NAMEStatusLevel.Warn);
                     if (response.StatusCode == HttpStatusCode.NotFound || response.StatusCode == HttpStatusCode.RequestTimeout)
                         throw new DependencyNotReachableException(SupportedDependencies.Service.ToString(), ex);
                 }
                 throw new DependencyNotReachableException(SupportedDependencies.Service.ToString(), ex);
             }
-
-            return jsonContents;
         }
     }
 }

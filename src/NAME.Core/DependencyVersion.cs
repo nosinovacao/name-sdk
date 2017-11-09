@@ -1,8 +1,9 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
 using System;
 using System.Runtime.CompilerServices;
 using System.Text.RegularExpressions;
 using NAME.Json;
+using NAME.Core.Utils;
 
 namespace NAME.Core
 {
@@ -17,7 +18,7 @@ namespace NAME.Core
         /// <value>
         /// The major version.
         /// </value>
-        public uint Major { get; }
+        public virtual uint Major { get; }
 
         /// <summary>
         /// Gets the minor version.
@@ -25,7 +26,7 @@ namespace NAME.Core
         /// <value>
         /// The minor version.
         /// </value>
-        public uint Minor { get; }
+        public virtual uint Minor { get; }
 
         /// <summary>
         /// Gets the patch version.
@@ -33,7 +34,7 @@ namespace NAME.Core
         /// <value>
         /// The patch version.
         /// </value>
-        public uint Patch { get; }
+        public virtual uint Patch { get; }
 
         /// <summary>
         /// Gets or sets the manifest jsonnode for this dependency.
@@ -42,16 +43,6 @@ namespace NAME.Core
         /// The manifest.
         /// </value>
         internal JsonNode ManifestNode { get; set; }
-
-        /// <summary>
-        /// The pattern to match a semver
-        /// </summary>
-        private const string Pattern = @"^(?<major>\d+)(\.(?<minor>\d+)(\.(?<patch>\d+))?)?$";
-
-        /// <summary>
-        /// The version matcher
-        /// </summary>
-        private static readonly Regex VersionMatcher = new Regex(Pattern, RegexOptions.Compiled | RegexOptions.Singleline);
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DependencyVersion"/> class.
@@ -67,43 +58,32 @@ namespace NAME.Core
         }
 
         /// <summary>
-        /// Parses a <see cref="DependencyVersion"/> from the specified version string.
+        /// Parses a <see cref="DependencyVersion" /> from the specified version string.
+        /// This method is deprecated. Please use <see cref="DependencyVersionParser.Parse"/> instead./>
         /// </summary>
         /// <param name="version">The version string.</param>
-        /// <returns>Returns a new instance of <see cref="DependencyVersion"/>.</returns>
-        /// <exception cref="VersionParsingException">Happens when the version parts could not be parsed.</exception>
+        /// <returns>
+        /// Returns a new instance of <see cref="DependencyVersion" />.
+        /// </returns>
+        [Obsolete("This method is deprecated. Please use DependencyVersionParser.Parse instead.")]
         public static DependencyVersion Parse(string version)
         {
-
-            if (!TryParse(version, out DependencyVersion result))
-                throw new VersionParsingException(version, $"The version ({version}) parts could not be parsed.");
-
-            return result;
+            return DependencyVersionParser.Parse(version, false);
         }
 
         /// <summary>
         /// Tries to parse a <see cref="DependencyVersion" /> from the specified version string.
+        /// This method is deprecated. Please use <see cref="DependencyVersionParser.TryParse"/> instead./>
         /// </summary>
         /// <param name="version">The version.</param>
         /// <param name="outVersion">The parsed version.</param>
         /// <returns>
         /// Returns true if the parsing was successfuly. Otherwise, returns false.
         /// </returns>
-        /// <exception cref="NAMEException">The JSON returned from the service is not a valid manifest.</exception>
+        [Obsolete("This method is deprecated. Please use DependencyVersionParser.TryParse instead.")]
         public static bool TryParse(string version, out DependencyVersion outVersion)
         {
-            if (version == null)
-                throw new NAMEException($"{SupportedDependencies.Service}: The JSON returned from the service is not a valid manifest.");
-
-            var parsedVersion = ParseVersion(version);
-            if (parsedVersion == null)
-            {
-                outVersion = default(DependencyVersion);
-                return false;
-            }
-
-            outVersion = new DependencyVersion(parsedVersion.Item1, parsedVersion.Item2, parsedVersion.Item3);
-            return true;
+            return DependencyVersionParser.TryParse(version, false, out outVersion);
         }
 
         /// <summary>
@@ -217,7 +197,7 @@ namespace NAME.Core
             if (!(obj is DependencyVersion))
                 return false;
 
-            return Comparison(this, (DependencyVersion)obj) == 0;
+            return this.CompareTo((DependencyVersion)obj) == 0;
         }
 
         /// <summary>
@@ -245,29 +225,12 @@ namespace NAME.Core
         /// Return 0 if both versions are equal.</returns>
         public static int Comparison(DependencyVersion version1, DependencyVersion version2)
         {
-            if (ReferenceEquals(version1, version2))
-                return 0;
-
             if (ReferenceEquals(version1, null) && ReferenceEquals(version2, null))
                 return 0;
             if (ReferenceEquals(version1, null))
                 return -1;
-            if (ReferenceEquals(version2, null))
-                return 1;
 
-            var r = version1.Major.CompareTo(version2.Major);
-            if (r != 0)
-                return r;
-
-            r = version1.Minor.CompareTo(version2.Minor);
-            if (r != 0)
-                return r;
-
-            r = version1.Patch.CompareTo(version2.Patch);
-            if (r != 0)
-                return r;
-
-            return 0;
+            return version1.CompareTo(version2);
         }
 
 
@@ -278,11 +241,11 @@ namespace NAME.Core
         /// <returns>Returns 1 if the first version is bigger than the second version.
         /// Returns -1 if the first version is lesser than the second version.
         /// Return 0 if both versions are equal.</returns>
-        public int CompareTo(object obj)
+        public virtual int CompareTo(object obj)
         {
             if (!(obj is DependencyVersion))
                 return 1;
-            return Comparison(this, (DependencyVersion)obj);
+            return this.CompareTo((DependencyVersion)obj);
         }
 
         /// <summary>
@@ -292,40 +255,28 @@ namespace NAME.Core
         /// <returns>Returns 1 if the first version is bigger than the second version.
         /// Returns -1 if the first version is lesser than the second version.
         /// Return 0 if both versions are equal.</returns>
-        public int CompareTo(DependencyVersion other)
+        public virtual int CompareTo(DependencyVersion other)
         {
-            return Comparison(this, other);
+            if (ReferenceEquals(this, other))
+                return 0;
+
+            if (ReferenceEquals(other, null))
+                return 1;
+
+            var r = this.Major.CompareTo(other.Major);
+            if (r != 0)
+                return r;
+
+            r = this.Minor.CompareTo(other.Minor);
+            if (r != 0)
+                return r;
+
+            r = this.Patch.CompareTo(other.Patch);
+            if (r != 0)
+                return r;
+
+            return 0;
         }
 
-
-        /// <summary>
-        /// Parses the version.
-        /// </summary>
-        /// <param name="version">The version.</param>
-        /// <returns>the parsed version as anonymous type</returns>
-        private static Tuple<uint, uint, uint> ParseVersion(string version)
-        {
-            var match = VersionMatcher.Match(version);
-
-            if (!match.Success)
-                return null;
-
-            uint major = ParseVersionValue(match.Groups[nameof(major)]);
-            uint minor = ParseVersionValue(match.Groups[nameof(minor)]);
-            uint patch = ParseVersionValue(match.Groups[nameof(patch)]);
-            // I dream the day multiple returns are a thing
-            return Tuple.Create(major, minor, patch);
-        }
-
-        /// <summary>
-        /// Parses the version value.
-        /// </summary>
-        /// <param name="group">The regex group.</param>
-        /// <returns>the parsed number</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private static uint ParseVersionValue(Group group)
-        {
-            return group.Success ? uint.Parse(@group.Value) : 0u;
-        }
     }
 }

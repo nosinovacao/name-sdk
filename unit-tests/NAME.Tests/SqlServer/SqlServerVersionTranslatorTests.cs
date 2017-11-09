@@ -1,4 +1,5 @@
-﻿using NAME.Core;
+using NAME.Core;
+using NAME.Core.Utils;
 using NAME.SqlServer;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace NAME.Tests.SqlServer
 
             DependencyVersion v = translator.Translate(version.ToString());
 
-            Assert.True(v >= DependencyVersion.Parse(expectedVersion));
+            Assert.True(v >= DependencyVersionParser.Parse(expectedVersion, false));
         }
 
         [Theory]
@@ -30,7 +31,7 @@ namespace NAME.Tests.SqlServer
         {
             IVersionTranslator translator = new SqlServerVersionTranslator();
 
-            string v = translator.Translate(DependencyVersion.Parse(versionStr));
+            string v = translator.Translate(DependencyVersionParser.Parse(versionStr, false));
 
             Assert.True(v == exptectedVersion.ToString());
         }

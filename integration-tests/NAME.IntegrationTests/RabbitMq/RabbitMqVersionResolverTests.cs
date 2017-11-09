@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.MongoDb;
 using NAME.RabbitMq;
 using NAME.ConnectionStrings;
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using NAME.Core.Utils;
 
 namespace NAME.IntegrationTests.RabbitMq
 {
@@ -22,7 +23,7 @@ namespace NAME.IntegrationTests.RabbitMq
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.True(versions.First() >= DependencyVersion.Parse("3.6.5"));
+            Assert.True(versions.First() >= DependencyVersionParser.Parse("3.6.5", false));
         }
 
         [Fact]
@@ -35,7 +36,7 @@ namespace NAME.IntegrationTests.RabbitMq
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificRabbitVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificRabbitVersion, false));
         }
 
         [Fact]
@@ -48,7 +49,7 @@ namespace NAME.IntegrationTests.RabbitMq
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(2, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificRabbitVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificRabbitVersion, false));
         }
     }
 }

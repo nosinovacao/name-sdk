@@ -12,7 +12,7 @@ We use the [normal .NET coding guidelines](https://docs.microsoft.com/en-us/dotn
 * Use 4 spaces for indentation (no tabs)
 * Use `camelCase` for private fiels (do not use `_` )
 * Use `this.` when accessing instance members
-* Always specify member visibility, even if it's the default (i.e. `private string _foo;` not `string _foo;`)
+* Always specify member visibility, even if it's the default (i.e. `private string foo;` not `string foo;`)
 * All public members must be documented
 
 A StyleCop ruleset is included with the project, and the analyser is run for every build. Any StyleCop violation is considered as a Warning. Pull requests with incorrect styling will be rejected.

@@ -54,8 +54,6 @@ namespace NAME.WebApi
             {
                 var register = new Registration.Register();
                 
-                //TODO: NAME-32
-
                 register.RegisterInstance(
                     pathMapper,
                     config.APIName,

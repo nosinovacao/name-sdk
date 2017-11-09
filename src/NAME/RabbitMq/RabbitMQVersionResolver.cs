@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
 using NAME.Core.Utils;
 using System;
@@ -40,8 +40,7 @@ namespace NAME.RabbitMq
         /// <exception cref="NAMEException">An unexpected exception happened. See inner exception for details.</exception>
         public override async Task<IEnumerable<DependencyVersion>> GetVersions()
         {
-            string rabbitConnectionString;
-            if (!this.connectionStringProvider.TryGetConnectionString(out rabbitConnectionString))
+            if (!this.connectionStringProvider.TryGetConnectionString(out var rabbitConnectionString))
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
 
             var result = new List<DependencyVersion>();
@@ -52,7 +51,7 @@ namespace NAME.RabbitMq
                 {
                     SendConnectionHeader(client);
                     string version = GetVersionFromServerReponse(client);
-                    result.Add(DependencyVersion.Parse(version));
+                    result.Add(DependencyVersionParser.Parse(version, false));
                 }
             }
             return result;
@@ -65,7 +64,7 @@ namespace NAME.RabbitMq
             {
                 byte type = reader.ReadByte();
                 if (type != 1)
-                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong type ({type}).");
+                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong type ({type}).", NAMEStatusLevel.Error);
                 //Skip channel
                 reader.ReadUInt16();
                 //Read Length
@@ -77,24 +76,24 @@ namespace NAME.RabbitMq
                 //Read class (should be Connection (10))
                 ushort rClass = reader.ReadUInt16();
                 if (rClass != 10)
-                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong class ({rClass}).");
+                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong class ({rClass}).", NAMEStatusLevel.Error);
                 //Read method (should be Start (10))
                 ushort rMethod = reader.ReadUInt16();
                 if (rMethod != 10)
-                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong method ({rMethod}).");
+                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong method ({rMethod}).", NAMEStatusLevel.Error);
                 //Read AMQP major version (should be 0)
                 byte major = reader.ReadByte();
                 if (major != 0)
-                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong AMQP major version ({major}).");
+                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong AMQP major version ({major}).", NAMEStatusLevel.Error);
                 //Read AMQP minor version (should be 9)
                 byte minor = reader.ReadByte();
                 if (major != 0)
-                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong AMQP minor version ({minor}).");
+                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server responded with wrong AMQP minor version ({minor}).", NAMEStatusLevel.Error);
                 IDictionary<string, object> serverProperties = AmqpTypesReader.ReadTable(reader);
                 if (!serverProperties.ContainsKey("version"))
-                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server did not send a server-properties table!");
+                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server did not send a server-properties table!", NAMEStatusLevel.Error);
                 if (!(serverProperties["version"] is byte[]))
-                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server returned a version which is not a string!");
+                    throw new NAMEException($"{SupportedDependencies.RabbitMq}: Server returned a version which is not a string!", NAMEStatusLevel.Error);
                 var versionStr = Encoding.UTF8.GetString((byte[])serverProperties["version"]);
                 return versionStr;
             }

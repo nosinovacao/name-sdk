@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Core.Exceptions;
 using NAME.MongoDb;
 using NAME.SqlServer;
@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using NAME.Core.Utils;
 
 namespace NAME.IntegrationTests.SqlServer
 {
@@ -23,7 +24,7 @@ namespace NAME.IntegrationTests.SqlServer
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.True(versions.First() >= DependencyVersion.Parse("12.0.0"), "The version should be greater than 12.0.0");
+            Assert.True(versions.First() >= DependencyVersionParser.Parse("12.0.0", false), "The version should be greater than 12.0.0");
         }
         [Fact]
         [Trait("TestCategory", "Integration")]
@@ -35,7 +36,7 @@ namespace NAME.IntegrationTests.SqlServer
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.True(versions.First() >= DependencyVersion.Parse("12.0.0"), "The version should be greater than 12.0.0");
+            Assert.True(versions.First() >= DependencyVersionParser.Parse("12.0.0", false), "The version should be greater than 12.0.0");
         }
         [Fact]
         [Trait("TestCategory", "Integration")]

@@ -1,5 +1,4 @@
-﻿#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Json
-#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Docker
+﻿#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Docker
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.DoInDirectory
 #addin nuget:https://www.nuget.org/api/v2/?package=Cake.FileHelpers
 
@@ -63,8 +62,11 @@ Task("Build")
     .Does(() =>
     {
         var dotNetBuildConfig = new DotNetCoreBuildSettings() {
-            Configuration = configuration
+            Configuration = configuration,
+            MSBuildSettings = new DotNetCoreMSBuildSettings()
         };
+        
+        dotNetBuildConfig.MSBuildSettings.TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error;
 
         DotNetCoreBuild("NAME.sln", dotNetBuildConfig);
     });
@@ -184,13 +186,13 @@ Task("Build-AND-Test")
     .IsDependentOn("Run-Unit-Tests");
 
 Task("AppVeyor")
-    .IsDependentOn("Run-Unit-Tests")
+    .IsDependentOn("Build-AND-Test")
     .IsDependentOn("Nuget-Pack");
 
 Task("TravisCI")
-    .IsDependentOn("Run-Unit-Tests")
+    .IsDependentOn("Build-AND-Test")
     .Does(() => {
-        if(EnvironmentVariable("TRAVIS_OS_NAME") == "linux") {
+        if(IsRunningOnUnix()) {
             Information("Travis CI running on Linux, executing the integration tests.");
             RunTarget("Run-Integration-Tests");
         }

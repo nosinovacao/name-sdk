@@ -1,0 +1,54 @@
+using NAME.ConnectionStrings;
+using NAME.Core;
+using NAME.Core.Exceptions;
+using NAME.Core.Utils;
+using NAME.Service;
+using System.Linq;
+using System.Threading.Tasks;
+using Xunit;
+
+namespace NAME.IntegrationTests.Service
+{
+    public class SelfHostKestrelServiceVersionResolverTests
+    {
+        [Fact]
+        [Trait("TestCategory", "Integration")]
+        public async Task GetVersions()
+        {
+            string connectionString = $"http://{ Constants.SpecificKestrelSelfHostHostname }:40500";
+            IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
+
+            var versions = await resolver.GetVersions().ConfigureAwait(false);
+
+            Assert.Equal(1, versions.Count());
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificKestrelSelfHostVersion, false));
+        }
+
+        [Fact]
+        [Trait("TestCategory", "Integration")]
+        public async Task GetVersions_WrongEndpoint()
+        {
+            string connectionString = $"http://{ Constants.SpecificKestrelSelfHostHostname }:40500/api/v1";
+            IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
+
+            var versions = await resolver.GetVersions().ConfigureAwait(false);
+
+            Assert.Equal(1, versions.Count());
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificKestrelSelfHostVersion, false));
+        }
+
+        [Fact]
+        [Trait("TestCategory", "Integration")]
+        public async Task GetVersions_WrongEndpoint_ReturnedOk()
+        {
+            string connectionString = $"http://{ Constants.SpecificKestrelSelfHostHostname }:40500/not/the/real";
+            IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
+
+            var versions = await resolver.GetVersions().ConfigureAwait(false);
+
+            Assert.Equal(1, versions.Count());
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificKestrelSelfHostVersion, false));
+        }
+
+    }
+}

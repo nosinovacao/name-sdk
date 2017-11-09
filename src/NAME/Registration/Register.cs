@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -183,7 +183,7 @@ namespace NAME.Registration
             {
                 var msg = "Unable to send new manifest to the registry. Status code = " + response.StatusCode;
                 LogWarning(msg, true);
-                throw new NAMEException(msg);
+                throw new NAMEException(msg, NAMEStatusLevel.Error);
             }
         }
 
@@ -214,7 +214,7 @@ namespace NAME.Registration
                 {
                     var msg = "Unable to send new manifest to the registry. Status code = " + response.StatusCode;
                     LogWarning(msg, true);
-                    throw new NAMEException(msg);
+                    throw new NAMEException(msg, NAMEStatusLevel.Warn);
                 }
                 else
                 {

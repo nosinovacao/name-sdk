@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Dependencies;
 using System;
 using System.Collections.Generic;

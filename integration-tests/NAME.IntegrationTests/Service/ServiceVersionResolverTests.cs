@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using NAME.Service;
 using NAME.ConnectionStrings;
 using System;
@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
+using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 
 namespace NAME.IntegrationTests.Service
 {
@@ -21,7 +23,7 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificServiceVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificServiceVersion, false));
         }
 
         [Fact]
@@ -34,7 +36,36 @@ namespace NAME.IntegrationTests.Service
             var versions = await resolver.GetVersions().ConfigureAwait(false);
 
             Assert.Equal(1, versions.Count());
-            Assert.Equal(versions.First(), DependencyVersion.Parse(Constants.SpecificServiceVersion));
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificServiceVersion, false));
+        }
+
+        [Fact]
+        [Trait("TestCategory", "Integration")]
+        public async Task GetVersions_WrongEndpoint_ReturnedOk()
+        {
+            string connectionString = $"http://{ Constants.SpecificServiceHostname }:5000/not/the/real";
+            IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
+
+            var versions = await resolver.GetVersions().ConfigureAwait(false);
+
+            Assert.Equal(1, versions.Count());
+            Assert.Equal(versions.First(), DependencyVersionParser.Parse(Constants.SpecificServiceVersion, false));
+        }
+        // /endpoint/before/name/middleware
+        
+        [Fact]
+        [Trait("TestCategory", "Integration")]
+        public async Task GetVersions_EndpointWithoutNAMEInstalled()
+        {
+            string connectionString = $"http://{ Constants.SpecificServiceHostname }:5000/endpoint/before/name/middleware";
+            IVersionResolver resolver = new ServiceVersionResolver(new StaticConnectionStringProvider(connectionString), 0, 5, 10000, 10000);
+
+            var ex = await Assert.ThrowsAsync<DependencyWithoutNAMEException>(async () =>
+            {
+                await resolver.GetVersions().ConfigureAwait(false);
+            });
+
+            Assert.Equal(NAMEStatusLevel.Warn, ex.StatusLevel);
         }
     }
 }

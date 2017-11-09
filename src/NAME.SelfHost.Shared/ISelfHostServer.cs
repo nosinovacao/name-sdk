@@ -12,6 +12,14 @@ namespace NAME.SelfHost.Shared
     internal interface ISelfHostServer : IDisposable
     {
         /// <summary>
+        /// Gets the port of the server.
+        /// </summary>
+        /// <value>
+        /// The port where the server is listening for connections.
+        /// </value>
+        int? Port { get; }
+
+        /// <summary>
         /// Starts the server.
         /// </summary>
         /// <param name="port">The port.</param>

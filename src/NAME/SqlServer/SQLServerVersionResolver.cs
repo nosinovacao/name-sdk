@@ -1,4 +1,4 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core.Exceptions;
 using NAME.Core.Utils;
 using NAME.Core;
 using System;
@@ -43,9 +43,7 @@ namespace NAME.SqlServer
         /// <exception cref="NAMEException">An unexpected exception happened. See inner exception for details.</exception>
         public override async Task<IEnumerable<DependencyVersion>> GetVersions()
         {
-            string hostname;
-            int port;
-            this.ExtractHostnameAndPort(out hostname, out port);
+            this.ExtractHostnameAndPort(out string hostname, out int port);
 
             byte[] message = this.CreatePreLoginMessage();
 
@@ -53,7 +51,7 @@ namespace NAME.SqlServer
             {
                 await client.GetStream().WriteAsync(message, 0, message.Length, default(CancellationToken)).ConfigureAwait(false);
                 string versionStr = this.GetServerVersionFromResponse(client.GetStream());
-                return new List<DependencyVersion> { DependencyVersion.Parse(versionStr) };
+                return new List<DependencyVersion> { DependencyVersionParser.Parse(versionStr, false) };
             }
         }
 
@@ -61,8 +59,7 @@ namespace NAME.SqlServer
         {
             hostname = string.Empty;
             port = 1433;
-            string connectionString;
-            if (!this.connectionStringProvider.TryGetConnectionString(out connectionString))
+            if (!this.connectionStringProvider.TryGetConnectionString(out string connectionString))
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
 
             var matches = dataSourceRegex.Matches(connectionString);
@@ -78,7 +75,7 @@ namespace NAME.SqlServer
             }
 
             if (dataSource == null)
-                throw new NAMEException("The SQL Server connection string must contain a Data Source or Server value.");
+                throw new FormatException("The SQL Server connection string must contain a Data Source or Server value.");
 
             var parts = dataSource.Split(',');
             hostname = parts[0];
@@ -97,7 +94,7 @@ namespace NAME.SqlServer
                 //Read Type (should be response = 4)
                 int type = reader.ReadByte();
                 if (type != 4)
-                    throw new NAMEException($"{SupportedDependencies.SqlServer}: Server responded with wrong Type ({type}).");
+                    throw new NAMEException($"{SupportedDependencies.SqlServer}: Server responded with wrong Type ({type}).", NAMEStatusLevel.Error);
                 //Skip Status bit mask
                 reader.ReadByte();
                 //Read the full message length
@@ -113,13 +110,13 @@ namespace NAME.SqlServer
                 //Read first option token (should be Version = 0)
                 int token = reader.ReadByte();
                 if (token != 0)
-                    throw new NAMEException($"{SupportedDependencies.SqlServer}: Server responded with wrong Token ({token}).");
+                    throw new NAMEException($"{SupportedDependencies.SqlServer}: Server responded with wrong Token ({token}).", NAMEStatusLevel.Error);
                 //Read the offset
                 ushort offset = reader.ReadUInt16();
                 //Read the length (should be 6)
                 ushort optionlength = reader.ReadUInt16();
                 if (optionlength != 6)
-                    throw new NAMEException($"{SupportedDependencies.SqlServer}: Server responded with an invalid version length ({length}).");
+                    throw new NAMEException($"{SupportedDependencies.SqlServer}: Server responded with an invalid version length ({length}).", NAMEStatusLevel.Error);
                 //Skip everything until the version.
                 reader.ReadBytes(offset - 2 - 2 - 1);
                 int major = reader.ReadByte();

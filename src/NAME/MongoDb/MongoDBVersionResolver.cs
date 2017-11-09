@@ -1,17 +1,15 @@
-﻿using NAME.Core.Exceptions;
+using NAME.Core;
+using NAME.Core.Exceptions;
+using NAME.Core.Utils;
 using NAME.MongoDb.Bson;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using NAME.Core.Utils;
-using NAME.Core;
 
 namespace NAME.MongoDb
 {
@@ -45,8 +43,7 @@ namespace NAME.MongoDb
         public override async Task<IEnumerable<DependencyVersion>> GetVersions()
         {
             var versions = new List<DependencyVersion>();
-            string connectionString;
-            if (!this.connectionStringProvider.TryGetConnectionString(out connectionString))
+            if (!this.connectionStringProvider.TryGetConnectionString(out string connectionString))
                 throw new ConnectionStringNotFoundException(this.connectionStringProvider.ToString());
 
             var connectionStringBuilder = new MongoConnectionStringBuilder(connectionString);
@@ -60,7 +57,7 @@ namespace NAME.MongoDb
                     await client.GetStream().WriteAsync(message, 0, message.Length, default(CancellationToken)).ConfigureAwait(false);
                     await Task.Delay(100).ConfigureAwait(false);
                     BSONObject obj = ExtractServerStatusFromResponse(client);
-                    versions.Add(DependencyVersion.Parse(obj["version"].stringValue));
+                    versions.Add(DependencyVersionParser.Parse(obj["version"].stringValue, false));
                 }
             }
 
@@ -77,12 +74,12 @@ namespace NAME.MongoDb
                 //Response To
                 int responseTo = binaryReader.ReadInt32();
                 if (responseTo != 0)
-                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected response code ({responseTo}).");
+                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected response code ({responseTo}).", NAMEStatusLevel.Error);
 
                 //Op Code
                 int opCode = binaryReader.ReadInt32();
                 if (opCode != 1)
-                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected operation code ({opCode}).");
+                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responed with an unexpected operation code ({opCode}).", NAMEStatusLevel.Error);
 
                 //We don't care about responseFlags, cursorID or startingFrom. Skip them.
                 binaryReader.ReadBytes(4 + 8 + 4);
@@ -90,7 +87,7 @@ namespace NAME.MongoDb
                 //Number of documents
                 var numberOfDocuments = binaryReader.ReadInt32();
                 if (numberOfDocuments != 1)
-                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responded with an unexpected number of documents ({numberOfDocuments}).");
+                    throw new NAMEException($"{SupportedDependencies.MongoDb}: The server responded with an unexpected number of documents ({numberOfDocuments}).", NAMEStatusLevel.Error);
 
                 //The ServerStatus document
                 int size = binaryReader.ReadInt32();
@@ -122,8 +119,10 @@ namespace NAME.MongoDb
                 //Number to return
                 commandWriter.Write(-1);
 
-                var commandBSON = new BSONObject();
-                commandBSON["serverStatus"] = 1.0;
+                var commandBSON = new BSONObject
+                {
+                    ["serverStatus"] = 1.0
+                };
                 commandWriter.Write(SimpleBSON.Dump(commandBSON));
                 commandWriter.Flush();
 

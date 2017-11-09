@@ -1,4 +1,4 @@
-﻿using NAME.Core;
+using NAME.Core;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -87,7 +87,6 @@ namespace NAME.OperatingSystem
 
             return base.Equals(obj);
         }
-
 
         /// <summary>
         /// Implements the operator ==.

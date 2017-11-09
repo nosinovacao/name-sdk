@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -35,16 +35,38 @@ namespace NAME.DummyService
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
-
-            var filename = Configuration["IS_SECONDARY"] != null && Configuration["IS_SECONDARY"] == "true"
-                ? "dependencies-2.json"
-                : "dependencies.json";
+            
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.HasValue)
+                {
+                    if (context.Request.Path.Value == "/endpoint/before/name/middleware/manifest")
+                    {
+                        context.Response.StatusCode = 200;
+                        return;
+                    }
+                }
+                await next();
+            });
 
             app.UseNAME(config =>
             {
                 config.APIName = "Dummy";
                 config.APIVersion = "1.0.0";
-                config.DependenciesFilePath = filename;
+                config.DependenciesFilePath = "dependencies.json";
+            });
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path.HasValue)
+                {
+                    if (context.Request.Path.Value == "/not/the/real/manifest")
+                    {
+                        context.Response.StatusCode = 200;
+                        return;
+                    }
+                }
+                await next();
             });
 
             app.UseMvc();

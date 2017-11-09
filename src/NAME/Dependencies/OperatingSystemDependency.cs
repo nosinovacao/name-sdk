@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -22,7 +22,7 @@ namespace NAME.Dependencies
             {
                 IEnumerable<DependencyVersion> actualVersions = await this.VersionResolver.GetVersions().ConfigureAwait(false);
                 if (!actualVersions.Any())
-                    return new DependencyCheckStatus(false, message: "Could not fetch the actual versions.");
+                    return new DependencyCheckStatus(NAMEStatusLevel.Warn, message: "Could not fetch the actual versions.");
 
                 foreach (var version in actualVersions)
                 {
@@ -30,20 +30,24 @@ namespace NAME.Dependencies
 
                     if (osVersion == null || !osVersion.OperatingSystem.Equals(this.OperatingSystemName, StringComparison.OrdinalIgnoreCase))
                     {
-                        return new DependencyCheckStatus(false, message: $"Unsupported Operating system: { osVersion.OperatingSystem }.)");
+                        return new DependencyCheckStatus(NAMEStatusLevel.Error, message: $"Unsupported Operating system { osVersion?.OperatingSystem }.)");
                     }
 
                     if (version < this.MinimumVersion || (this.MaximumVersion != null && version > this.MaximumVersion))
                     {
-                        return new DependencyCheckStatus(false, version: version, message: $"Unsupported version.)");
+                        return new DependencyCheckStatus(NAMEStatusLevel.Error, version: version, message: $"Unsupported version.)");
                     }
                 }
 
-                return new DependencyCheckStatus(true, actualVersions.FirstOrDefault());
+                return new DependencyCheckStatus(NAMEStatusLevel.Ok, actualVersions.FirstOrDefault());
+            }
+            catch (NAMEException ex)
+            {
+                return new DependencyCheckStatus(ex.StatusLevel, message: ex.Message, innerException: ex.InnerException);
             }
             catch (Exception ex)
             {
-                return new DependencyCheckStatus(false, message: ex.Message, innerException: ex.InnerException);
+                return new DependencyCheckStatus(NAMEStatusLevel.Error, message: ex.Message, innerException: ex.InnerException);
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +25,7 @@ namespace NAME.Core.Exceptions
         /// <param name="sourceVersion">The source version.</param>
         /// <param name="message">The message.</param>
         public VersionParsingException(string sourceVersion, string message)
-            : base(message)
+            : base(message, NAMEStatusLevel.Warn)
         {
             this.SourceVersion = sourceVersion;
         }

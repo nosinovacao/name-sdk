@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectedVersionResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyCheckStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NAMEStatusLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DTOs\BootstrapDTO.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DTOs\BootstrapResultDto.cs" />
@@ -19,6 +20,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\ConnectionStringNotFoundException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependenciesCheckException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependencyNotReachableException.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Exceptions\DependencyWithoutNAMEException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\NAMEException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\VersionNotRecognizedException.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Exceptions\VersionParsingException.cs" />
@@ -33,10 +35,11 @@
     <Compile Include="$(MSBuildThisFileDirectory)SupportedConnectionStringLocators.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SupportedDependencies.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SupportedNAMEBehaviours.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Utils\DependencyVersionParser.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\EndianAwareBinaryReader.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\EndianAwareBinaryWriter.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Utils\Guard.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NAMEContext.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)Utils\SocketHelpers.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)WildcardDependencyVersion.cs" />
   </ItemGroup>
 </Project>
