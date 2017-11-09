@@ -1,5 +1,5 @@
 {
-  "$schema": "https://raw.githubusercontent.com/nosinovacao/name-sdk/v1.1.0/schemas/name.dependencies.v1.jschema",
+  "$schema": "https://raw.githubusercontent.com/nosinovacao/name-sdk/schema-v1/name.dependencies.v1.jschema",
   //Use this file to define all your application dependencies.
   "infrastructure_dependencies": [
     //{
