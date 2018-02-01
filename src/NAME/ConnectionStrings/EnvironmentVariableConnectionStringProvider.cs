@@ -32,7 +32,7 @@ namespace NAME.ConnectionStrings
         {
             connectionString = Environment.GetEnvironmentVariable(this.environmentVariable);
 
-            return string.IsNullOrWhiteSpace(connectionString);
+            return !string.IsNullOrWhiteSpace(connectionString);
         }
 
         /// <summary>
