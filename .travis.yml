@@ -10,7 +10,7 @@ dist: trusty
 services:
   - docker
 # Ensure that .NET Core is installed
-dotnet: 1.0.9
+dotnet: 2.1.2
 # Ensure Mono is installed
 mono: latest
 env:
