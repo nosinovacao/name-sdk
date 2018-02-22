@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using NAME.Core;
 using System.Xml.XPath;
 using System.IO;
@@ -42,13 +42,16 @@ namespace NAME.ConnectionStrings
                 fs = new FileStream(this.xmlFilePath, FileMode.Open, FileAccess.Read);
                 XPathDocument document = new XPathDocument(fs);
                 XPathNavigator navigator = document?.CreateNavigator();
-
                 XPathExpression query = navigator?.Compile(this.xPath);
 
                 object evaluatedObject = navigator?.Evaluate(query);
                 connectionString = evaluatedObject as string;
                 if (connectionString == null)
-                    connectionString = (evaluatedObject as XPathNodeIterator)?.Current?.Value;
+                {
+                    var iterator = evaluatedObject as XPathNodeIterator;
+                    if (iterator?.MoveNext() == true)
+                        connectionString = iterator.Current?.Value;
+                }
 
                 return connectionString != null;
             }
