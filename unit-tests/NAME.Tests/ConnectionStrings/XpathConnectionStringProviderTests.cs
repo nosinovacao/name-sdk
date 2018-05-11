@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,9 +25,14 @@ namespace NAME.Tests.ConnectionStrings
                 <applicationSettings>
                     <nPVR.Services.AAAAClient.Properties.Settings>
                         <setting name=""AAAAEndpoint"" serializeAs=""String"">
-                        <value>http://localhost/service/api/v1/</value>
+                            <value>http://localhost/service/api/v1/</value>
                         </setting>
                     </nPVR.Services.AAAAClient.Properties.Settings>
+                    <nPVR.Services.OtherClient.Properties.Settings>
+                        <setting name=""Timeout"" serializeAs=""Int32"">
+                            <value>10000</value>
+                        </setting>
+                    </nPVR.Services.OtherClient.Properties.Settings>
                 </applicationSettings>
             </configuration>";
 
