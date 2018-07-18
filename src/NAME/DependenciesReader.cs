@@ -268,6 +268,13 @@ namespace NAME
                         if (string.IsNullOrEmpty(file))
                             throw new ArgumentNullException("file", "The file must be specified.");
                         provider = new XpathConnectionStringProvider(pathMapper.MapPath(file), key);
+                        break;
+                    }
+                case SupportedConnectionStringLocators.EnvironmentVariable:
+                    {
+                        key = node["key"]?.Value;
+                       
+                        provider = new EnvironmentVariableConnectionStringProvider(key);
                     }
                     break;
                 default:
