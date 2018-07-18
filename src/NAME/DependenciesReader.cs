@@ -272,7 +272,7 @@ namespace NAME
                     }
                 case SupportedConnectionStringLocators.EnvironmentVariable:
                     {
-                        key = node["key"]?.Value;
+                        key = objClass["key"]?.Value;
                        
                         provider = new EnvironmentVariableConnectionStringProvider(key);
                     }
