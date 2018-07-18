@@ -186,6 +186,25 @@
                         "locator": {
                             "type": "string",
                             "enum": [
+                                "ConfigurationProvider"
+                            ],
+                            "title": "Fetches the configuration value from the IConfigurationProvider. Only available on Asp.Net Core."
+                        },
+                        "key": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "locator"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "properties": {
+                        "locator": {
+                            "type": "string",
+                            "enum": [
                                 "XPath",
                                 "JSONPath"
                             ]
