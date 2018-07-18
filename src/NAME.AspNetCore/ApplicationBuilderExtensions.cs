@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,6 +10,8 @@ using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
 using static NAME.Hosting.Shared.DependenciesUtils;
 using static NAME.Utils.LogUtils;
+using NAME.Json;
+using NAME.Core.Exceptions;
 
 namespace NAME.AspNetCore
 {
@@ -44,9 +46,31 @@ namespace NAME.AspNetCore
             this IApplicationBuilder app,
             NAMEAspNetCoreConfiguration config)
         {
+            IConnectionStringProvider connectionStringProviderOverride(IJsonNode node)
+            {
+                if (node.Tag != JsonBinaryTag.Class)
+                    return null;
+
+                if (node["locator"]?.Value == null)
+                    return null;
+
+                if (!node["locator"].Value.Equals("ConfigurationProvider", StringComparison.OrdinalIgnoreCase))
+                    return null;
+
+                if (config.ConfigurationProvider == null)
+                    throw new NAMEException("To use the 'ConfigurationProvider' locator you must add the IConfigurationProvider in the configuration.", NAMEStatusLevel.Warn);
+
+                var key = node["key"]?.Value;
+                if (string.IsNullOrWhiteSpace(key))
+                    throw new ArgumentException("key", "The key must be specified with the 'ConfigurationProvider' locator.");
+
+                return new ConfigurationProviderConnectionStringProvider(config.ConfigurationProvider, key);
+            }
+
+
             var env = app.ApplicationServices.GetService(typeof(IHostingEnvironment)) as IHostingEnvironment;
             var filePathMapper = new AspNetCoreFilePathMapper(env);
-            var dependencies = ReadAndLogDependencies(config, false, filePathMapper, out NAMESettings settings);
+            var dependencies = ReadAndLogDependencies(config, false, filePathMapper, out NAMESettings settings, connectionStringProviderOverride);
 
             if (settings.RunningMode == SupportedNAMEBehaviours.NAMEDisabled)
             {

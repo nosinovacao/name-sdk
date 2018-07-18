@@ -1,4 +1,4 @@
-﻿/* * * * *
+/* * * * *
  * A simple Json Parser / builder
  * ------------------------------
  * 
@@ -49,23 +49,57 @@ using System.Linq;
 
 namespace NAME.Json
 {
-    internal enum JsonBinaryTag
+    /// <summary>
+    /// Represents the possible json tags.
+    /// </summary>
+    public enum JsonBinaryTag
     {
+        /// <summary>
+        /// An array.
+        /// </summary>  
         Array = 1,
+
+        /// <summary>
+        /// A class.
+        /// </summary>
         Class = 2,
+
+        /// <summary>
+        /// A string.
+        /// </summary>
         Value = 3,
+
+        /// <summary>
+        /// An int.
+        /// </summary>
         IntValue = 4,
+
+        /// <summary>
+        /// A double.
+        /// </summary>
         DoubleValue = 5,
+
+        /// <summary>
+        /// A boolean.
+        /// </summary>
         BoolValue = 6,
+
+        /// <summary>
+        /// A float.
+        /// </summary>
         FloatValue = 7,
     }
 
-    internal abstract class JsonNode
+    internal abstract class JsonNode : IJsonNode
     {
         public virtual void Add(string aKey, JsonNode aItem)
         {
         }
-        
+
+        IJsonNode IJsonNode.this[string aKey] => this[aKey];
+
+        IJsonNode IJsonNode.this[int aIndex] => this[aIndex];
+
         public virtual JsonNode this[int aIndex]
         {
             get { return null; }
@@ -240,7 +274,6 @@ namespace NAME.Json
                 return this as JsonClass;
             }
         }
-
 
         public static implicit operator JsonNode(string s)
         {

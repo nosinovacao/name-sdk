@@ -46,7 +46,11 @@ namespace NAME
         /// </returns>
         /// <exception cref="NAMEException">An unhandled exception happened.</exception>
         /// <exception cref="System.IO.FileNotFoundException">The configuration file was not found.</exception>
-        public static ParsedDependencies ReadDependencies(string dependenciesFile, IFilePathMapper pathMapper, NAMESettings settings, NAMEContext context)
+        public static ParsedDependencies ReadDependencies(
+            string dependenciesFile, 
+            IFilePathMapper pathMapper, 
+            NAMESettings settings, 
+            NAMEContext context)
         {
             Guard.NotNull(settings, nameof(settings));
             if (context == null)
@@ -55,19 +59,6 @@ namespace NAME
             string jsonContents = ReadJsonContents(pathMapper.MapPath(dependenciesFile));
 
             return ParseDependenciesFromString(jsonContents, pathMapper, settings, context);
-        }
-
-        private static string ReadJsonContents(string dependenciesFile)
-        {
-            if (!File.Exists(dependenciesFile))
-            {
-                string exceptionMessage = "The dependencies file was not found.";
-                throw new NAMEException(exceptionMessage, new FileNotFoundException(exceptionMessage, dependenciesFile), NAMEStatusLevel.Warn);
-            }
-
-            string[] jsonLines = File.ReadAllLines(dependenciesFile);
-            string jsonContents = string.Join(Environment.NewLine, jsonLines.Where(l => !l.TrimStart().StartsWith("//")));
-            return jsonContents;
         }
 
         /// <summary>
@@ -103,6 +94,19 @@ namespace NAME
             }
         }
 
+        private static string ReadJsonContents(string dependenciesFile)
+        {
+            if (!File.Exists(dependenciesFile))
+            {
+                string exceptionMessage = "The dependencies file was not found.";
+                throw new NAMEException(exceptionMessage, new FileNotFoundException(exceptionMessage, dependenciesFile), NAMEStatusLevel.Warn);
+            }
+
+            string[] jsonLines = File.ReadAllLines(dependenciesFile);
+            string jsonContents = string.Join(Environment.NewLine, jsonLines.Where(l => !l.TrimStart().StartsWith("//")));
+            return jsonContents;
+        }
+
         private static ParsedDependencies ParseDependenciesFromString(
             string jsonContents,
             IFilePathMapper pathMapper,
@@ -116,7 +120,12 @@ namespace NAME
                 HandleDependencyArray(rootNode?["service_dependencies"]?.AsArray, pathMapper, settings, context));
         }
 
-        private static IList<Dependency> HandleDependencyArray(JsonArray dependencies, IFilePathMapper pathMapper, NAMESettings configuration, NAMEContext context, int depth = 0)
+        private static IList<Dependency> HandleDependencyArray(
+            JsonArray dependencies, 
+            IFilePathMapper pathMapper, 
+            NAMESettings configuration, 
+            NAMEContext context,
+            int depth = 0)
         {
             IList<Dependency> handledDependencies = new List<Dependency>();
             if (dependencies == null)
@@ -130,7 +139,12 @@ namespace NAME
             return handledDependencies;
         }
 
-        private static Dependency HandleDependency(JsonClass dependency, IFilePathMapper pathMapper, NAMESettings configuration, NAMEContext context, int depth = 0)
+        private static Dependency HandleDependency(
+            JsonClass dependency, 
+            IFilePathMapper pathMapper, 
+            NAMESettings configuration,
+            NAMEContext context, 
+            int depth = 0)
         {
             if (depth == MAX_DEPENDENCY_DEPTH)
                 throw new NAMEException($"Reached the maximum dependency recursion of {MAX_DEPENDENCY_DEPTH}.", NAMEStatusLevel.Warn);
@@ -165,7 +179,7 @@ namespace NAME
             }
             else
             {
-                var connectionStringProvider = ParseConnectionStringProvider(dependency["connection_string"], pathMapper);
+                var connectionStringProvider = ParseConnectionStringProvider(dependency["connection_string"], pathMapper, configuration.ConnectionStringProviderOverride);
                 result = new ConnectedDependency(GetConnectedDependencyVersionResolver(typedType, connectionStringProvider, configuration, context))
                 {
                     ConnectionStringProvider = connectionStringProvider,
@@ -203,30 +217,36 @@ namespace NAME
             return dependencyVersionTranslators[dependencyType].Translate(version);
         }
 
-        private static IConnectionStringProvider ParseConnectionStringProvider(JsonNode node, IFilePathMapper pathMapper)
+        private static IConnectionStringProvider ParseConnectionStringProvider(
+            JsonNode node, 
+            IFilePathMapper pathMapper,
+            Func<IJsonNode, IConnectionStringProvider> connectionStringProviderOverride)
         {
             if (node.AsObject == null)
                 return new StaticConnectionStringProvider(node.Value);
 
+            IConnectionStringProvider provider = connectionStringProviderOverride?.Invoke(node);
+            if (provider != null)
+                return provider;
+
             JsonClass objClass = node.AsObject;
-            if (!Enum.TryParse(node["locator"]?.Value, out SupportedConnectionStringLocators locator))
-                throw new NAMEException($"The locator {node["locator"]?.Value} is not supported.", NAMEStatusLevel.Warn);
-            IConnectionStringProvider provider = null;
+            if (!Enum.TryParse(objClass["locator"]?.Value, out SupportedConnectionStringLocators locator))
+                throw new NAMEException($"The locator {objClass["locator"]?.Value} is not supported.", NAMEStatusLevel.Warn);
             string key;
             switch (locator)
             {
 #if NET45
                 case SupportedConnectionStringLocators.ConnectionStrings:
-                    key = node["key"]?.Value;
+                    key = objClass["key"]?.Value;
                     provider = new ConnectionStringsConnectionStringProvider(key);
                     break;
                 case SupportedConnectionStringLocators.AppSettings:
-                    key = node["key"]?.Value;
+                    key = objClass["key"]?.Value;
                     provider = new AppSettingsConnectionStringProvider(key);
                     break;
                 case SupportedConnectionStringLocators.VSSettingsFile:
-                    key = node["key"]?.Value;
-                    string section = node["section"]?.Value;
+                    key = objClass["key"]?.Value;
+                    string section = objClass["section"]?.Value;
                     if (string.IsNullOrEmpty(section))
                         throw new ArgumentNullException("section", "The section must be specified.");
                     provider = new VisualStudioSetingsFileConnectionStringProvider(section, key);
@@ -234,8 +254,8 @@ namespace NAME
 #endif
                 case SupportedConnectionStringLocators.JSONPath:
                     {
-                        key = node["expression"]?.Value;
-                        string file = node["file"]?.Value;
+                        key = objClass["expression"]?.Value;
+                        string file = objClass["file"]?.Value;
                         if (string.IsNullOrEmpty(file))
                             throw new ArgumentNullException("file", "The file must be specified.");
                         provider = new JsonPathConnectionStringProvider(pathMapper.MapPath(file), key);
@@ -243,8 +263,8 @@ namespace NAME
                     break;
                 case SupportedConnectionStringLocators.XPath:
                     {
-                        key = node["expression"]?.Value;
-                        string file = node["file"]?.Value;
+                        key = objClass["expression"]?.Value;
+                        string file = objClass["file"]?.Value;
                         if (string.IsNullOrEmpty(file))
                             throw new ArgumentNullException("file", "The file must be specified.");
                         provider = new XpathConnectionStringProvider(pathMapper.MapPath(file), key);
