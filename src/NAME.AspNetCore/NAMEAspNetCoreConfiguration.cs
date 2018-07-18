@@ -14,9 +14,9 @@ namespace NAME.AspNetCore
     public class NAMEAspNetCoreConfiguration : NAMEBaseConfiguration
     {
         /// <summary>
-        /// Gets or sets the configuration provider instance to be used by NAME.
+        /// Gets or sets the Asp.Net Core configuration instance to be used by NAME.
         /// </summary>
-        public IConfigurationProvider ConfigurationProvider { get; set; }
+        public IConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="NAMEAspNetCoreConfiguration"/> class.

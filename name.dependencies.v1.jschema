@@ -186,9 +186,9 @@
                         "locator": {
                             "type": "string",
                             "enum": [
-                                "ConfigurationProvider"
+                                "IConfiguration"
                             ],
-                            "title": "Fetches the configuration value from the IConfigurationProvider. Only available on Asp.Net Core."
+                            "title": "Fetches the configuration value from the IConfiguration. Only available on Asp.Net Core."
                         },
                         "key": {
                             "type": "string"

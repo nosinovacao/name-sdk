@@ -48,23 +48,20 @@ namespace NAME.AspNetCore
         {
             IConnectionStringProvider connectionStringProviderOverride(IJsonNode node)
             {
-                if (node.Tag != JsonBinaryTag.Class)
-                    return null;
-
                 if (node["locator"]?.Value == null)
                     return null;
 
-                if (!node["locator"].Value.Equals("ConfigurationProvider", StringComparison.OrdinalIgnoreCase))
+                if (!node["locator"].Value.Equals("IConfiguration", StringComparison.OrdinalIgnoreCase))
                     return null;
 
-                if (config.ConfigurationProvider == null)
-                    throw new NAMEException("To use the 'ConfigurationProvider' locator you must add the IConfigurationProvider in the configuration.", NAMEStatusLevel.Warn);
+                if (config.Configuration == null)
+                    throw new NAMEException("To use the 'IConfiguration' locator you must add the IConfiguration in the configuration.", NAMEStatusLevel.Warn);
 
                 var key = node["key"]?.Value;
                 if (string.IsNullOrWhiteSpace(key))
-                    throw new ArgumentException("key", "The key must be specified with the 'ConfigurationProvider' locator.");
+                    throw new ArgumentException("key", "The key must be specified with the 'IConfiguration' locator.");
 
-                return new ConfigurationProviderConnectionStringProvider(config.ConfigurationProvider, key);
+                return new ConfigurationProviderConnectionStringProvider(config.Configuration, key);
             }
 
 

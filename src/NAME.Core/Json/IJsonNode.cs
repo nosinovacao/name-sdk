@@ -36,14 +36,6 @@ namespace NAME.Json
         }
         
         /// <summary>
-        /// Gets the element tag.
-        /// </summary>
-        JsonBinaryTag Tag
-        {
-            get;
-        }
-
-        /// <summary>
         /// Gets the element value as int.
         /// </summary>
         int AsInt

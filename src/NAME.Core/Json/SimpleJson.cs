@@ -49,44 +49,14 @@ using System.Linq;
 
 namespace NAME.Json
 {
-    /// <summary>
-    /// Represents the possible json tags.
-    /// </summary>
-    public enum JsonBinaryTag
+    internal enum JsonBinaryTag
     {
-        /// <summary>
-        /// An array.
-        /// </summary>  
         Array = 1,
-
-        /// <summary>
-        /// A class.
-        /// </summary>
         Class = 2,
-
-        /// <summary>
-        /// A string.
-        /// </summary>
         Value = 3,
-
-        /// <summary>
-        /// An int.
-        /// </summary>
         IntValue = 4,
-
-        /// <summary>
-        /// A double.
-        /// </summary>
         DoubleValue = 5,
-
-        /// <summary>
-        /// A boolean.
-        /// </summary>
         BoolValue = 6,
-
-        /// <summary>
-        /// A float.
-        /// </summary>
         FloatValue = 7,
     }
 
