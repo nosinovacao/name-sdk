@@ -5,8 +5,8 @@ using System.Linq;
 using NAME.Core.Exceptions;
 using NAME.Core;
 using System.Threading.Tasks;
-using static NAME.Utils.LogUtils;
 using NAME.Json;
+using static NAME.Utils.LogUtils;
 
 namespace NAME.Hosting.Shared
 {

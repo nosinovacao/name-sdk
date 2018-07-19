@@ -8,10 +8,10 @@ using NAME.Core;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
-using static NAME.Hosting.Shared.DependenciesUtils;
-using static NAME.Utils.LogUtils;
 using NAME.Json;
 using NAME.Core.Exceptions;
+using static NAME.Hosting.Shared.DependenciesUtils;
+using static NAME.Utils.LogUtils;
 
 namespace NAME.AspNetCore
 {
