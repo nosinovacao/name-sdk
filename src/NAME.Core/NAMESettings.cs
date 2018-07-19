@@ -1,4 +1,5 @@
-﻿using System;
+using NAME.Json;
+using System;
 
 namespace NAME.Core
 {
@@ -117,5 +118,13 @@ namespace NAME.Core
         /// The registry bootstrap connect timeout.
         /// </value>
         public TimeSpan RegistryBootstrapTimeout { get; internal set; } = TimeSpan.FromSeconds(5);
+
+        /// <summary>
+        /// Gets or sets the function that may be used to override the connection string provider each dependency wil use.
+        /// </summary>
+        /// <value>
+        /// The function that may be used to override the connection string provider each dependency wil use.
+        /// </value>
+        public Func<IJsonNode, IConnectionStringProvider> ConnectionStringProviderOverride { get; set; }
     }
 }

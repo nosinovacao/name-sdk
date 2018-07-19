@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -8,6 +8,8 @@ using NAME.Core;
 using System.Diagnostics;
 using System.Reflection;
 using Microsoft.AspNetCore.Hosting;
+using NAME.Json;
+using NAME.Core.Exceptions;
 using static NAME.Hosting.Shared.DependenciesUtils;
 using static NAME.Utils.LogUtils;
 
@@ -44,9 +46,28 @@ namespace NAME.AspNetCore
             this IApplicationBuilder app,
             NAMEAspNetCoreConfiguration config)
         {
+            IConnectionStringProvider connectionStringProviderOverride(IJsonNode node)
+            {
+                if (node["locator"]?.Value == null)
+                    return null;
+
+                if (!node["locator"].Value.Equals("IConfiguration", StringComparison.OrdinalIgnoreCase))
+                    return null;
+
+                if (config.Configuration == null)
+                    throw new NAMEException("To use the 'IConfiguration' locator you must add the IConfiguration in the configuration.", NAMEStatusLevel.Warn);
+
+                var key = node["key"]?.Value;
+                if (string.IsNullOrWhiteSpace(key))
+                    throw new ArgumentException("key", "The key must be specified with the 'IConfiguration' locator.");
+
+                return new AspNetCoreConfigurationConnectionStringProvider(config.Configuration, key);
+            }
+
+
             var env = app.ApplicationServices.GetService(typeof(IHostingEnvironment)) as IHostingEnvironment;
             var filePathMapper = new AspNetCoreFilePathMapper(env);
-            var dependencies = ReadAndLogDependencies(config, false, filePathMapper, out NAMESettings settings);
+            var dependencies = ReadAndLogDependencies(config, false, filePathMapper, out NAMESettings settings, connectionStringProviderOverride);
 
             if (settings.RunningMode == SupportedNAMEBehaviours.NAMEDisabled)
             {

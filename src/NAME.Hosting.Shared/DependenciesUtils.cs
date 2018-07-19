@@ -5,6 +5,7 @@ using System.Linq;
 using NAME.Core.Exceptions;
 using NAME.Core;
 using System.Threading.Tasks;
+using NAME.Json;
 using static NAME.Utils.LogUtils;
 
 namespace NAME.Hosting.Shared
@@ -22,16 +23,18 @@ namespace NAME.Hosting.Shared
         /// <param name="logToConsole">if set to <c>true</c> [log to console].</param>
         /// <param name="pathMapper">The path mapper.</param>
         /// <param name="settings">The context information.</param>
+        /// <param name="connectionStringProviderOverrider">The function that may be used to override the connection string provider each dependency wil use</param>
         /// <returns>
         /// The <see cref="ParsedDependencies" /> object populated from the dependencies file
         /// </returns>
         /// <exception cref="NAMEException">Error parsing the dependencies file.</exception>
         /// <exception cref="DependenciesCheckException">Wrapper for all possible exceptions in the NAME process</exception>
-        public static ParsedDependencies ReadAndLogDependencies(NAMEBaseConfiguration configuration, bool logToConsole, IFilePathMapper pathMapper, out NAMESettings settings)
+        public static ParsedDependencies ReadAndLogDependencies(NAMEBaseConfiguration configuration, bool logToConsole, IFilePathMapper pathMapper, out NAMESettings settings, Func<IJsonNode, IConnectionStringProvider> connectionStringProviderOverrider = null)
         {
             var dependencies = new ParsedDependencies(null, null);
 
             settings = DependenciesReader.ReadNAMESettingsOverrides(configuration.DependenciesFilePath, pathMapper);
+            settings.ConnectionStringProviderOverride = connectionStringProviderOverrider;
 
             try
             {

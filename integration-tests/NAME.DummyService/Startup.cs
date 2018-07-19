@@ -17,7 +17,8 @@ namespace NAME.DummyService
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddEnvironmentVariables();
+                .AddEnvironmentVariables()
+                .AddJsonFile("appsettings.json");
             Configuration = builder.Build();
         }
 
@@ -54,6 +55,7 @@ namespace NAME.DummyService
                 config.APIName = "Dummy";
                 config.APIVersion = "1.0.0";
                 config.DependenciesFilePath = "dependencies.json";
+                config.Configuration = Configuration;
             });
 
             app.Use(async (context, next) =>

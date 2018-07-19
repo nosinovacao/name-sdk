@@ -44,12 +44,15 @@ app.UseNAME(config =>
     Assembly a = typeof(Startup).GetTypeInfo().Assembly;
     config.APIName = a.GetName().Name;
     config.APIVersion = a.GetName().Version.ToString();
+    // Comment the next line if you don't use the default Asp.Net Core IConfiguration interface.
+    config.Configuration = Configuration;
 });
 ```
 
 3. Create the `dependencies.json` file at the root of the project, the following example is a good starting point.
 ```json
 {
+  "$schema": "https://raw.githubusercontent.com/nosinovacao/name-sdk/schema-v1/name.dependencies.v1.jschema",
   "infrastructure_dependencies": [
     {
       "os_name": "debian",
@@ -64,9 +67,8 @@ app.UseNAME(config =>
       "min_version": "1.2.53",
       "max_version": "1.8",
       "connection_string": {
-        "locator": "JSONPath",
-        "file": "appsettings.json",
-        "expression": "ConnectionStrings.InternalServiceUri"
+        "locator": "IConfiguration",
+        "key": "ConnectionStrings:InternalServiceUri"
       }
     }
   ]
