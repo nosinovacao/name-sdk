@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/) and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Added
+* Support for resolving the connection strings using environment variables [#16](https://github.com/nosinovacao/name-sdk/issues/16)
 * Extension point for the decision of which ConnectionString locator to use [#33](https://github.com/nosinovacao/name-sdk/issues/33)
 * Support for resolving the connection strings using the Asp.Net Core IConfiguration in the NAME.AspNetCore package [#33](https://github.com/nosinovacao/name-sdk/issues/33)
 
