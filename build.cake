@@ -1,6 +1,6 @@
-﻿#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Docker
-#addin nuget:https://www.nuget.org/api/v2/?package=Cake.DoInDirectory
-#addin nuget:https://www.nuget.org/api/v2/?package=Cake.FileHelpers
+﻿#addin nuget:https://www.nuget.org/api/v2/?package=Cake.Docker&version=0.8.5
+#addin nuget:https://www.nuget.org/api/v2/?package=Cake.DoInDirectory&version=2.0.0
+// #addin nuget:https://www.nuget.org/api/v2/?package=Cake.FileHelpers
 
 //////////////////////////////////////////////////////////////////////
 // CONFIGURATION
