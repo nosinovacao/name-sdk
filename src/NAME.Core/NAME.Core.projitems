@@ -12,6 +12,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ConnectedVersionResolver.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Constants.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyCheckStatus.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Json\IJsonNode.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NAMEStatusLevel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DependencyVersion.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)DTOs\BootstrapDTO.cs" />

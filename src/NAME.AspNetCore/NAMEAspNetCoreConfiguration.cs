@@ -1,4 +1,5 @@
-﻿using NAME.Hosting.Shared;
+using Microsoft.Extensions.Configuration;
+using NAME.Hosting.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,11 @@ namespace NAME.AspNetCore
     /// <seealso cref="NAME.Hosting.Shared.NAMEBaseConfiguration" />
     public class NAMEAspNetCoreConfiguration : NAMEBaseConfiguration
     {
+        /// <summary>
+        /// Gets or sets the Asp.Net Core configuration instance to be used by NAME.
+        /// </summary>
+        public IConfiguration Configuration { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="NAMEAspNetCoreConfiguration"/> class.
         /// </summary>

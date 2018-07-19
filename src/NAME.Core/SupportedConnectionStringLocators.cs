@@ -1,4 +1,4 @@
-﻿namespace NAME.Core
+namespace NAME.Core
 {
     /// <summary>
     /// Represents the supported connection string locators.
@@ -30,7 +30,12 @@
         /// <summary>
         /// XPath.
         /// </summary>
-        XPath = 50
+        XPath = 50,
+
+        /// <summary>
+        /// EnvironmentVariable
+        /// </summary>
+        EnvironmentVariable = 60
 
     }
 }

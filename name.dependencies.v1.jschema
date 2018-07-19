@@ -167,6 +167,44 @@
                         "locator": {
                             "type": "string",
                             "enum": [
+                                "EnvironmentVariable"
+                            ],
+                            "title": "Fetches the configuration value from the environment variables."
+                        },
+                        "key": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "locator"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "properties": {
+                        "locator": {
+                            "type": "string",
+                            "enum": [
+                                "IConfiguration"
+                            ],
+                            "title": "Fetches the configuration value from the IConfiguration. Only available on Asp.Net Core."
+                        },
+                        "key": {
+                            "type": "string"
+                        }
+                    },
+                    "required": [
+                        "key",
+                        "locator"
+                    ],
+                    "additionalProperties": false
+                },
+                {
+                    "properties": {
+                        "locator": {
+                            "type": "string",
+                            "enum": [
                                 "XPath",
                                 "JSONPath"
                             ]

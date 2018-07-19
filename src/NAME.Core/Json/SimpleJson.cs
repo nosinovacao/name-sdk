@@ -1,4 +1,4 @@
-﻿/* * * * *
+/* * * * *
  * A simple Json Parser / builder
  * ------------------------------
  * 
@@ -60,12 +60,16 @@ namespace NAME.Json
         FloatValue = 7,
     }
 
-    internal abstract class JsonNode
+    internal abstract class JsonNode : IJsonNode
     {
         public virtual void Add(string aKey, JsonNode aItem)
         {
         }
-        
+
+        IJsonNode IJsonNode.this[string aKey] => this[aKey];
+
+        IJsonNode IJsonNode.this[int aIndex] => this[aIndex];
+
         public virtual JsonNode this[int aIndex]
         {
             get { return null; }
@@ -240,7 +244,6 @@ namespace NAME.Json
                 return this as JsonClass;
             }
         }
-
 
         public static implicit operator JsonNode(string s)
         {

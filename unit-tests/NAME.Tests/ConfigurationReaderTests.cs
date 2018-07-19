@@ -1,6 +1,8 @@
+using NAME.ConnectionStrings;
 using NAME.Core;
 using NAME.Core.Exceptions;
 using NAME.Dependencies;
+using NAME.Json;
 using NAME.Tests.ConnectionStrings;
 using System;
 using System.Collections.Generic;
@@ -76,6 +78,202 @@ namespace NAME.Tests
                 ]
             }";
         #endregion
+        
+        [Fact]
+        [Trait("TestCategory", "Unit")]
+        public void ReadConfiguration_CallsMultipleTimes_ConnectionStringProviderOverride()
+        {
+            string fileContents = @"{
+                ""infrastructure_dependencies"": [
+                ],
+                ""service_dependencies"": [
+                    {
+                        ""name"": ""Some Service0"",
+                        ""min_version"": ""0.3"",
+                        ""max_version"": ""*"",
+                        ""connection_string"": {
+                            ""unrecognizedString"": 0
+                        }
+                    },
+                    {
+                        ""name"": ""Some Service1"",
+                        ""min_version"": ""0.3"",
+                        ""max_version"": ""*"",
+                        ""connection_string"": {
+                            ""unrecognizedString"": 1
+                        }
+                    }
+                ]
+            }";
+            string fileName = Guid.NewGuid() + ".json";
+            File.WriteAllText(fileName, fileContents);
+            try
+            {
+                int iterationsCount = 0;
+                var settings = new NAMESettings()
+                {
+                    ConnectionStringProviderOverride = (node) =>
+                    {
+                        Assert.Equal(iterationsCount, node["unrecognizedString"].AsInt);
+                        iterationsCount++;
+                        return new StaticConnectionStringProvider(iterationsCount.ToString());
+                    }
+                };
+
+                ParsedDependencies configuration = DependenciesReader.ReadDependencies(fileName, new DummyFilePathMapper(), settings, new NAMEContext());
+
+                Assert.Equal(0, configuration.InfrastructureDependencies.Count());
+                Assert.Equal(2, configuration.ServiceDependencies.Count());
+                Assert.Equal(2, iterationsCount);
+
+                var firstDependency = (ConnectedDependency)configuration.ServiceDependencies.First();
+                var secondDependency = (ConnectedDependency)configuration.ServiceDependencies.Skip(1).First();
+
+                Assert.IsType<StaticConnectionStringProvider>(firstDependency.ConnectionStringProvider);
+                Assert.IsType<StaticConnectionStringProvider>(secondDependency.ConnectionStringProvider);
+            }
+            finally
+            {
+                File.Delete(fileName);
+            }
+        }
+
+        [Fact]
+        [Trait("TestCategory", "Unit")]
+        public void ReadConfiguration_UsesConnectionStringProviderReturnedFromOverride()
+        {
+            string fileContents = @"{
+                ""infrastructure_dependencies"": [
+                    {
+                        ""type"": ""RabbitMq"",
+                        ""name"": ""rabbitmq"",
+                        ""min_version"": ""2.0"",
+                        ""max_version"": ""3.3"",
+                        ""connection_string"": {
+                            ""locator"": ""JSONPath"",
+                            ""key"": ""shouldn't matter""
+                        }
+                    }  
+                ],
+                ""service_dependencies"": [
+                ]
+            }";
+            string fileName = Guid.NewGuid() + ".json";
+            File.WriteAllText(fileName, fileContents);
+            try
+            {
+                int iterationsCount = 0;
+                var settings = new NAMESettings()
+                {
+                    ConnectionStringProviderOverride = (node) =>
+                    {
+                        iterationsCount++;
+                        return new StaticConnectionStringProvider(string.Empty);
+                    }
+                };
+
+                ParsedDependencies configuration = DependenciesReader.ReadDependencies(fileName, new DummyFilePathMapper(), settings, new NAMEContext());
+
+                Assert.Equal(1, configuration.InfrastructureDependencies.Count());
+                Assert.Equal(0, configuration.ServiceDependencies.Count());
+                Assert.Equal(1, iterationsCount);
+
+                var firstDependency = (ConnectedDependency)configuration.InfrastructureDependencies.First();
+                Assert.IsType<StaticConnectionStringProvider>(firstDependency.ConnectionStringProvider);
+            }
+            finally
+            {
+                File.Delete(fileName);
+            }
+        }
+
+        [Fact]
+        [Trait("TestCategory", "Unit")]
+        public void ReadConfiguration_UsesStaticConnectionStringProvider()
+        {
+            string fileContents = @"{
+                ""infrastructure_dependencies"": [
+                    {
+                        ""type"": ""RabbitMq"",
+                        ""name"": ""rabbitmq"",
+                        ""min_version"": ""2.0"",
+                        ""max_version"": ""3.3"",
+                        ""connection_string"": ""some-connection-string""
+                    }  
+                ],
+                ""service_dependencies"": [
+                ]
+            }";
+            string fileName = Guid.NewGuid() + ".json";
+            File.WriteAllText(fileName, fileContents);
+            try
+            {
+                int iterationsCount = 0;
+                var settings = new NAMESettings()
+                {
+                    ConnectionStringProviderOverride = (node) =>
+                     {
+                         iterationsCount++;
+                         return null;
+                     }
+                };
+
+                ParsedDependencies configuration = DependenciesReader.ReadDependencies(fileName, new DummyFilePathMapper(), settings, new NAMEContext());
+
+                Assert.Equal(1, configuration.InfrastructureDependencies.Count());
+                Assert.Equal(0, configuration.ServiceDependencies.Count());
+                Assert.Equal(0, iterationsCount);
+
+                var firstDependency = (ConnectedDependency)configuration.InfrastructureDependencies.First();
+                Assert.IsType<StaticConnectionStringProvider>(firstDependency.ConnectionStringProvider);
+            }
+            finally
+            {
+                File.Delete(fileName);
+            }
+        }
+
+        [Fact]
+        [Trait("TestCategory", "Unit")]
+        public void ReadConfiguration_OperatingSystemDependency_SkipsOverride()
+        {
+            string fileContents = @"{
+                ""infrastructure_dependencies"": [
+                    {
+                        ""os_name"": ""Ubuntu"",
+                        ""type"": ""OperatingSystem"",
+                        ""min_version"": ""16.04"",
+                        ""max_version"": ""14.04""
+                    }
+                ],
+                ""service_dependencies"": [
+                ]
+            }";
+            string fileName = Guid.NewGuid() + ".json";
+            File.WriteAllText(fileName, fileContents);
+            try
+            {
+                int iterationsCount = 0;
+                var settings = new NAMESettings()
+                {
+                    ConnectionStringProviderOverride = (node) =>
+                    {
+                        iterationsCount++;
+                        return null;
+                    }
+                };
+
+                ParsedDependencies configuration = DependenciesReader.ReadDependencies(fileName, new DummyFilePathMapper(), settings, new NAMEContext());
+
+                Assert.Equal(1, configuration.InfrastructureDependencies.Count());
+                Assert.Equal(0, configuration.ServiceDependencies.Count());
+                Assert.Equal(0, iterationsCount);
+            }
+            finally
+            {
+                File.Delete(fileName);
+            }
+        }
 
         [Fact]
         [Trait("TestCategory", "Unit")]
@@ -248,14 +446,26 @@ namespace NAME.Tests
 #if NET452
             System.Configuration.ConfigurationManager.ConnectionStrings.SetWritable().Add(new System.Configuration.ConnectionStringSettings("RabbitMQConnectionString", "ConnString"));
 #endif
-            ParsedDependencies configuration = DependenciesReader.ReadDependencies(CONFIGURATION_FILE, new DummyFilePathMapper(), new NAMESettings(), new NAMEContext());
+            int overrideCallsCount = 0;
+            var settings = new NAMESettings()
+            {
+                ConnectionStringProviderOverride = (node) =>
+                {
+                    overrideCallsCount = overrideCallsCount + 1;
+                    return null;
+                }
+            };
+
+            ParsedDependencies configuration = DependenciesReader.ReadDependencies(CONFIGURATION_FILE, new DummyFilePathMapper(), settings, new NAMEContext());
 
 #if NET452
             Assert.Equal(4, configuration.InfrastructureDependencies.Count());
             Assert.Equal(2, configuration.ServiceDependencies.Count());
+            Assert.Equal(1, overrideCallsCount);
 #else
             Assert.Equal(3, configuration.InfrastructureDependencies.Count());
             Assert.Equal(2, configuration.ServiceDependencies.Count());
+            Assert.Equal(0, overrideCallsCount);
 #endif
             var elasticsearchDependency = configuration.InfrastructureDependencies.OfType<VersionedDependency>().Single(d => d.Type == SupportedDependencies.Elasticsearch);
             var castedMaxVersion = Assert.IsAssignableFrom<WildcardDependencyVersion>(elasticsearchDependency.MaximumVersion);

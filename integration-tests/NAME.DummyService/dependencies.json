@@ -1,8 +1,16 @@
-﻿{
+{
   "infrastructure_dependencies": [
 
   ],
   "service_dependencies": [
-
+    {
+      "name": "The Service",
+      "min_version": "1.2.53",
+      "max_version": "1.8",
+      "connection_string": {
+        "locator": "IConfiguration",
+        "key": "TheService:Endpoint"
+      }
+    }
   ]
 }

@@ -1,4 +1,7 @@
+using NAME.ConnectionStrings;
+using NAME.Core;
 using NAME.Core.Exceptions;
+using NAME.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,6 +38,48 @@ namespace NAME.IntegrationTests
             try
             {
                 var parsedDependencies = DependenciesReader.ReadDependencies(fileName, new DummyFilePathMapper(), new Core.NAMESettings(), new Core.NAMEContext());
+                await DependenciesExtensions.CheckDependencies(parsedDependencies);
+            }
+            finally
+            {
+                File.Delete(fileName);
+            }
+        }
+
+        [Fact]
+        [Trait("TestCategory", "Integration")]
+        public async Task CheckDependencies_ConnectionStringFromOverride()
+        {
+            string contents =
+            @"{
+                ""$schema"": ""./config-manifest.schema.json"",
+                ""infrastructure_dependencies"": [
+                    {
+                        ""type"": ""MongoDb"",
+                        ""min_version"": ""2.6"",
+                        ""max_version"": """ + Constants.SpecificMongoVersion + @""",
+                        ""connection_string"": {
+                            ""locator"": ""hard-coded""
+                        }
+                    }
+                ],
+                ""service_dependencies"": [
+                ]
+            }";
+            string fileName = Guid.NewGuid() + ".json";
+            File.WriteAllText(fileName, contents);
+            try
+            {
+                var settings = new NAMESettings()
+                {
+                    ConnectionStringProviderOverride = (node) =>
+                    {
+                        if (node["locator"].Value == "hard-coded")
+                            return new StaticConnectionStringProvider("mongodb://" + Constants.SpecificMongoHostname + ":27017/nPVR_Dev_TST");
+                        return null;
+                    }
+                };
+                var parsedDependencies = DependenciesReader.ReadDependencies(fileName, new DummyFilePathMapper(), settings, new Core.NAMEContext());
                 await DependenciesExtensions.CheckDependencies(parsedDependencies);
             }
             finally
