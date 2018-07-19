@@ -6,19 +6,19 @@ using System.Text;
 
 namespace NAME.AspNetCore
 {
-    internal class ConfigurationProviderConnectionStringProvider : IConnectionStringProvider
+    internal class AspNetCoreConfigurationConnectionStringProvider : IConnectionStringProvider
     {
         private readonly IConfiguration configuration;
         private readonly string connectionStringKey;
 
-        public ConfigurationProviderConnectionStringProvider(IConfiguration configurationProvider, string connectionStringKey)
+        public AspNetCoreConfigurationConnectionStringProvider(IConfiguration configuration, string connectionStringKey)
         {
             if (string.IsNullOrWhiteSpace(connectionStringKey))
             {
-                throw new ArgumentException("message", nameof(connectionStringKey));
+                throw new ArgumentException("Value must be set.", nameof(connectionStringKey));
             }
 
-            this.configuration = configurationProvider ?? throw new ArgumentNullException(nameof(configurationProvider));
+            this.configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
             this.connectionStringKey = connectionStringKey;
         }
 

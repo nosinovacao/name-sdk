@@ -61,7 +61,7 @@ namespace NAME.AspNetCore
                 if (string.IsNullOrWhiteSpace(key))
                     throw new ArgumentException("key", "The key must be specified with the 'IConfiguration' locator.");
 
-                return new ConfigurationProviderConnectionStringProvider(config.Configuration, key);
+                return new AspNetCoreConfigurationConnectionStringProvider(config.Configuration, key);
             }
 
 
