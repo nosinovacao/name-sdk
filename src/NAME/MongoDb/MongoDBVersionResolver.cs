@@ -121,7 +121,7 @@ namespace NAME.MongoDb
 
                 var commandBSON = new BSONObject
                 {
-                    ["serverStatus"] = 1.0
+                    ["buildInfo"] = 1.0
                 };
                 commandWriter.Write(SimpleBSON.Dump(commandBSON));
                 commandWriter.Flush();
