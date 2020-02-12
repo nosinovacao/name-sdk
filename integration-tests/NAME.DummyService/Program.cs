@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 
 namespace NAME.DummyService
 {
@@ -20,6 +21,9 @@ namespace NAME.DummyService
 
             var host = new WebHostBuilder()
                 .UseConfiguration(config)
+                .ConfigureLogging(builder => 
+                    builder.AddConfiguration(config)
+                           .AddDebug())
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseIISIntegration()

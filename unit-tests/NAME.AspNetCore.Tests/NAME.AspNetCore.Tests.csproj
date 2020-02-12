@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.0;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net452</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>NAME.AspNetCore.Tests</AssemblyName>
     <PackageId>NAME.AspNetCore.Tests</PackageId>
@@ -30,7 +30,7 @@
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.0.0" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
     <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
   </ItemGroup>
 

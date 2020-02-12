@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.0;net452</TargetFrameworks>
+    <TargetFrameworks>netcoreapp3.1;net452</TargetFrameworks>
     <DebugType>portable</DebugType>
     <AssemblyName>NAME.Hosting.Shared.Tests</AssemblyName>
     <PackageId>NAME.Hosting.Shared.Tests</PackageId>
