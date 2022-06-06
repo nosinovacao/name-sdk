@@ -1,52 +1,53 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>Provides a way to expose service information (e.g. software version and all the service dependencies versions).</Description>
-    <TargetFrameworks>netstandard1.6;net45</TargetFrameworks>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>NAME</AssemblyName>
-    <PackageId>NAME</PackageId>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Description>Provides a way to expose service information (e.g. software version and all the service dependencies versions).</Description>
+        <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>NAME</AssemblyName>
+        <PackageId>NAME</PackageId>
+        <AnalysisLevel>latest-recommended</AnalysisLevel>
+        <!--<PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>-->
+    </PropertyGroup>
 
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\NAME_UI.html" />
-  </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="Resources\NAME_UI.html" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="Nuget\readme.txt">
-      <PackagePath>.</PackagePath>
-    </Content>
-    <Content Include="Nuget\Content\dependencies.json">
-      <CopyToOutputDirectory>true</CopyToOutputDirectory>
-      <PackagePath>content</PackagePath>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="Nuget\readme.txt">
+            <PackagePath>.</PackagePath>
+        </Content>
+        <Content Include="Nuget\Content\dependencies.json">
+            <CopyToOutputDirectory>true</CopyToOutputDirectory>
+            <PackagePath>content</PackagePath>
+        </Content>
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.6' ">
-    <PackageReference Include="System.Xml.XPath" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
-    <PackageReference Include="System.Linq" Version="4.3.0" />
-    <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.0" />
-    <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
-    <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
-    <PackageReference Include="System.Globalization" Version="4.3.0" />
-    <PackageReference Include="System.Net.Requests" Version="4.3.0" />
-    <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
-    <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
-    <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard2.0' ">
+        <PackageReference Include="System.Xml.XPath" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.InteropServices" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation" Version="4.3.0" />
+        <PackageReference Include="System.Linq" Version="4.3.0" />
+        <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
+        <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+        <PackageReference Include="System.IO.FileSystem" Version="4.3.0" />
+        <PackageReference Include="System.Text.Encoding.Extensions" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.Extensions" Version="4.3.1" />
+        <PackageReference Include="System.Globalization" Version="4.3.0" />
+        <PackageReference Include="System.Net.Requests" Version="4.3.0" />
+        <PackageReference Include="System.Diagnostics.TraceSource" Version="4.3.0" />
+        <PackageReference Include="System.Runtime.Serialization.Json" Version="4.3.0" />
+        <PackageReference Include="System.Security.Cryptography.Algorithms" Version="4.3.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+        <Reference Include="System.Configuration" />
+        <Reference Include="System.Xml" />
+        <Reference Include="System" />
+        <Reference Include="Microsoft.CSharp" />
+    </ItemGroup>
 
-  <Import Project="..\NAME.Core\NAME.Core.projitems" Label="Shared" />
+    <Import Project="..\NAME.Core\NAME.Core.projitems" Label="Shared" />
 
 </Project>

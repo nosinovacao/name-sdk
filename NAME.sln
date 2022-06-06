@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27004.2006
+# Visual Studio Version 17
+VisualStudioVersion = 17.2.32519.379
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{858DAD45-2D69-4C8F-8E51-A726A7C0532D}"
 	ProjectSection(SolutionItems) = preProject
@@ -12,10 +12,19 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8375C21F-81D2-495F-8393-9E72AF053A74}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
 		build.cake = build.cake
 		build.ps1 = build.ps1
 		build.sh = build.sh
+		CHANGELOG.md = CHANGELOG.md
+		CONTRIBUTING.md = CONTRIBUTING.md
 		global.json = global.json
+		LICENSE = LICENSE
+		name.dependencies.v1.jschema = name.dependencies.v1.jschema
+		README.md = README.md
 		stylecop.json = stylecop.json
 		stylecop.ruleset = stylecop.ruleset
 	EndProjectSection
@@ -62,11 +71,6 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NAME.Hosting.Shared.Tests", "unit-tests\NAME.Hosting.Shared.Tests\NAME.Hosting.Shared.Tests.csproj", "{7BF3496C-1E0F-4AC3-9497-2C526132894A}"
 EndProject
 Global
-	GlobalSection(SharedMSBuildProjectFiles) = preSolution
-		src\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems*{1b69400b-f2b5-417a-9234-5f12114554a8}*SharedItemsImports = 13
-		src\NAME.Core\NAME.Core.projitems*{6bed7e20-a9a1-41e1-9a74-fd1c9211d181}*SharedItemsImports = 13
-		src\NAME.SelfHost.Shared\NAME.SelfHost.Shared.projitems*{b7f1edf7-131e-494d-a7ce-f6d3d994a8b2}*SharedItemsImports = 13
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -154,5 +158,17 @@ Global
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {FB1598D2-F306-4060-B4C8-90DCF74C8C93}
+	EndGlobalSection
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		src\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems*{1b69400b-f2b5-417a-9234-5f12114554a8}*SharedItemsImports = 13
+		src\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems*{23b5dafc-d49f-41b5-ab84-b9bae9578cc4}*SharedItemsImports = 5
+		src\NAME.Core\NAME.Core.projitems*{50ab471c-4769-4c65-a219-dbd9d8389c6c}*SharedItemsImports = 5
+		src\NAME.Core\NAME.Core.projitems*{6bed7e20-a9a1-41e1-9a74-fd1c9211d181}*SharedItemsImports = 13
+		src\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems*{7bf3496c-1e0f-4ac3-9497-2c526132894a}*SharedItemsImports = 5
+		src\NAME.SelfHost.Shared\NAME.SelfHost.Shared.projitems*{b7f1edf7-131e-494d-a7ce-f6d3d994a8b2}*SharedItemsImports = 13
+		src\NAME.SelfHost.Shared\NAME.SelfHost.Shared.projitems*{bd5d9f86-bf08-4d53-a3be-99e3f9f06db4}*SharedItemsImports = 5
+		src\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems*{eabdc739-41ab-493f-a3a7-60bcd5be9c7a}*SharedItemsImports = 5
+		src\NAME.SelfHost.Shared\NAME.SelfHost.Shared.projitems*{eabdc739-41ab-493f-a3a7-60bcd5be9c7a}*SharedItemsImports = 5
+		src\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems*{f5d256a5-56df-45f1-a2aa-1b366e6bc5ea}*SharedItemsImports = 5
 	EndGlobalSection
 EndGlobal

@@ -1,4 +1,5 @@
-FROM microsoft/dotnet:1.1.1-sdk
+#FROM microsoft/dotnet:1.1.1-sdk
+FROM mcr.microsoft.com/dotnet/core/sdk:1.1
 WORKDIR /integration
 COPY . ./
 # COPY ../../Output/Artifacts/NuGets/Release ./nugets

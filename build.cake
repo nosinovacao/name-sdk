@@ -65,20 +65,20 @@ Task("Build")
             Configuration = configuration,
             MSBuildSettings = new DotNetCoreMSBuildSettings()
         };
-        
+
         dotNetBuildConfig.MSBuildSettings.TreatAllWarningsAs = MSBuildTreatAllWarningsAs.Error;
 
         DotNetCoreBuild("NAME.sln", dotNetBuildConfig);
     });
-    
+
 Task("Nuget-Pack")
     .Does(()=>{
         EnsureDirectoryExists(preReleaseNugetPackagesDir);
         EnsureDirectoryExists(releaseNugetPackagesDir);
-        
+
         CleanDirectory(preReleaseNugetPackagesDir);
         CleanDirectory(releaseNugetPackagesDir);
-                
+
         var preReleaseSettings = new DotNetCorePackSettings{
             Configuration = configuration,
             OutputDirectory = preReleaseNugetPackagesDir,
@@ -101,7 +101,7 @@ Task("Nuget-Pack")
                     { "VersionSuffix", settings.VersionSuffix }
                 };
             }
-                
+
             foreach(var project in PROJECTS_TO_PACK){
                 var projectFolder = "./src/" + project;
                 DotNetCoreRestore(projectFolder, dotnetCoreRestoreSettings);
@@ -112,22 +112,21 @@ Task("Nuget-Pack")
         packProjects(preReleaseSettings);
         packProjects(releaseSettings);
     });
-    
+
 Task("Run-Unit-Tests")
     .IsDependentOn("Restore-NuGet-Packages")
     .Does(() =>
     {
-        
         var files = GetFiles("./unit-tests/**/*.csproj");
 
         int highestExitCode = 0;
 
         foreach (var file in files){
-            // While https://github.com/cake-build/cake/pull/1578 is not merged, 
+            // While https://github.com/cake-build/cake/pull/1578 is not merged,
             // we need to start our own process to run dotnet xunit.
             // Related: https://github.com/cake-build/cake/issues/1577
 
-            var processSettings = new ProcessSettings { 
+            var processSettings = new ProcessSettings {
                 Arguments = "xunit -trait \"TestCategory=\"Unit\"\"",
                 WorkingDirectory = file.GetDirectory()
             };
@@ -140,7 +139,7 @@ Task("Run-Unit-Tests")
                 if (frameworks == null || frameworks.Contains("netcoreapp") == false) {
                     continue;
                 }
-                processSettings.Arguments.Append("-framework netcoreapp1.0");
+                processSettings.Arguments.Append("-framework netcoreapp2.2");
             }
 
             var exitCode = StartProcess("dotnet", processSettings);
@@ -148,7 +147,7 @@ Task("Run-Unit-Tests")
             if(exitCode > highestExitCode)
                 highestExitCode = exitCode;
         }
-        
+
         // Means there was an error
         if(highestExitCode > 0 )
             throw new Exception("Some tests failed.");
@@ -200,7 +199,7 @@ Task("TravisCI")
 
 Task("Default")
     .IsDependentOn("Build-AND-Test");
-    
+
 //////////////////////////////////////////////////////////////////////
 // EXECUTION
 //////////////////////////////////////////////////////////////////////

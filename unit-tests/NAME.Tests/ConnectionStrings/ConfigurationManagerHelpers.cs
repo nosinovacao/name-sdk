@@ -1,4 +1,4 @@
-﻿#if NET452
+﻿#if NET462
 using System.Configuration;
 using System.Reflection;
 using System.Collections.Specialized;

@@ -1,25 +1,25 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-    <PreserveCompilationContext>true</PreserveCompilationContext>
-    <AssemblyName>NAME.DummyConsole.Kestrel</AssemblyName>
-    <OutputType>Exe</OutputType>
-    <PackageId>NAME.DummyConsole.Kestrel</PackageId>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <PreserveCompilationContext>true</PreserveCompilationContext>
+        <AssemblyName>NAME.DummyConsole.Kestrel</AssemblyName>
+        <OutputType>Exe</OutputType>
+        <PackageId>NAME.DummyConsole.Kestrel</PackageId>
+    </PropertyGroup>
 
-  <ItemGroup Condition="'$(RUNNING_ON_DOCKER)' != ''">
-    <PackageReference Include="NAME.SelfHost.Kestrel" Version="*" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(RUNNING_ON_DOCKER)' != ''">
+        <PackageReference Include="NAME.SelfHost.Kestrel" Version="*" />
+    </ItemGroup>
 
-  <ItemGroup Condition="'$(RUNNING_ON_DOCKER)' == ''">
-    <ProjectReference Include="..\..\src\NAME.SelfHost.Kestrel\NAME.SelfHost.Kestrel.csproj" />
-  </ItemGroup>
+    <ItemGroup Condition="'$(RUNNING_ON_DOCKER)' == ''">
+        <ProjectReference Include="..\..\src\NAME.SelfHost.Kestrel\NAME.SelfHost.Kestrel.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Content Include="dependencies.json">
-      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-    </Content>
-  </ItemGroup>
+    <ItemGroup>
+        <Content Include="dependencies.json">
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+    </ItemGroup>
 
 </Project>

@@ -76,7 +76,8 @@ services:
     expose:
       - "5672"
   sqlserver:
-    image: microsoft/mssql-server-linux:2017-GA
+    image: mcr.microsoft.com/mssql/server:2017-latest
+#microsoft/mssql-server-linux:2017-GA
     expose:
       - "1433"
     environment:

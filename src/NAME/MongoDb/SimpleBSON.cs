@@ -630,7 +630,7 @@ namespace NAME.MongoDb.Bson
                 ms.WriteByte(buf);
             }
             byte[] buffer;
-#if NETSTANDARD1_6
+#if NETSTANDARD2_0
             if (!ms.TryGetBuffer(out var tempBuffer))
                 throw new NAMEException("This should not happen!", NAMEStatusLevel.Warn);
             buffer = tempBuffer.Array;
@@ -718,7 +718,7 @@ namespace NAME.MongoDb.Bson
             bw.Write((int)(dms.Position + 4 + 1));
 
             byte[] buffer;
-#if NETSTANDARD1_6
+#if NETSTANDARD2_0
             if (!dms.TryGetBuffer(out var tempBuffer))
                 throw new NAMEException("This should not happen!", NAMEStatusLevel.Error);
             buffer = tempBuffer.Array;

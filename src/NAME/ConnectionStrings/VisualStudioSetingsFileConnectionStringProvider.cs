@@ -1,6 +1,5 @@
-﻿#if NET45
+#if NET462
 using NAME.Core;
-//using System.Xml;
 using System;
 using System.Collections.Generic;
 using System.Linq;

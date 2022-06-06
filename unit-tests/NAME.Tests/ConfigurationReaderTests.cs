@@ -49,7 +49,7 @@ namespace NAME.Tests
                         ""max_version"": ""4.*"",
                         ""connection_string"": ""http://some-elasticsearch-instance:9200""
                     }"
-#if NET452
+#if NET462
                     + @",{
                         ""type"": ""RabbitMq"",
                         ""name"": ""rabbitmq"",
@@ -443,7 +443,7 @@ namespace NAME.Tests
         [TestPriority(2)]
         public void ReadConfiguration()
         {
-#if NET452
+#if NET462
             System.Configuration.ConfigurationManager.ConnectionStrings.SetWritable().Add(new System.Configuration.ConnectionStringSettings("RabbitMQConnectionString", "ConnString"));
 #endif
             int overrideCallsCount = 0;
@@ -458,7 +458,7 @@ namespace NAME.Tests
 
             ParsedDependencies configuration = DependenciesReader.ReadDependencies(CONFIGURATION_FILE, new DummyFilePathMapper(), settings, new NAMEContext());
 
-#if NET452
+#if NET462
             Assert.Equal(4, configuration.InfrastructureDependencies.Count());
             Assert.Equal(2, configuration.ServiceDependencies.Count());
             Assert.Equal(1, overrideCallsCount);
@@ -473,7 +473,7 @@ namespace NAME.Tests
             Assert.True(castedMaxVersion.IsMinorWildcard);
         }
 
-#if NET452
+#if NET462
         [Fact]
         [Trait("TestCategory", "Unit")]
         [TestPriority(1)]
