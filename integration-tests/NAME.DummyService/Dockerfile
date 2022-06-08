@@ -1,5 +1,4 @@
-#FROM microsoft/dotnet:1.1.1-sdk
-FROM mcr.microsoft.com/dotnet/core/sdk:1.1
+FROM mcr.microsoft.com/dotnet/core/sdk:2.2
 
 COPY . /service
 

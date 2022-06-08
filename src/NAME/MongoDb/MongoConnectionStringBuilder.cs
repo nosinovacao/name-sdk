@@ -18,7 +18,7 @@ namespace NAME.MongoDb
         /// The Default database.
         /// </summary>
         public const string DefaultDatabase = "admin";
-        
+
         private static readonly Regex ServerRegex = new Regex(@"^\s*([^:]+)(?::(\d+))?\s*$");
         private static readonly Regex UriRegex = new Regex(@"^mongodb://(?:[^:]*:[^@]*@)?([^/]*)(?:/([^?]*))?(?:\?.*)?$");
 

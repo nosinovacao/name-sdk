@@ -6,7 +6,6 @@
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <AssemblyName>NAME.AspNetCore</AssemblyName>
         <PackageId>NAME.AspNetCore</PackageId>
-        <!--<PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>-->
     </PropertyGroup>
 
 
@@ -29,6 +28,10 @@
     <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
         <Reference Include="System" />
         <Reference Include="Microsoft.CSharp" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="StyleCop.Analyzers" Version="1.0.0" />
     </ItemGroup>
 
     <Import Project="..\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems" Label="Shared" />

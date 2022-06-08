@@ -7,7 +7,6 @@
         <AssemblyName>NAME</AssemblyName>
         <PackageId>NAME</PackageId>
         <AnalysisLevel>latest-recommended</AnalysisLevel>
-        <!--<PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.6' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>-->
     </PropertyGroup>
 
     <ItemGroup>
@@ -46,6 +45,10 @@
         <Reference Include="System.Xml" />
         <Reference Include="System" />
         <Reference Include="Microsoft.CSharp" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Update="StyleCop.Analyzers" Version="1.0.0" />
     </ItemGroup>
 
     <Import Project="..\NAME.Core\NAME.Core.projitems" Label="Shared" />
