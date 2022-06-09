@@ -235,7 +235,7 @@ namespace NAME
             string key;
             switch (locator)
             {
-#if NET45
+#if NET462
                 case SupportedConnectionStringLocators.ConnectionStrings:
                     key = objClass["key"]?.Value;
                     provider = new ConnectionStringsConnectionStringProvider(key);

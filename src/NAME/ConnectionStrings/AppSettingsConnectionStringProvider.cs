@@ -1,4 +1,4 @@
-﻿#if NET45
+#if NET462
 using NAME.Core;
 using System;
 using System.Collections.Generic;

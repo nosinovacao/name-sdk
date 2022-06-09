@@ -5,7 +5,7 @@ namespace NAME.Core
     /// </summary>
     public enum SupportedConnectionStringLocators
     {
-#if NET45
+#if NET462
         /// <summary>
         /// ConfigurationManager ConnectionStrings.
         /// </summary>

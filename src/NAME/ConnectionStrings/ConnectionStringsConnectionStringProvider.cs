@@ -1,4 +1,4 @@
-﻿#if NET45
+#if NET462
 using NAME.Core;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,6 @@ namespace NAME.ConnectionStrings
     /// <seealso cref="NAME.Core.IConnectionStringProvider" />
     public class ConnectionStringsConnectionStringProvider : IConnectionStringProvider
     {
-        
         private string key;
     
         /// <summary>

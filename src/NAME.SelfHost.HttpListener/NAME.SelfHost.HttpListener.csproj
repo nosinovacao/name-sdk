@@ -1,39 +1,41 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>Provides a way to add NAME as a self host web api endpoint for .NET using the HttpListener.</Description>
-    <Authors>Miguel Alexandre;João Trigo Soares</Authors>
-    <TargetFramework>net45</TargetFramework>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <AssemblyName>NAME.SelfHost.HttpListener</AssemblyName>
-    <PackageId>NAME.SelfHost.HttpListener</PackageId>
-    <PackageTags>NOS NAME Self Host HttpListener WebApi NOS Api Manifest Extension</PackageTags>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Description>Provides a way to add NAME as a self host web api endpoint for .NET using the HttpListener.</Description>
+        <Authors>Miguel Alexandre;João Trigo Soares</Authors>
+        <TargetFramework>net462</TargetFramework>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <AssemblyName>NAME.SelfHost.HttpListener</AssemblyName>
+        <PackageId>NAME.SelfHost.HttpListener</PackageId>
+        <PackageTags>NOS NAME Self Host HttpListener WebApi NOS Api Manifest Extension</PackageTags>
+    </PropertyGroup>
 
-  <Import Project="..\NAME.SelfHost.Shared\NAME.SelfHost.Shared.projitems" Label="Shared" />
+    <Import Project="..\NAME.SelfHost.Shared\NAME.SelfHost.Shared.projitems" Label="Shared" />
 
-  <Import Project="..\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems" Label="Shared" />
+    <Import Project="..\NAME.Hosting.Shared\NAME.Hosting.Shared.projitems" Label="Shared" />
 
-  
+    <ItemGroup>
+        <None Update="Nuget\readme.txt">
+            <PackagePath></PackagePath>
+            <Pack>true</Pack>
+        </None>
+    </ItemGroup>
 
-  <ItemGroup>
-    <None Update="Nuget\readme.txt">
-      <PackagePath></PackagePath>
-      <Pack>true</Pack>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\NAME\NAME.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\NAME\NAME.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="SocketHttpListener" Version="1.0.50" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="SocketHttpListener" Version="1.0.50" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+        <Reference Include="System" />
+        <Reference Include="Microsoft.CSharp" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net45' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
+    <ItemGroup>
+      <PackageReference Update="StyleCop.Analyzers" Version="1.0.0" />
+    </ItemGroup>
 
 </Project>

@@ -18,7 +18,7 @@ services:
       - LATEST_RABBIT_HOSTNAME=rabbitmq
       - LATEST_SQLSERVER_HOSTNAME=sqlserver
       - SPECIFIC_MONGO_HOSTNAME=specific-mongo
-      - SPECIFIC_MONGO_VERSION=3.0.14
+      - SPECIFIC_MONGO_VERSION=3.0.15
       - SPECIFIC_RABBIT_HOSTNAME=specific-rabbitmq
       - SPECIFIC_RABBIT_VERSION=3.6.5
       - SPECIFIC_SERVICE_HOSTNAME=dummy-service
@@ -43,6 +43,9 @@ services:
       - elasticsearch
       - specific-elasticsearch
       - dummy-console-kestrel
+    networks:
+      - integration-tests-network
+
   dummy-service:
     build: ./NAME.DummyService
     environment:
@@ -51,6 +54,9 @@ services:
       - ../Output/Artifacts/NuGets/Release:/service/nugets
     expose:
       - "5000"
+    networks:
+      - integration-tests-network
+
   dummy-console-kestrel:
     build: ./NAME.DummyConsole.Kestrel
     environment:
@@ -59,39 +65,66 @@ services:
       - ../Output/Artifacts/NuGets/Release:/service/nugets
     expose:
       - "40500"
+    networks:
+      - integration-tests-network
+
   mongo:
     image: mongo
     expose:
       - "27017"
+    networks:
+      - integration-tests-network
+
   specific-mongo:
-    image: mongo:3.0.14
+    image: mongo:3.0.15
     expose:
       - "27017"
+    networks:
+      - integration-tests-network
+
   rabbitmq:
     image: rabbitmq
     expose:
       - "5672"
+    networks:
+      - integration-tests-network
+
   specific-rabbitmq:
     image: rabbitmq:3.6.5
     expose:
       - "5672"
+    networks:
+      - integration-tests-network
+
   sqlserver:
-    image: microsoft/mssql-server-linux:2017-GA
+    image: mcr.microsoft.com/mssql/server:2017-latest-ubuntu
     expose:
       - "1433"
     environment:
       - SA_PASSWORD=W1#llnotbeused
       - ACCEPT_EULA=Y
+    networks:
+      - integration-tests-network
+
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.6.3
     expose:
       - "9200"
     environment:
       - xpack.security.enabled=false
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - integration-tests-network
+
   specific-elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.1
     expose:
       - "9200"
     environment:
       - xpack.security.enabled=false
-     
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    networks:
+      - integration-tests-network
+
+networks:
+  integration-tests-network:

@@ -22,11 +22,13 @@ namespace NAME.MongoDb.Bson
             None,
             Int32,
             Int64,
-            Object
+            Object,
+            Decimal
         }
 
         private ValueType mValueType;
         private double tdouble;
+        private decimal tdecimal;
         private string tstring;
         private byte[] binary;
         private bool tbool;
@@ -78,10 +80,16 @@ namespace NAME.MongoDb.Bson
                 {
                     case ValueType.Int32:
                         return (double)this.int32;
+
                     case ValueType.Int64:
                         return (double)this.int64;
+
                     case ValueType.Double:
                         return this.tdouble;
+
+                    case ValueType.Decimal:
+                        return (double)this.tdecimal;
+
                     case ValueType.None:
                         return float.NaN;
                 }
@@ -89,6 +97,30 @@ namespace NAME.MongoDb.Bson
                 throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to double", this.mValueType));
             }
         }
+
+        public decimal decimalValue
+        {
+            get
+            {
+                switch (this.mValueType)
+                {
+                    case ValueType.Double:
+                        return (decimal)this.tdouble;
+
+                    case ValueType.Int32:
+                        return (decimal)this.int32;
+
+                    case ValueType.Int64:
+                        return (decimal)this.int64;
+
+                    case ValueType.Decimal:
+                        return this.tdecimal;
+                }
+
+                throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to decimal", this.mValueType));
+            }
+        }
+
         public int int32Value
         {
             get
@@ -97,15 +129,21 @@ namespace NAME.MongoDb.Bson
                 {
                     case ValueType.Int32:
                         return (int)this.int32;
+
                     case ValueType.Int64:
                         return (int)this.int64;
+
                     case ValueType.Double:
                         return (int)this.tdouble;
+
+                    case ValueType.Decimal:
+                        return (int)this.tdecimal;
                 }
 
                 throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to Int32", this.mValueType));
             }
         }
+
         public long int64Value
         {
             get
@@ -114,15 +152,21 @@ namespace NAME.MongoDb.Bson
                 {
                     case ValueType.Int32:
                         return (long)this.int32;
+
                     case ValueType.Int64:
                         return (long)this.int64;
+
                     case ValueType.Double:
                         return (long)this.tdouble;
+
+                    case ValueType.Decimal:
+                        return (long)this.tdecimal;
                 }
 
                 throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to Int64", this.mValueType));
             }
         }
+
         public byte[] binaryValue
         {
             get
@@ -136,6 +180,7 @@ namespace NAME.MongoDb.Bson
                 throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to binary", this.mValueType));
             }
         }
+
         public DateTime dateTimeValue
         {
             get
@@ -149,6 +194,7 @@ namespace NAME.MongoDb.Bson
                 throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to DateTime", this.mValueType));
             }
         }
+
         public string stringValue
         {
             get
@@ -157,12 +203,19 @@ namespace NAME.MongoDb.Bson
                 {
                     case ValueType.Int32:
                         return Convert.ToString(this.int32);
+
                     case ValueType.Int64:
                         return Convert.ToString(this.int64);
+
                     case ValueType.Double:
                         return Convert.ToString(this.tdouble);
+
+                    case ValueType.Decimal:
+                        return Convert.ToString(this.tdecimal);
+
                     case ValueType.String:
                         return this.tstring != null ? this.tstring.TrimEnd(new char[] { (char)0 }) : null;
+
                     case ValueType.Binary:
                         return Encoding.UTF8.GetString(this.binary).TrimEnd(new char[] { (char)0 });
                 }
@@ -170,6 +223,7 @@ namespace NAME.MongoDb.Bson
                 throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to string", this.mValueType));
             }
         }
+
         public bool boolValue
         {
             get
@@ -183,6 +237,7 @@ namespace NAME.MongoDb.Bson
                 throw new Exception(string.Format("Original type is {0}. Cannot convert from {0} to bool", this.mValueType));
             }
         }
+
         public bool isNone
         {
             get { return this.mValueType == ValueType.None; }
@@ -193,6 +248,7 @@ namespace NAME.MongoDb.Bson
             get { return null; }
             set { }
         }
+
         public virtual BSONValue this[int index]
         {
             get { return null; }
@@ -226,6 +282,11 @@ namespace NAME.MongoDb.Bson
             return new BSONValue(v);
         }
 
+        public static implicit operator BSONValue(decimal v)
+        {
+            return new BSONValue(v);
+        }
+
         public static implicit operator BSONValue(int v)
         {
             return new BSONValue(v);
@@ -250,7 +311,6 @@ namespace NAME.MongoDb.Bson
         {
             return new BSONValue(v);
         }
-
 
         public static implicit operator double(BSONValue v)
         {
@@ -298,6 +358,12 @@ namespace NAME.MongoDb.Bson
             this.tdouble = v;
         }
 
+        public BSONValue(decimal v)
+        {
+            this.mValueType = ValueType.Decimal;
+            this.tdecimal = v;
+        }
+
         public BSONValue(string v)
         {
             this.mValueType = ValueType.String;
@@ -333,9 +399,7 @@ namespace NAME.MongoDb.Bson
             this.mValueType = ValueType.Int64;
             this.int64 = v;
         }
-
     }
-
 
     internal class BSONObject : BSONValue, IEnumerable
     {
@@ -356,6 +420,7 @@ namespace NAME.MongoDb.Bson
         {
             get { return this.mMap.Values; }
         }
+
         public int Count
         {
             get { return this.mMap.Count; }
@@ -367,21 +432,23 @@ namespace NAME.MongoDb.Bson
             get { return this.mMap[key]; }
             set { this.mMap[key] = value; }
         }
+
         // Methods
         public override void Clear()
         {
             this.mMap.Clear();
         }
+
         public override void Add(string key, BSONValue value)
         {
             this.mMap.Add(key, value);
         }
 
-
         public override bool Contains(BSONValue v)
         {
             return this.mMap.ContainsValue(v);
         }
+
         public override bool ContainsKey(string key)
         {
             return this.mMap.ContainsKey(key);
@@ -397,17 +464,14 @@ namespace NAME.MongoDb.Bson
             return this.mMap.TryGetValue(key, out value);
         }
 
-
         IEnumerator IEnumerable.GetEnumerator()
         {
             return this.mMap.GetEnumerator();
         }
     }
 
-
     internal class BSONArray : BSONValue, IEnumerable
     {
-
         private List<BSONValue> mList = new List<BSONValue>();
 
         public BSONArray()
@@ -421,6 +485,7 @@ namespace NAME.MongoDb.Bson
             get { return this.mList[index]; }
             set { this.mList[index] = value; }
         }
+
         public int Count
         {
             get { return this.mList.Count; }
@@ -436,18 +501,22 @@ namespace NAME.MongoDb.Bson
         {
             return this.mList.IndexOf(item);
         }
+
         public void Insert(int index, BSONValue item)
         {
             this.mList.Insert(index, item);
         }
+
         public bool Remove(BSONValue v)
         {
             return this.mList.Remove(v);
         }
+
         public void RemoveAt(int index)
         {
             this.mList.RemoveAt(index);
         }
+
         public override void Clear()
         {
             this.mList.Clear();
@@ -457,7 +526,6 @@ namespace NAME.MongoDb.Bson
         {
             return this.mList.Contains(v);
         }
-
 
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -480,7 +548,6 @@ namespace NAME.MongoDb.Bson
 
         public static byte[] Dump(BSONObject obj)
         {
-
             SimpleBSON bson = new SimpleBSON();
             MemoryStream ms = new MemoryStream();
 
@@ -511,67 +578,121 @@ namespace NAME.MongoDb.Bson
         {
             byte elementType = this.mBinaryReader.ReadByte();
 
-            if (elementType == 0x01)
-            { // Double
-                name = this.decodeCString();
-                return new BSONValue(this.mBinaryReader.ReadDouble());
+            // Ref.: https://bsonspec.org/spec.html
+            switch (elementType)
+            {
+                case 0x01:
+                    // Double
+                    name = this.decodeCString();
+                    return new BSONValue(this.mBinaryReader.ReadDouble());
 
-            }
-            else if (elementType == 0x02)
-            { // String
-                name = this.decodeCString();
-                return new BSONValue(this.decodeString());
+                case 0x02:
+                    // String
+                    name = this.decodeCString();
+                    return new BSONValue(this.decodeString());
 
-            }
-            else if (elementType == 0x03)
-            { // Document
-                name = this.decodeCString();
-                return this.decodeDocument();
+                case 0x03:
+                    // Document
+                    name = this.decodeCString();
+                    return this.decodeDocument();
 
-            }
-            else if (elementType == 0x04)
-            { // Array
-                name = this.decodeCString();
-                return this.decodeArray();
+                case 0x04:
+                    // Array
+                    name = this.decodeCString();
+                    return this.decodeArray();
 
-            }
-            else if (elementType == 0x05)
-            { // Binary
-                name = this.decodeCString();
-                int length = this.mBinaryReader.ReadInt32();
-                byte binaryType = this.mBinaryReader.ReadByte();
+                case 0x05:
+                    // Binary
+                    name = this.decodeCString();
+                    int length = this.mBinaryReader.ReadInt32();
+                    byte binaryType = this.mBinaryReader.ReadByte();
+                    return new BSONValue(this.mBinaryReader.ReadBytes(length));
 
-                return new BSONValue(this.mBinaryReader.ReadBytes(length));
+                case 0x06:
+                    // Undefined value (deprecated)
+                    name = this.decodeCString();
+                    return new BSONValue();
 
-            }
-            else if (elementType == 0x08)
-            { // Boolean
-                name = this.decodeCString();
-                return new BSONValue(this.mBinaryReader.ReadBoolean());
+                case 0x07:
+                    // ObjectId (12 bytes)
+                    name = this.decodeCString();
+                    return new BSONValue(this.mBinaryReader.ReadBytes(12));
 
-            }
-            else if (elementType == 0x09)
-            { // DateTime
-                name = this.decodeCString();
-                long time = this.mBinaryReader.ReadInt64();
-                return new BSONValue(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + new TimeSpan(time * 10000));
-            }
-            else if (elementType == 0x0A)
-            { // None
-                name = this.decodeCString();
-                return new BSONValue();
-            }
-            else if (elementType == 0x10)
-            { // Int32
-                name = this.decodeCString();
-                return new BSONValue(this.mBinaryReader.ReadInt32());
-            }
-            else if (elementType == 0x12)
-            { // Int64
-                name = this.decodeCString();
-                return new BSONValue(this.mBinaryReader.ReadInt64());
-            }
+                case 0x08:
+                    // Boolean
+                    name = this.decodeCString();
+                    return new BSONValue(this.mBinaryReader.ReadBoolean());
 
+                case 0x09:
+                    // DateTime
+                    name = this.decodeCString();
+                    long time = this.mBinaryReader.ReadInt64();
+                    return new BSONValue(new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc) + new TimeSpan(time * 10000));
+
+                case 0x0A:
+                    // Null value
+                    name = this.decodeCString();
+                    return new BSONValue();
+
+                case 0x0B:
+                    // Regular expression
+                    name = this.decodeCString();
+                    var regexPattern = this.decodeCString();
+                    var regexOptions = this.decodeCString();
+                    return new BSONValue(regexPattern);
+
+                case 0x0C:
+                    // DBPointer (Deprecated)
+                    break;
+
+                case 0x0D:
+                    // JavaScript code
+                    name = this.decodeCString();
+                    return new BSONValue(this.decodeString());
+
+                case 0x0E:
+                    // Symbol (Deprecated)
+                    name = this.decodeCString();
+                    return new BSONValue(this.decodeString());
+
+                case 0x0F:
+                    // JavaScript code w/ scope (Deprecated)
+                    name = this.decodeCString();
+                    var value = this.mBinaryReader.ReadInt32();
+                    var text = this.decodeString();
+                    var document = this.decodeDocument();
+                    return new BSONValue(text);
+
+                case 0x10:
+                    // Int32
+                    name = this.decodeCString();
+                    return new BSONValue(this.mBinaryReader.ReadInt32());
+
+                case 0x11:
+                    // Timestamp
+                    name = this.decodeCString();
+                    return new BSONValue((double)this.mBinaryReader.ReadUInt64());
+
+                case 0x12:
+                    // Int64
+                    name = this.decodeCString();
+                    return new BSONValue(this.mBinaryReader.ReadInt64());
+
+                case 0x13:
+                    // Decimal (128 bits)
+                    name = this.decodeCString();
+                    return new BSONValue(this.mBinaryReader.ReadDecimal());
+
+                case 0xFF:
+                    // Min key
+                    name = this.decodeCString();
+                    return new BSONValue();
+
+                case 0x7F:
+                    // Max key
+                    name = this.decodeCString();
+                    return new BSONValue();
+            }
 
             throw new Exception(string.Format("Don't know elementType={0}", elementType));
         }
@@ -587,7 +708,6 @@ namespace NAME.MongoDb.Bson
             {
                 BSONValue value = this.decodeElement(out string name);
                 obj.Add(name, value);
-
             }
 
             this.mBinaryReader.ReadByte(); // zero
@@ -620,7 +740,6 @@ namespace NAME.MongoDb.Bson
 
         private string decodeCString()
         {
-
             var ms = new MemoryStream();
             while (true)
             {
@@ -630,7 +749,7 @@ namespace NAME.MongoDb.Bson
                 ms.WriteByte(buf);
             }
             byte[] buffer;
-#if NETSTANDARD1_6
+#if NETSTANDARD2_0
             if (!ms.TryGetBuffer(out var tempBuffer))
                 throw new NAMEException("This should not happen!", NAMEStatusLevel.Warn);
             buffer = tempBuffer.Array;
@@ -648,7 +767,6 @@ namespace NAME.MongoDb.Bson
             return Encoding.UTF8.GetString(buffer, 0, (int)ms.Position);
         }
 
-
         private void encodeElement(MemoryStream ms, string name, BSONValue v)
         {
             switch (v.valueType)
@@ -658,45 +776,54 @@ namespace NAME.MongoDb.Bson
                     this.encodeCString(ms, name);
                     this.encodeDouble(ms, v.doubleValue);
                     return;
+
                 case BSONValue.ValueType.String:
                     ms.WriteByte(0x02);
                     this.encodeCString(ms, name);
                     this.encodeString(ms, v.stringValue);
                     return;
+
                 case BSONValue.ValueType.Object:
                     ms.WriteByte(0x03);
                     this.encodeCString(ms, name);
                     this.encodeDocument(ms, v as BSONObject);
                     return;
+
                 case BSONValue.ValueType.Array:
                     ms.WriteByte(0x04);
                     this.encodeCString(ms, name);
                     this.encodeArray(ms, v as BSONArray);
                     return;
+
                 case BSONValue.ValueType.Binary:
                     ms.WriteByte(0x05);
                     this.encodeCString(ms, name);
                     this.encodeBinary(ms, v.binaryValue);
                     return;
+
                 case BSONValue.ValueType.Boolean:
                     ms.WriteByte(0x08);
                     this.encodeCString(ms, name);
                     this.encodeBool(ms, v.boolValue);
                     return;
+
                 case BSONValue.ValueType.UTCDateTime:
                     ms.WriteByte(0x09);
                     this.encodeCString(ms, name);
                     this.encodeUTCDateTime(ms, v.dateTimeValue);
                     return;
+
                 case BSONValue.ValueType.None:
                     ms.WriteByte(0x0A);
                     this.encodeCString(ms, name);
                     return;
+
                 case BSONValue.ValueType.Int32:
                     ms.WriteByte(0x10);
                     this.encodeCString(ms, name);
                     this.encodeInt32(ms, v.int32Value);
                     return;
+
                 case BSONValue.ValueType.Int64:
                     ms.WriteByte(0x12);
                     this.encodeCString(ms, name);
@@ -707,7 +834,6 @@ namespace NAME.MongoDb.Bson
 
         private void encodeDocument(MemoryStream ms, BSONObject obj)
         {
-
             MemoryStream dms = new MemoryStream();
             foreach (string str in obj.Keys)
             {
@@ -718,7 +844,7 @@ namespace NAME.MongoDb.Bson
             bw.Write((int)(dms.Position + 4 + 1));
 
             byte[] buffer;
-#if NETSTANDARD1_6
+#if NETSTANDARD2_0
             if (!dms.TryGetBuffer(out var tempBuffer))
                 throw new NAMEException("This should not happen!", NAMEStatusLevel.Error);
             buffer = tempBuffer.Array;
@@ -738,7 +864,6 @@ namespace NAME.MongoDb.Bson
 
         private void encodeArray(MemoryStream ms, BSONArray lst)
         {
-
             var obj = new BSONObject();
             for (int i = 0; i < lst.Count; ++i)
             {
@@ -790,11 +915,13 @@ namespace NAME.MongoDb.Bson
             byte[] buf = BitConverter.GetBytes(v);
             ms.Write(buf, 0, buf.Length);
         }
+
         private void encodeInt64(MemoryStream ms, long v)
         {
             byte[] buf = BitConverter.GetBytes(v);
             ms.Write(buf, 0, buf.Length);
         }
+
         private void encodeUTCDateTime(MemoryStream ms, DateTime dt)
         {
             TimeSpan span;

@@ -30,7 +30,7 @@ namespace NAME.OperatingSystem
         Task<IEnumerable<DependencyVersion>> IVersionResolver.GetVersions()
         {
             OperatingSystemDependencyVersion result;
-#if NET45
+#if NET462
             result = this.HandleWindowsOperatingSystem();
 #else
             if (RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
@@ -44,7 +44,7 @@ namespace NAME.OperatingSystem
 
             return Task.FromResult(new List<DependencyVersion> { result }.AsEnumerable());
         }
-#if !NET45
+#if !NET462
         private OperatingSystemDependencyVersion HandleLinuxOperatingSystem()
         {
             if (!File.Exists(LINUX_OS_RELEASE_FILE))
@@ -75,7 +75,7 @@ namespace NAME.OperatingSystem
 #endif
         private OperatingSystemDependencyVersion HandleWindowsOperatingSystem()
         {
-#if NET45
+#if NET462
             return new OperatingSystemDependencyVersion("windows", (uint)Environment.OSVersion.Version.Major, (uint)Environment.OSVersion.Version.Minor, (uint)Environment.OSVersion.Version.Build);
 #else
             string osDescription = RuntimeInformation.OSDescription;

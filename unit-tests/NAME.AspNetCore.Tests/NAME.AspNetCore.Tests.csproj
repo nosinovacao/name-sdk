@@ -1,46 +1,47 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <TargetFrameworks>netcoreapp1.0;net452</TargetFrameworks>
-    <DebugType>portable</DebugType>
-    <AssemblyName>NAME.AspNetCore.Tests</AssemblyName>
-    <PackageId>NAME.AspNetCore.Tests</PackageId>
-    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">$(PackageTargetFallback);dotnet5.4;portable-net451+win8</PackageTargetFallback>
-    <RuntimeFrameworkVersion Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">1.1.1</RuntimeFrameworkVersion>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-  </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net462</TargetFrameworks>
+        <DebugType>portable</DebugType>
+        <AssemblyName>NAME.AspNetCore.Tests</AssemblyName>
+        <PackageId>NAME.AspNetCore.Tests</PackageId>
+        <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+        <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
+        <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
+        <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
+    </PropertyGroup>
 
 
-  <ItemGroup>
-    <ProjectReference Include="..\..\src\NAME\NAME.csproj" />
-    <ProjectReference Include="..\..\src\NAME.AspNetCore\NAME.AspNetCore.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\src\NAME\NAME.csproj" />
+        <ProjectReference Include="..\..\src\NAME.AspNetCore\NAME.AspNetCore.csproj" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.0.0" />
-    <PackageReference Include="Moq" Version="4.9.0" />
-    <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
-    <PackageReference Include="xunit" Version="2.3.0-beta3-build3705" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0-beta3-build3705" />
-    <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta3-build3705" />
-    <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="1.0.0" />
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.0.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.0.1" />
+        <PackageReference Include="Moq" Version="4.9.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
+        <PackageReference Include="xunit" Version="2.4.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta3-build3705" />
+        <PackageReference Include="Microsoft.AspNetCore.TestHost" Version="1.0.0" />
+        <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.0.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.0' ">
-    <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
+        <PackageReference Include="System.Runtime.Serialization.Primitives" Version="4.3.0" />
+    </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net462' ">
+        <Reference Include="System" />
+        <Reference Include="Microsoft.CSharp" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
-  </ItemGroup>
+    <ItemGroup>
+        <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
+    </ItemGroup>
 
 </Project>

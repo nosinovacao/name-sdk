@@ -1,7 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <VersionPrefix>1.2.1</VersionPrefix>
+    <VersionPrefix>1.3.0</VersionPrefix>
     <AssemblyVersion>$(VersionPrefix)</AssemblyVersion>
     <Authors>NOS Inovação</Authors>
     <PackageTags>NOS NAME NOS Api Manifest Extension name nos api manifest extension</PackageTags>

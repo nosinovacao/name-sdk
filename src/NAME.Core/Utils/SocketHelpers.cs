@@ -41,7 +41,7 @@ namespace NAME.Core.Utils
             }
             catch (SocketException ex)
             {
-#if NET45
+#if NET462
                 if (client.Connected)
                     client?.GetStream()?.Close();
                 client?.Close();
