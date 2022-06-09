@@ -4,7 +4,8 @@ COPY . /service
 
 WORKDIR /service
 
-RUN chmod +x ./docker_init.sh
+RUN sed -i -e 's/\r$//' ./docker_init.sh \
+    && chmod +x ./docker_init.sh
 
 EXPOSE 40500/tcp
 
